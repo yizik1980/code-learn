@@ -1701,4 +1701,739 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 5;
       },
     ],
   },
+
+  {
+    id: 'views',
+    title: 'Views — תצוגות וירטואליות',
+    summary: 'יצירת "טבלאות מדומות" לפישוט שאילתות מורכבות ואבטחת מידע',
+    emoji: '🪟',
+    content: [
+      { type: 'heading', text: 'מה זה View?' },
+      { type: 'text', text: 'View היא שאילתת SELECT שמורה בשם. היא מתנהגת כמו טבלה — אפשר לבצע עליה SELECT, לסנן אותה ולחבר אותה עם טבלאות אחרות. אבל היא לא מאחסנת נתונים בעצמה — בכל פעם שניגשים אליה, השאילתה שמאחוריה מתבצעת מחדש.' },
+      { type: 'tip', text: 'View מאפשר להסתיר מורכבות: במקום לכתוב JOIN ארוך כל פעם — שומרים אותו כ-View ומשתמשים בשמו.' },
+      { type: 'heading', text: 'יצירת View' },
+      { type: 'code', lang: 'sql', caption: 'CREATE VIEW', code: `-- יצירת view של הזמנות עם שם הלקוח
+CREATE VIEW order_details AS
+SELECT
+  o.id          AS order_id,
+  c.name        AS customer_name,
+  o.amount,
+  o.order_date
+FROM orders o
+JOIN customers c ON o.customer_id = c.id;
+
+-- שימוש ב-view בדיוק כמו טבלה:
+SELECT * FROM order_details
+WHERE amount > 500
+ORDER BY order_date DESC;` },
+      { type: 'heading', text: 'View לאבטחת מידע' },
+      { type: 'text', text: 'View שימושי להסתרת עמודות רגישות. ניתן לתת למשתמש גישה ל-View בלבד — בלי גישה לטבלה המקורית עם שדות כמו סיסמה או מספר כרטיס אשראי.' },
+      { type: 'code', lang: 'sql', caption: 'View ציבורי בלי שדות רגישים', code: `-- הטבלה המקורית:
+-- users(id, name, email, password_hash, credit_card)
+
+-- View בטוח שחושף רק מה שמותר:
+CREATE VIEW public_users AS
+SELECT id, name, email
+FROM users;
+
+-- המשתמש רואה רק זאת:
+SELECT * FROM public_users;` },
+      { type: 'heading', text: 'עדכון ומחיקת View' },
+      { type: 'code', lang: 'sql', caption: 'ניהול Views', code: `-- עדכון view קיים:
+CREATE OR REPLACE VIEW order_details AS
+SELECT
+  o.id,
+  c.name AS customer_name,
+  o.amount,
+  o.order_date,
+  o.status   -- הוספנו עמודה חדשה
+FROM orders o
+JOIN customers c ON o.customer_id = c.id;
+
+-- מחיקת view:
+DROP VIEW order_details;
+
+-- רשימת כל ה-views:
+SHOW FULL TABLES WHERE Table_type = 'VIEW';` },
+      { type: 'heading', text: 'View מוחמר עם WITH CHECK OPTION' },
+      { type: 'code', lang: 'sql', caption: 'WITH CHECK OPTION', code: `-- View שמאפשר לראות ולשנות רק הזמנות פעילות:
+CREATE VIEW active_orders AS
+SELECT * FROM orders
+WHERE status = 'active'
+WITH CHECK OPTION;
+
+-- הכנסה דרך ה-View — יבדוק שהשורה תואמת את ה-WHERE:
+INSERT INTO active_orders (customer_id, amount, status)
+VALUES (1, 300, 'active');  -- עובד
+
+-- INSERT עם status אחר ייכשל:
+-- VALUES (1, 300, 'cancelled');  -- שגיאה!` },
+    ],
+    questionBank: [
+      {
+        id: 'views-q1',
+        text: 'מה זה View ב-SQL?',
+        options: [
+          'טבלה פיזית שמאחסנת נתונים',
+          'שאילתת SELECT שמורה בשם שמתנהגת כמו טבלה',
+          'גיבוי של טבלה',
+          'אינדקס מיוחד',
+        ],
+        correct: 1,
+        explanation: 'View היא שאילתה שמורה. היא לא מאחסנת נתונים — בכל גישה השאילתה שמתחתיה מתבצעת מחדש.',
+      },
+      {
+        id: 'views-q2',
+        text: 'מה היתרון העיקרי של View?',
+        options: [
+          'מהירות אחסון גבוהה יותר',
+          'פישוט שאילתות מורכבות וניהול הרשאות גישה',
+          'הגדלת שטח דיסק',
+          'תמיכה ב-NoSQL',
+        ],
+        correct: 1,
+        explanation: 'View חוסך כתיבה חוזרת של שאילתות מורכבות ומאפשר הסתרת שדות רגישים ממשתמשים.',
+      },
+      {
+        id: 'views-q3',
+        text: 'האם View מאחסן נתונים פיזית?',
+        options: [
+          'כן, כמו טבלה רגילה',
+          'לא — הנתונים מגיעים מהטבלאות המקוריות בכל גישה',
+          'תלוי בסוג מסד הנתונים',
+          'רק אם הגדרנו MATERIALIZED',
+        ],
+        correct: 1,
+        explanation: 'View רגיל לא מאחסן נתונים. בכל שאילתה על ה-View, מסד הנתונים מבצע את הגדרת ה-View על הטבלאות המקוריות.',
+      },
+      {
+        id: 'views-q4',
+        text: 'איך מעדכנים View קיים?',
+        options: [
+          'ALTER VIEW',
+          'UPDATE VIEW',
+          'CREATE OR REPLACE VIEW',
+          'MODIFY VIEW',
+        ],
+        correct: 2,
+        explanation: 'CREATE OR REPLACE VIEW מחליף את הגדרת ה-View הקיים בגרסה החדשה ללא מחיקה ידנית.',
+      },
+      {
+        id: 'views-q5',
+        text: 'מה עושה WITH CHECK OPTION ב-View?',
+        options: [
+          'מוסיף בדיקת ביצועים',
+          'מבטיח ש-INSERT/UPDATE דרך ה-View יעמדו בתנאי ה-WHERE של ה-View',
+          'מאפשר מחיקה דרך ה-View',
+          'יוצר אינדקס על ה-View',
+        ],
+        correct: 1,
+        explanation: 'WITH CHECK OPTION מונע שינויים שגורמים לשורה "לצאת" מהגדרת ה-View, שמירה על עקביות.',
+      },
+      {
+        id: 'views-q6',
+        text: 'מה ההבדל בין View לטבלה מבחינת שימוש ב-SELECT?',
+        options: [
+          'View לא תומך ב-WHERE',
+          'אין הבדל — ניתן לכתוב SELECT על View בדיוק כמו על טבלה',
+          'View מחזיר תמיד את כל העמודות',
+          'SELECT על View איטי תמיד',
+        ],
+        correct: 1,
+        explanation: 'View מתנהג בדיוק כמו טבלה ב-SELECT — אפשר לסנן, למיין, לחבר עם טבלאות אחרות.',
+      },
+      {
+        id: 'views-q7',
+        text: 'מדוע View שימושי לאבטחת מידע?',
+        options: [
+          'הוא מצפין נתונים',
+          'ניתן לתת גישה ל-View בלבד ולהסתיר שדות רגישים מהטבלה המקורית',
+          'הוא מחייב סיסמה לכל שאילתה',
+          'View נשמר בצורה מוצפנת',
+        ],
+        correct: 1,
+        explanation: 'נותנים למשתמש הרשאה ל-View שחושף רק עמודות מסוימות — בלי גישה ישירה לטבלה עם כל השדות.',
+      },
+      {
+        id: 'views-q8',
+        text: 'איך מוחקים View?',
+        options: [
+          'DELETE VIEW view_name',
+          'REMOVE VIEW view_name',
+          'DROP VIEW view_name',
+          'TRUNCATE VIEW view_name',
+        ],
+        correct: 2,
+        explanation: 'DROP VIEW מוחק את הגדרת ה-View. הנתונים בטבלאות המקוריות אינם נמחקים.',
+      },
+    ],
+  },
+
+  {
+    id: 'transactions',
+    title: 'טרנזקציות ו-ACID',
+    summary: 'כיצד מסד הנתונים שומר על שלמות הנתונים עם COMMIT, ROLLBACK ו-SAVEPOINT',
+    emoji: '🔒',
+    content: [
+      { type: 'heading', text: 'מה זה טרנזקציה?' },
+      { type: 'text', text: 'טרנזקציה היא קבוצת פעולות שמתבצעות כיחידה אחת. או שכולן מצליחות — או שאף אחת לא מתבצעת. הדוגמה הקלאסית: העברת כסף בין חשבונות — חובה ששתי הפעולות (חיוב + זיכוי) יצליחו יחד.' },
+      { type: 'tip', text: 'בלי טרנזקציות, קריסת השרת באמצע פעולה יכולה להשאיר את הנתונים במצב שבור — לחייב חשבון אחד בלי לזכות את השני.' },
+      { type: 'heading', text: 'BEGIN, COMMIT, ROLLBACK' },
+      { type: 'code', lang: 'sql', caption: 'טרנזקציה בסיסית', code: `-- תחילת טרנזקציה:
+BEGIN;
+
+-- חיוב מחשבון המקור:
+UPDATE accounts
+SET balance = balance - 500
+WHERE id = 1;
+
+-- זיכוי חשבון היעד:
+UPDATE accounts
+SET balance = balance + 500
+WHERE id = 2;
+
+-- הכל הצליח — שמירה:
+COMMIT;
+
+-- אם הייתה שגיאה — ביטול הכל:
+-- ROLLBACK;` },
+      { type: 'heading', text: 'ROLLBACK — ביטול טרנזקציה' },
+      { type: 'code', lang: 'sql', caption: 'טיפול בשגיאות', code: `BEGIN;
+
+UPDATE inventory SET quantity = quantity - 10
+WHERE product_id = 42;
+
+-- בדיקה: האם הכמות שלילית?
+-- אם כן — נבטל:
+ROLLBACK;
+
+-- אם הכל תקין — נשמור:
+-- COMMIT;` },
+      { type: 'heading', text: 'SAVEPOINT — נקודות שמירה' },
+      { type: 'code', lang: 'sql', caption: 'SAVEPOINT', code: `BEGIN;
+
+INSERT INTO orders (customer_id, amount) VALUES (1, 200);
+
+SAVEPOINT after_order;  -- נקודת שמירה ביניים
+
+INSERT INTO order_items (order_id, product_id) VALUES (LAST_INSERT_ID(), 5);
+
+-- אם שלב זה נכשל — חזרה לנקודת השמירה (לא לתחילה):
+ROLLBACK TO SAVEPOINT after_order;
+
+-- ממשיכים מ-SAVEPOINT:
+INSERT INTO order_items (order_id, product_id) VALUES (LAST_INSERT_ID(), 7);
+
+COMMIT;` },
+      { type: 'heading', text: 'ACID — עקרונות טרנזקציה' },
+      { type: 'text', text: 'ACID הוא ראשי תיבות של ארבעת עקרונות הטרנזקציה:' },
+      {
+        type: 'table',
+        caption: 'ACID properties',
+        headers: ['עיקרון', 'משמעות'],
+        rows: [
+          ['Atomicity — אטומיות', 'הכל או כלום — אין מצב חלקי'],
+          ['Consistency — עקביות', 'הנתונים עוברים ממצב תקין למצב תקין'],
+          ['Isolation — בידוד', 'טרנזקציות מקבילות לא מפריעות זו לזו'],
+          ['Durability — עמידות', 'אחרי COMMIT הנתונים שמורים לצמיתות'],
+        ],
+      },
+      { type: 'heading', text: 'רמות בידוד (Isolation Levels)' },
+      { type: 'code', lang: 'sql', caption: 'הגדרת isolation level', code: `-- READ UNCOMMITTED — קורא נתונים לא מחויבים (מסוכן)
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
+
+-- READ COMMITTED — ברירת מחדל ב-PostgreSQL
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
+
+-- REPEATABLE READ — ברירת מחדל ב-MySQL/InnoDB
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+
+-- SERIALIZABLE — הכי בטוח, הכי איטי
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;` },
+    ],
+    questionBank: [
+      {
+        id: 'tx-q1',
+        text: 'מה מבטיחה טרנזקציה?',
+        options: [
+          'שהשאילתה תהיה מהירה',
+          'שקבוצת פעולות תתבצע כולה יחד או לא תתבצע כלל',
+          'שלא יהיו כפילויות',
+          'שהנתונים יהיו ממוינים',
+        ],
+        correct: 1,
+        explanation: 'טרנזקציה מבטיחה אטומיות — הכל מצליח או הכל מבוטל. אין מצב חלקי שמשאיר נתונים שבורים.',
+      },
+      {
+        id: 'tx-q2',
+        text: 'מה עושה ROLLBACK?',
+        options: [
+          'שומר את כל השינויים',
+          'מבטל את כל השינויים מאז BEGIN',
+          'מוחק את הטבלה',
+          'חוזר לגרסה הקודמת של הסכמה',
+        ],
+        correct: 1,
+        explanation: 'ROLLBACK מבטל את כל השינויים שנעשו מאז תחילת הטרנזקציה (BEGIN), מחזיר למצב המקורי.',
+      },
+      {
+        id: 'tx-q3',
+        text: 'מה ה-A ב-ACID מייצג?',
+        options: [
+          'Authentication — אימות',
+          'Atomicity — אטומיות (הכל או כלום)',
+          'Availability — זמינות',
+          'Authorization — הרשאה',
+        ],
+        correct: 1,
+        explanation: 'Atomicity מבטיחה שהטרנזקציה לא תתבצע חלקית. כל הפעולות מצליחות יחד — או אף אחת.',
+      },
+      {
+        id: 'tx-q4',
+        text: 'מה מאפשר SAVEPOINT?',
+        options: [
+          'שמירה בקובץ חיצוני',
+          'הגדרת נקודת חזרה ביניים בתוך טרנזקציה',
+          'יצירת גיבוי אוטומטי',
+          'ביצוע COMMIT חלקי',
+        ],
+        correct: 1,
+        explanation: 'SAVEPOINT מגדיר נקודה בתוך הטרנזקציה. אפשר לחזור אליה עם ROLLBACK TO SAVEPOINT בלי לבטל את כל הטרנזקציה.',
+      },
+      {
+        id: 'tx-q5',
+        text: 'מה ה-D ב-ACID מייצג?',
+        options: [
+          'Deletion — מחיקה',
+          'Durability — עמידות (נתונים שמורים לאחר COMMIT)',
+          'Distribution — חלוקה',
+          'Dependency — תלות',
+        ],
+        correct: 1,
+        explanation: 'Durability מבטיחה שלאחר COMMIT הנתונים שמורים לצמיתות — גם אם השרת קורס מיד לאחר מכן.',
+      },
+      {
+        id: 'tx-q6',
+        text: 'מה COMMIT עושה?',
+        options: [
+          'מתחיל טרנזקציה חדשה',
+          'מבטל את הטרנזקציה',
+          'שומר את כל השינויים שנעשו בטרנזקציה לצמיתות',
+          'בודק שגיאות בשאילתה',
+        ],
+        correct: 2,
+        explanation: 'COMMIT מסיים את הטרנזקציה בהצלחה ושומר את כל השינויים לצמיתות במסד הנתונים.',
+      },
+      {
+        id: 'tx-q7',
+        text: 'מה I ב-ACID מייצג?',
+        options: [
+          'Indexing — אינדוקס',
+          'Isolation — בידוד בין טרנזקציות מקבילות',
+          'Insertion — הכנסה',
+          'Integration — אינטגרציה',
+        ],
+        correct: 1,
+        explanation: 'Isolation מבטיחה שטרנזקציות מקבילות לא "רואות" שינויים של זו בזו עד לסיום COMMIT.',
+      },
+      {
+        id: 'tx-q8',
+        text: 'מה SERIALIZABLE isolation level מבטיח?',
+        options: [
+          'מהירות מרבית',
+          'שטרנזקציות מקבילות יתנהגו כאילו רצו אחת אחרי השנייה — הכי בטוח',
+          'שלא ניתן להריץ טרנזקציות בו-זמנית',
+          'אחסון בקובץ טקסט',
+        ],
+        correct: 1,
+        explanation: 'SERIALIZABLE הוא הרמה הגבוהה ביותר — מבטיח בידוד מוחלט. הכי בטוח אבל גם הכי איטי בגלל נעילות.',
+      },
+    ],
+  },
+
+  {
+    id: 'procedures',
+    title: 'Stored Procedures וטריגרים',
+    summary: 'פרוצדורות מאוחסנות, פונקציות ו-Triggers — לוגיקה עסקית ישירות במסד הנתונים',
+    emoji: '⚙️',
+    content: [
+      { type: 'heading', text: 'מה זה Stored Procedure?' },
+      { type: 'text', text: 'Stored Procedure (פרוצדורה מאוחסנת) היא בלוק קוד SQL שמור במסד הנתונים בשם. ניתן להפעיל אותה בפקודה אחת, להעביר פרמטרים, ולכלול לוגיקה מורכבת: לולאות, תנאים, טיפול בשגיאות.' },
+      { type: 'tip', text: 'Stored Procedures מקטינות תנועת רשת (לוגיקה רצה בצד השרת), שימושיות לפעולות חוזרות וניתנות לשיתוף בין אפליקציות שונות.' },
+      { type: 'heading', text: 'יצירת Procedure' },
+      { type: 'code', lang: 'sql', caption: 'CREATE PROCEDURE', code: `DELIMITER //
+
+CREATE PROCEDURE get_customer_orders(
+  IN customer_id INT,        -- פרמטר קלט
+  IN min_amount  DECIMAL,
+  OUT order_count INT        -- פרמטר פלט
+)
+BEGIN
+  -- גוף הפרוצדורה:
+  SELECT * FROM orders
+  WHERE orders.customer_id = customer_id
+    AND amount >= min_amount;
+
+  -- מחזיר את מספר הרשומות דרך פרמטר OUT:
+  SELECT COUNT(*) INTO order_count
+  FROM orders
+  WHERE orders.customer_id = customer_id;
+END //
+
+DELIMITER ;
+
+-- הפעלה:
+CALL get_customer_orders(1, 100, @count);
+SELECT @count;` },
+      { type: 'heading', text: 'לוגיקה בתוך Procedure' },
+      { type: 'code', lang: 'sql', caption: 'תנאים ולולאות', code: `DELIMITER //
+
+CREATE PROCEDURE apply_discount(
+  IN order_id   INT,
+  IN discount   DECIMAL(5,2)
+)
+BEGIN
+  DECLARE current_amount DECIMAL(10,2);
+
+  -- שליפת הסכום הנוכחי:
+  SELECT amount INTO current_amount
+  FROM orders WHERE id = order_id;
+
+  -- תנאי:
+  IF current_amount > 1000 THEN
+    UPDATE orders
+    SET amount = amount * (1 - discount / 100)
+    WHERE id = order_id;
+    SELECT 'הנחה הוחלה' AS result;
+  ELSE
+    SELECT 'ההזמנה קטנה מדי להנחה' AS result;
+  END IF;
+END //
+
+DELIMITER ;` },
+      { type: 'heading', text: 'Stored Functions' },
+      { type: 'text', text: 'Function דומה ל-Procedure אבל מחזירה ערך בודד וניתן להשתמש בה ישירות בתוך שאילתת SELECT.' },
+      { type: 'code', lang: 'sql', caption: 'CREATE FUNCTION', code: `DELIMITER //
+
+CREATE FUNCTION get_vat_price(
+  price DECIMAL(10,2)
+) RETURNS DECIMAL(10,2)
+DETERMINISTIC
+BEGIN
+  RETURN price * 1.17;  -- מחיר כולל מע"מ 17%
+END //
+
+DELIMITER ;
+
+-- שימוש ישיר ב-SELECT:
+SELECT
+  product_name,
+  price,
+  get_vat_price(price) AS price_with_vat
+FROM products;` },
+      { type: 'heading', text: 'Triggers — טריגרים' },
+      { type: 'text', text: 'Trigger הוא קוד שמופעל אוטומטית בעקבות אירוע בטבלה: INSERT, UPDATE או DELETE. לא קוראים לו ישירות — הוא מופעל מאליו.' },
+      { type: 'code', lang: 'sql', caption: 'CREATE TRIGGER', code: `-- Trigger שמעדכן updated_at אוטומטית:
+CREATE TRIGGER before_order_update
+BEFORE UPDATE ON orders
+FOR EACH ROW
+BEGIN
+  SET NEW.updated_at = NOW();
+END;
+
+-- Trigger שמוסיף ל-audit log אחרי מחיקה:
+CREATE TRIGGER after_order_delete
+AFTER DELETE ON orders
+FOR EACH ROW
+BEGIN
+  INSERT INTO audit_log (
+    action, table_name, record_id, deleted_at
+  )
+  VALUES (
+    'DELETE', 'orders', OLD.id, NOW()
+  );
+END;` },
+      { type: 'tip', text: 'ב-Trigger: NEW מייצג את השורה החדשה (אחרי שינוי), OLD מייצג את השורה הישנה (לפני שינוי). ב-DELETE אין NEW, ב-INSERT אין OLD.' },
+      { type: 'heading', text: 'ניהול Procedures' },
+      { type: 'code', lang: 'sql', caption: 'רשימה, הצגה ומחיקה', code: `-- רשימת כל ה-procedures:
+SHOW PROCEDURE STATUS WHERE Db = 'my_database';
+
+-- הצגת הקוד של procedure:
+SHOW CREATE PROCEDURE get_customer_orders;
+
+-- מחיקה:
+DROP PROCEDURE IF EXISTS get_customer_orders;
+DROP FUNCTION IF EXISTS get_vat_price;
+DROP TRIGGER IF EXISTS before_order_update;` },
+    ],
+    questionBank: [
+      {
+        id: 'proc-q1',
+        text: 'מה זה Stored Procedure?',
+        options: [
+          'טבלה מיוחדת לאחסון נתונים',
+          'בלוק קוד SQL שמור במסד הנתונים שניתן לקרוא לו בשם',
+          'אינדקס מסוג מיוחד',
+          'גיבוי אוטומטי',
+        ],
+        correct: 1,
+        explanation: 'Stored Procedure הוא קוד SQL שמור בשם. ניתן להפעיל עם CALL, לקבל פרמטרים, ולכלול לוגיקה מורכבת.',
+      },
+      {
+        id: 'proc-q2',
+        text: 'מה ההבדל בין IN לבין OUT בפרמטרים של Procedure?',
+        options: [
+          'אין הבדל',
+          'IN מעביר ערך לפרוצדורה, OUT מחזיר ערך מהפרוצדורה',
+          'OUT מעביר ערך לפרוצדורה, IN מחזיר',
+          'IN למחרוזות, OUT למספרים',
+        ],
+        correct: 1,
+        explanation: 'IN — ערך שמועבר לפרוצדורה. OUT — משתנה שהפרוצדורה תמלא בתוצאה. INOUT — גם וגם.',
+      },
+      {
+        id: 'proc-q3',
+        text: 'מה ההבדל בין Function לבין Procedure?',
+        options: [
+          'אין הבדל',
+          'Function מחזירה ערך בודד וניתן להשתמש בה ב-SELECT, Procedure לא',
+          'Procedure מהירה יותר',
+          'Function לא יכולה לקבל פרמטרים',
+        ],
+        correct: 1,
+        explanation: 'Function מחזירה ערך בודד דרך RETURN וניתן להשתמש בה כחלק משאילתה. Procedure מופעלת עם CALL ויכולה להחזיר תוצאות מרובות.',
+      },
+      {
+        id: 'proc-q4',
+        text: 'מה זה Trigger?',
+        options: [
+          'פרמטר של Procedure',
+          'קוד שמופעל אוטומטית בעקבות אירוע בטבלה (INSERT/UPDATE/DELETE)',
+          'סוג של View',
+          'פקודה לביצוע עסקה',
+        ],
+        correct: 1,
+        explanation: 'Trigger מופעל אוטומטית כשמתרחש אירוע על טבלה. לא קוראים לו ישירות — המסד קורא לו.',
+      },
+      {
+        id: 'proc-q5',
+        text: 'מה מייצג NEW בתוך Trigger?',
+        options: [
+          'הטבלה החדשה',
+          'השורה החדשה שנכנסת (ב-INSERT) או הערכים החדשים (ב-UPDATE)',
+          'הטריגר הקודם',
+          'ערך NULL',
+        ],
+        correct: 1,
+        explanation: 'NEW מייצג את השורה כפי שתיראה אחרי הפעולה. זמין ב-INSERT וב-UPDATE. ב-DELETE רק OLD זמין.',
+      },
+      {
+        id: 'proc-q6',
+        text: 'מה מייצג OLD בתוך Trigger?',
+        options: [
+          'הגרסה הישנה של ה-Trigger',
+          'השורה לפני השינוי — ערכים שהיו לפני UPDATE/DELETE',
+          'שם הטבלה הישנה',
+          'לא קיים ב-SQL',
+        ],
+        correct: 1,
+        explanation: 'OLD מייצג את השורה לפני השינוי. זמין ב-UPDATE וב-DELETE. ב-INSERT אין OLD.',
+      },
+      {
+        id: 'proc-q7',
+        text: 'מתי Trigger מסוג BEFORE רץ?',
+        options: [
+          'אחרי הפעולה על הטבלה',
+          'לפני שהפעולה (INSERT/UPDATE/DELETE) מתבצעת על הטבלה',
+          'רק בתחילת טרנזקציה',
+          'רק בסוף היום',
+        ],
+        correct: 1,
+        explanation: 'BEFORE Trigger רץ לפני הפעולה — מאפשר לשנות ערכים (כמו SET NEW.updated_at) לפני שנכתבים.',
+      },
+      {
+        id: 'proc-q8',
+        text: 'מה היתרון של Stored Procedure על פני שאילתות מהאפליקציה?',
+        options: [
+          'יותר קל לכתיבה',
+          'הלוגיקה רצה בצד השרת — מפחיתה תנועת רשת ומאפשרת שיתוף בין אפליקציות',
+          'מהירה יותר תמיד',
+          'לא צריך הרשאות',
+        ],
+        correct: 1,
+        explanation: 'Procedure רצה בצד השרת — שולחים קריאה אחת במקום שאילתות מרובות, מה שחוסך תנועת רשת וזמן round-trip.',
+      },
+    ],
+  },
+
+  {
+    id: 'window-functions',
+    title: 'Window Functions — פונקציות חלון',
+    summary: 'ROW_NUMBER, RANK, PARTITION BY, LAG/LEAD — ניתוח נתונים מתקדם',
+    emoji: '📊',
+    content: [
+      { type: 'heading', text: 'מה זה Window Function?' },
+      { type: 'text', text: 'Window Function מבצעת חישוב על קבוצת שורות הקשורות לשורה הנוכחית — בדומה ל-GROUP BY, אבל בלי לקמץ (collapse) את השורות לתוצאה אחת. כל שורה נשמרת, ומקבלת ערך מחושב.' },
+      { type: 'tip', text: 'Window Functions נכתבות עם OVER() — זה מה שמגדיר את "החלון" של השורות שיחושבו עבור כל שורה.' },
+      { type: 'heading', text: 'ROW_NUMBER, RANK, DENSE_RANK' },
+      { type: 'code', lang: 'sql', caption: 'מיקום שורות', code: `SELECT
+  name,
+  department,
+  salary,
+  ROW_NUMBER() OVER (ORDER BY salary DESC)  AS row_num,
+  RANK()       OVER (ORDER BY salary DESC)  AS rank_pos,
+  DENSE_RANK() OVER (ORDER BY salary DESC)  AS dense_rank
+FROM employees;
+
+-- ההבדל:
+-- ROW_NUMBER: 1,2,3,4,5 — תמיד רציף
+-- RANK:       1,2,2,4,5 — מדלג אחרי שוויון
+-- DENSE_RANK: 1,2,2,3,4 — לא מדלג` },
+      { type: 'heading', text: 'PARTITION BY — חלוקה לקבוצות' },
+      { type: 'text', text: 'PARTITION BY מחלק את השורות לקבוצות — כל קבוצה מקבלת "חלון" משל עצמה. כמו GROUP BY אבל בלי לאבד שורות.' },
+      { type: 'code', lang: 'sql', caption: 'PARTITION BY', code: `-- דירוג עובדים בתוך כל מחלקה בנפרד:
+SELECT
+  name,
+  department,
+  salary,
+  RANK() OVER (
+    PARTITION BY department   -- חלק לפי מחלקה
+    ORDER BY salary DESC      -- מיין לפי שכר
+  ) AS rank_in_dept
+FROM employees;
+
+-- תוצאה:
+-- שם       | מחלקה  | שכר  | דירוג
+-- אלי       | פיתוח  | 20000| 1
+-- שרה      | פיתוח  | 18000| 2
+-- דן        | מכירות | 15000| 1
+-- מירה     | מכירות | 12000| 2` },
+      { type: 'heading', text: 'SUM ו-AVG עם OVER' },
+      { type: 'code', lang: 'sql', caption: 'צבירה ב-Window', code: `SELECT
+  name,
+  department,
+  salary,
+  -- סכום שכר כל המחלקה (עבור כל שורה):
+  SUM(salary) OVER (PARTITION BY department) AS dept_total,
+  -- אחוז מתוך סכום המחלקה:
+  ROUND(salary * 100.0 /
+    SUM(salary) OVER (PARTITION BY department), 1) AS pct_of_dept,
+  -- ממוצע כללי:
+  AVG(salary) OVER () AS company_avg
+FROM employees;` },
+      { type: 'heading', text: 'LAG ו-LEAD — השוואה לשורה קודמת/הבאה' },
+      { type: 'code', lang: 'sql', caption: 'LAG / LEAD', code: `SELECT
+  order_date,
+  amount,
+  -- הסכום מהחודש הקודם:
+  LAG(amount, 1) OVER (ORDER BY order_date)  AS prev_month,
+  -- הסכום לחודש הבא:
+  LEAD(amount, 1) OVER (ORDER BY order_date) AS next_month,
+  -- שינוי מהחודש הקודם:
+  amount - LAG(amount, 1, 0) OVER (ORDER BY order_date) AS change
+FROM monthly_sales;` },
+      { type: 'heading', text: 'NTILE — חלוקה לאחוזונים' },
+      { type: 'code', lang: 'sql', caption: 'NTILE', code: `-- חלוקת לקוחות ל-4 רבעונים לפי רכישות:
+SELECT
+  customer_name,
+  total_purchases,
+  NTILE(4) OVER (ORDER BY total_purchases DESC) AS quartile
+FROM customer_summary;
+-- quartile=1: הרוכשים הכי הרבה (25% עליון)
+-- quartile=4: הרוכשים הכי מעט (25% תחתון)` },
+    ],
+    questionBank: [
+      {
+        id: 'wf-q1',
+        text: 'מה ההבדל בין Window Function לבין GROUP BY?',
+        options: [
+          'אין הבדל',
+          'Window Function מחשבת על קבוצת שורות אבל שומרת כל שורה בנפרד, GROUP BY מקמץ לשורה אחת',
+          'GROUP BY מהיר יותר תמיד',
+          'Window Function עובדת רק עם JOIN',
+        ],
+        correct: 1,
+        explanation: 'GROUP BY מחזיר שורה אחת לקבוצה. Window Function מחשבת על הקבוצה אבל מחזירה את כל השורות המקוריות.',
+      },
+      {
+        id: 'wf-q2',
+        text: 'מה עושה PARTITION BY?',
+        options: [
+          'מחלק את הטבלה לקבצים',
+          'מחלק את השורות לקבוצות — כל קבוצה מקבלת "חלון" נפרד לחישוב',
+          'ממיין את התוצאות',
+          'מגביל את מספר השורות',
+        ],
+        correct: 1,
+        explanation: 'PARTITION BY מגדיר תת-קבוצות בתוך ה-window. כמו GROUP BY אבל שורות לא נמחקות.',
+      },
+      {
+        id: 'wf-q3',
+        text: 'מה ההבדל בין RANK לבין DENSE_RANK?',
+        options: [
+          'אין הבדל',
+          'RANK מדלג אחרי שוויון (1,2,2,4), DENSE_RANK לא מדלג (1,2,2,3)',
+          'DENSE_RANK מדלג, RANK לא',
+          'RANK רק למספרים, DENSE_RANK לכל טיפוס',
+        ],
+        correct: 1,
+        explanation: 'כששתי שורות שוות ב-RANK: הבאה תקפוץ למספר 4 (מדלגת על 3). ב-DENSE_RANK: הבאה תקבל 3 ללא דילוג.',
+      },
+      {
+        id: 'wf-q4',
+        text: 'מה עושה LAG(salary, 1)?',
+        options: [
+          'מחשב את השכר הממוצע',
+          'מחזיר את ערך salary מהשורה הקודמת לפי הסדר',
+          'מחזיר את השורה הבאה',
+          'מחשב הפרש שכר',
+        ],
+        correct: 1,
+        explanation: 'LAG(col, n) מחזיר את הערך מ-n שורות לאחור לפי הסדר ב-OVER. שימושי להשוואה עם נקודות קודמות.',
+      },
+      {
+        id: 'wf-q5',
+        text: 'מה ROW_NUMBER() מחזיר?',
+        options: [
+          'מספר השורה הפיזית בטבלה',
+          'מספר רציף ייחודי לכל שורה לפי הסדר שהוגדר ב-OVER',
+          'מספר השורות בטבלה',
+          'מזהה השורה (id)',
+        ],
+        correct: 1,
+        explanation: 'ROW_NUMBER() נותן 1,2,3,4... לפי הסדר ב-ORDER BY שב-OVER. תמיד ייחודי — גם בשוויון.',
+      },
+      {
+        id: 'wf-q6',
+        text: 'מה המילה השמורה שמגדירה Window Function?',
+        options: ['WITH', 'OVER', 'WINDOW', 'PARTITION'],
+        correct: 1,
+        explanation: 'כל Window Function משתמשת ב-OVER() — זה מה שמגדיר את "החלון" ומבדיל אותה מפונקציה רגילה.',
+      },
+      {
+        id: 'wf-q7',
+        text: 'מה NTILE(4) עושה?',
+        options: [
+          'מחלק את הערכים ל-4 עמודות',
+          'מחלק את השורות ל-4 קבוצות שוות בגודלן (רבעונים)',
+          'בוחר 4 שורות אקראיות',
+          'מחשב ממוצע של 4 שורות',
+        ],
+        correct: 1,
+        explanation: 'NTILE(n) מחלק את השורות ל-n קבוצות שוות. NTILE(4) יוצר 4 רבעונים — שימושי לניתוח אחוזונים.',
+      },
+      {
+        id: 'wf-q8',
+        text: 'מה יחזיר SUM(salary) OVER (PARTITION BY department)?',
+        options: [
+          'סכום שכר כל החברה בשורה אחת',
+          'לכל שורת עובד — סכום השכר הכולל של המחלקה שלו',
+          'ממוצע שכר המחלקה',
+          'מספר העובדים במחלקה',
+        ],
+        correct: 1,
+        explanation: 'כל שורת עובד תקבל את סכום השכר של כל עובדי המחלקה שלו — בלי לאבד שורות.',
+      },
+    ],
+  },
 ]

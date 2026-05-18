@@ -83,6 +83,9 @@ export default function Home() {
         {/* Footer */}
         <footer className="text-center" style={{ color: '#a0998c', fontSize: '1rem' }}>
           <p>כל הקורסים חינמיים · בנוי עם React + Signals</p>
+          <p className="mt-1" style={{ fontSize: '0.85rem', color: '#c4b8a4' }}>
+            © {new Date().getFullYear()} כל הזכויות שמורות ל-yizik
+          </p>
         </footer>
       </div>
     </div>
