@@ -2,6 +2,8 @@ import { sqlLessons } from './sql/lessons'
 import { jsLessons } from './js/lessons'
 import { tsLessons } from './ts/lessons'
 import { reactLessons } from './react_course/lessons'
+import { cloudLessons } from './cloud/lessons'
+import { devopsLessons } from './devops/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -50,5 +52,23 @@ export const courses: Course[] = [
     gradient: 'from-blue-500 to-cyan-600',
     lessons: [],
     comingSoon: true,
+  },
+  {
+    id: 'cloud',
+    title: 'תחזוק בענן',
+    description: 'AWS, Azure ו-GCP — ניהול תשתית, שירותים ו-DevOps בענן',
+    emoji: '☁️',
+    color: '#0ea5e9',
+    gradient: 'from-sky-400 to-blue-600',
+    lessons: cloudLessons,
+  },
+  {
+    id: 'devops',
+    title: 'Linux & DevOps',
+    description: 'Linux, Docker, CI/CD וניטור — מהקמנד-ליין ועד production',
+    emoji: '🐧',
+    color: '#f97316',
+    gradient: 'from-orange-500 to-red-600',
+    lessons: devopsLessons,
   },
 ]
