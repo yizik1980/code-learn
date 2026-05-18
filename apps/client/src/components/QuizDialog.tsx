@@ -30,20 +30,20 @@ export default function QuizDialog({ questions, courseId, lessonId, progress }: 
   return (
     <>
       {/* Trigger */}
-      <div className="mt-10 rounded-2xl border border-white/10 overflow-hidden">
-        <div className="bg-[#1a1a28] px-6 py-4 flex items-center justify-between border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">🧠</span>
+      <div className="mt-6 rounded-2xl border border-white/10 overflow-hidden">
+        <div className="bg-[#1a1a28] px-5 py-3 flex items-center justify-between border-b border-white/10">
+          <div className="flex items-center gap-2">
+            <span>🧠</span>
             <div>
-              <h3 className="text-xl font-bold text-white">בחן את עצמך</h3>
-              <p className="text-slate-500 text-base">
+              <h3 className="font-bold text-white leading-tight">בחן את עצמך</h3>
+              <p className="text-slate-500 text-sm">
                 {Math.min(5, questions.length)} שאלות אקראיות מתוך {questions.length}
               </p>
             </div>
           </div>
           {done && (
             <div className="text-right">
-              <div className="text-emerald-400 font-bold text-xl">
+              <div className="text-emerald-400 font-bold">
                 {progress.score}/{progress.total}
               </div>
               <div className="text-slate-500 text-sm">נקודות</div>
@@ -51,18 +51,18 @@ export default function QuizDialog({ questions, courseId, lessonId, progress }: 
           )}
         </div>
 
-        <div className="px-6 py-5 flex items-center justify-between">
+        <div className="px-5 py-3 flex items-center justify-between">
           {done ? (
-            <div className="flex items-center gap-2 text-emerald-400 text-lg">
+            <div className="flex items-center gap-2 text-emerald-400">
               <span>✓</span>
               <span>הבחינה הושלמה</span>
             </div>
           ) : (
-            <p className="text-slate-400 text-lg">מוכן לבדוק את עצמך?</p>
+            <p className="text-slate-400">מוכן לבדוק את עצמך?</p>
           )}
           <button
             onClick={handleOpen}
-            className={`px-6 py-3 rounded-xl text-xl font-semibold transition-all ${
+            className={`px-5 py-2 rounded-xl font-semibold transition-all ${
               done
                 ? 'bg-white/8 text-slate-300 hover:bg-white/12'
                 : 'bg-emerald-600 hover:bg-emerald-500 text-white'
@@ -85,21 +85,20 @@ export default function QuizDialog({ questions, courseId, lessonId, progress }: 
             onClick={(e) => e.stopPropagation()}
           >
             {/* Dialog header */}
-            <div className="sticky top-0 bg-[#0e0e18] flex items-center justify-between px-6 py-4 border-b border-white/10 z-10">
+            <div className="sticky top-0 bg-[#0e0e18] flex items-center justify-between px-5 py-3 border-b border-white/10 z-10">
               <div className="flex items-center gap-2">
-                <span className="text-xl">🧠</span>
-                <span className="text-xl font-bold text-white">בחינה</span>
+                <span>🧠</span>
+                <span className="font-bold text-white">בחינה</span>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="w-8 h-8 rounded-lg bg-white/8 hover:bg-white/15 flex items-center justify-center text-slate-400 hover:text-white transition-all"
+                className="w-7 h-7 rounded-lg bg-white/8 hover:bg-white/15 flex items-center justify-center text-slate-400 hover:text-white transition-all text-sm"
               >
                 ✕
               </button>
             </div>
 
-            {/* Quiz rendered inside dialog — no outer wrapper needed */}
-            <div className="p-6">
+            <div className="p-5">
               <Quiz
                 key={quizKey}
                 questions={questions}

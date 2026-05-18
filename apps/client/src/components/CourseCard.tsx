@@ -15,12 +15,12 @@ export default function CourseCard({ course }: Props) {
     return (
       <div className="glass rounded-2xl p-6 opacity-60 cursor-not-allowed select-none">
         <div className="flex items-start justify-between mb-4">
-          <span className="text-5xl">{course.emoji}</span>
+          <span className="">{course.emoji}</span>
           <span className="text-sm bg-white/10 text-slate-400 px-3 py-1 rounded-full">
             בקרוב
           </span>
         </div>
-        <h3 className="text-2xl font-bold text-white mb-2">{course.title}</h3>
+        <h3 className=" font-bold text-white mb-2">{course.title}</h3>
         <p className="text-lg text-slate-400">{course.description}</p>
       </div>
     )
@@ -37,7 +37,7 @@ export default function CourseCard({ course }: Props) {
         }}
       >
         <div className="flex items-start justify-between mb-4">
-          <span className="text-5xl">{course.emoji}</span>
+          <span className="">{course.emoji}</span>
           {stats.percent > 0 && (
             <span
               className="text-sm font-semibold px-3 py-1 rounded-full"
@@ -48,10 +48,10 @@ export default function CourseCard({ course }: Props) {
           )}
         </div>
 
-        <h3 className="text-2xl font-bold text-white mb-2">{course.title}</h3>
+        <h3 className=" font-bold text-white mb-2">{course.title}</h3>
         <p className="text-lg text-slate-400 mb-5">{course.description}</p>
 
-        <div className="flex items-center justify-between text-base text-slate-500 mb-3">
+        <div className="flex items-center justify-between  text-slate-500 mb-3">
           <span>{course.lessons.length} שיעורים</span>
           <span>{stats.completed} / {course.lessons.length} הושלמו</span>
         </div>

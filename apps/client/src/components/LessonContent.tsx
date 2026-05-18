@@ -15,14 +15,14 @@ export default function LessonContent({ blocks }: Props) {
             return (
               <h2
                 key={i}
-                className="text-3xl font-bold text-white mt-10 mb-3 first:mt-0"
+                className=" font-bold text-white mt-10 mb-3 first:mt-0"
               >
                 {block.text}
               </h2>
             )
           case 'text':
             return (
-              <p key={i} className="text-xl text-slate-300 leading-relaxed">
+              <p key={i} className=" text-slate-300 leading-relaxed">
                 {block.text}
               </p>
             )
@@ -30,9 +30,9 @@ export default function LessonContent({ blocks }: Props) {
             return (
               <div
                 key={i}
-                className="my-5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 px-5 py-4 text-xl text-indigo-200 leading-relaxed flex gap-3"
+                className="my-5 rounded-xl bg-indigo-500/10 border border-indigo-500/25 px-5 py-4  text-indigo-200 leading-relaxed flex gap-3"
               >
-                <span className="text-2xl shrink-0">💡</span>
+                <span className=" shrink-0">💡</span>
                 <span>{block.text}</span>
               </div>
             )

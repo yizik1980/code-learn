@@ -19,7 +19,7 @@ export default function SqlLesson() {
 
   if (!lesson) {
     return (
-      <div className="min-h-screen bg-[#08080f] flex items-center justify-center text-white text-2xl">
+      <div className="min-h-screen bg-[#08080f] flex items-center justify-center text-white ">
         שיעור לא נמצא
       </div>
     )
@@ -32,28 +32,28 @@ export default function SqlLesson() {
         <div className="max-w-3xl mx-auto px-6 py-4 flex items-center gap-4">
           <Link
             to="/learn/sql"
-            className="text-slate-400 hover:text-white transition-colors text-xl flex items-center gap-1"
+            className="text-slate-400 hover:text-white transition-colors  flex items-center gap-1"
           >
             → SQL
           </Link>
           <span className="text-slate-700">/</span>
-          <span className="text-white font-semibold text-xl truncate flex-1">
+          <span className="text-white font-semibold  truncate flex-1">
             {lesson.emoji} {lesson.title}
           </span>
-          <span className="text-slate-500 text-base shrink-0">
+          <span className="text-slate-500  shrink-0">
             {lessonIdx + 1} / {sqlLessons.length}
           </span>
         </div>
       </nav>
 
-      <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className="max-w-3xl mx-auto px-6 py-6">
         {/* Lesson header */}
-        <div className="mb-10">
-          <div className="text-6xl mb-4">{lesson.emoji}</div>
-          <h1 className="text-4xl font-black text-white mb-3">{lesson.title}</h1>
-          <p className="text-xl text-slate-400">{lesson.summary}</p>
+        <div className="mb-6">
+          <div className="mb-2">{lesson.emoji}</div>
+          <h1 className="font-black text-white mb-1">{lesson.title}</h1>
+          <p className="text-slate-400">{lesson.summary}</p>
           {prog?.completed && (
-            <div className="mt-4 inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 rounded-full px-4 py-2 text-emerald-400 text-base">
+            <div className="mt-4 inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-500/30 rounded-full px-4 py-2 text-emerald-400 ">
               ✓ הושלם · {prog.score}/{prog.total} נקודות
             </div>
           )}
@@ -72,13 +72,13 @@ export default function SqlLesson() {
         />
 
         {/* Navigation */}
-        <div className="flex items-center justify-between mt-12 pt-8 border-t border-white/8">
+        <div className="flex items-center justify-between mt-8 pt-5 border-t border-white/8">
           {prevLesson ? (
             <button
               onClick={() => navigate(`/learn/sql/${prevLesson.id}`)}
               className="flex items-center gap-3 text-slate-400 hover:text-white transition-colors group"
             >
-              <div className="w-10 h-10 rounded-xl bg-white/6 flex items-center justify-center group-hover:bg-white/12 transition-all text-xl">
+              <div className="w-10 h-10 rounded-xl bg-white/6 flex items-center justify-center group-hover:bg-white/12 transition-all ">
                 →
               </div>
               <div className="text-right">
@@ -99,7 +99,7 @@ export default function SqlLesson() {
                 <div className="text-sm text-slate-600">שיעור הבא</div>
                 <div className="text-lg font-medium">{nextLesson.title}</div>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all text-xl text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all  text-emerald-400">
                 ←
               </div>
             </button>
@@ -112,7 +112,7 @@ export default function SqlLesson() {
                 <div className="text-sm text-emerald-600">סיימת את הקורס!</div>
                 <div className="text-lg font-medium">חזרה לסיכום</div>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all text-xl">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all ">
                 🏆
               </div>
             </button>

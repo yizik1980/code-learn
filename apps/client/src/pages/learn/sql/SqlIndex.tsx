@@ -28,9 +28,9 @@ export default function SqlIndex() {
 
         {/* Hero */}
         <div className="mb-12">
-          <div className="text-6xl mb-4">🗄️</div>
-          <h1 className="text-5xl font-black text-white mb-3">SQL</h1>
-          <p className="text-xl text-slate-400 mb-6">
+          <div className=" mb-4">🗄️</div>
+          <h1 className=" font-black text-white mb-3">SQL</h1>
+          <p className=" text-slate-400 mb-6">
             שפת השאילתות הסטנדרטית לניהול מסדי נתונים — מהבסיס ועד שאילתות מורכבות
           </p>
 
@@ -52,7 +52,7 @@ export default function SqlIndex() {
               />
             </div>
             {stats.maxScore > 0 && (
-              <p className="text-slate-500 text-base mt-2">
+              <p className="text-slate-500  mt-2">
                 ⭐ {stats.score} / {stats.maxScore} נקודות
               </p>
             )}
@@ -82,7 +82,7 @@ export default function SqlIndex() {
                 <div className="flex items-center gap-4">
                   {/* Number / Check */}
                   <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold shrink-0 ${
+                    className={`w-12 h-12 rounded-full flex items-center justify-center  font-bold shrink-0 ${
                       prog?.completed
                         ? 'bg-emerald-500 text-white'
                         : 'bg-white/8 text-slate-400'
@@ -94,23 +94,23 @@ export default function SqlIndex() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-2xl">{lesson.emoji}</span>
-                      <h3 className="text-xl font-bold text-white">{lesson.title}</h3>
+                      <span className="">{lesson.emoji}</span>
+                      <h3 className=" font-bold text-white">{lesson.title}</h3>
                     </div>
-                    <p className="text-base text-slate-400">{lesson.summary}</p>
+                    <p className=" text-slate-400">{lesson.summary}</p>
                   </div>
 
                   {/* Score badge */}
                   {prog?.completed && (
                     <div className="shrink-0 text-right">
-                      <div className="text-emerald-400 font-bold text-xl">
+                      <div className="text-emerald-400 font-bold ">
                         {prog.score}/{prog.total}
                       </div>
                       <div className="text-slate-500 text-sm">נקודות</div>
                     </div>
                   )}
 
-                  <span className="text-slate-600 text-2xl shrink-0">←</span>
+                  <span className="text-slate-600  shrink-0">←</span>
                 </div>
               </Link>
             )

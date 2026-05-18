@@ -83,130 +83,108 @@ export default function Quiz({ questions, courseId, lessonId, onComplete, embedd
 
   return (
     <div>
-      {/* Progress header */}
-      {!embedded && (
-        <div className="bg-[#1a1a28] px-6 py-4 flex items-center justify-between border-b border-white/10 rounded-t-2xl">
-          <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            🧠 בחן את עצמך
-          </h3>
-          <ProgressDots picked={picked} currentIdx={currentIdx} />
-        </div>
-      )}
-
       {embedded && (
-        <div className="flex items-center justify-between mb-6">
-          <span className="text-lg text-slate-400">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-slate-400">
             שאלה {currentIdx + 1} מתוך {picked.length}
           </span>
           <ProgressDots picked={picked} currentIdx={currentIdx} />
         </div>
       )}
 
-      <div className={embedded ? '' : 'p-6'}>
-        {/* Question */}
-        <p className="text-2xl font-semibold text-white mb-6 leading-relaxed">
-          {current.text}
-        </p>
+      {/* Question */}
+      <p className="font-semibold text-white mb-4 leading-relaxed">
+        {current.text}
+      </p>
 
-        {/* Options */}
-        <div className="space-y-3 mb-6">
-          {current.options.map((opt, i) => {
-            let style =
-              'w-full text-right px-5 py-4 rounded-xl border text-xl transition-all cursor-pointer '
+      {/* Options */}
+      <div className="space-y-2 mb-4">
+        {current.options.map((opt, i) => {
+          let style =
+            'w-full text-right px-4 py-3 rounded-xl border transition-all cursor-pointer '
 
-            if (!checked) {
-              style += selected === i
-                ? 'border-emerald-500 bg-emerald-500/15 text-white'
-                : 'border-white/10 bg-white/4 text-slate-300 hover:border-white/25 hover:bg-white/8'
+          if (!checked) {
+            style += selected === i
+              ? 'border-emerald-500 bg-emerald-500/15 text-white'
+              : 'border-white/10 bg-white/4 text-slate-300 hover:border-white/25 hover:bg-white/8'
+          } else {
+            if (i === current.correct) {
+              style += 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
+            } else if (selected === i && isWrong) {
+              style += 'border-red-500 bg-red-500/20 text-red-300'
             } else {
-              if (i === current.correct) {
-                style += 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
-              } else if (selected === i && isWrong) {
-                style += 'border-red-500 bg-red-500/20 text-red-300'
-              } else {
-                style += 'border-white/5 bg-white/2 text-slate-500'
-              }
+              style += 'border-white/5 bg-white/2 text-slate-500'
             }
+          }
 
-            return (
-              <button key={i} className={style} onClick={() => handleSelect(i)}>
-                <span className="flex items-center gap-3">
-                  <span className="w-8 h-8 rounded-full border border-current flex items-center justify-center text-base shrink-0 font-mono">
-                    {String.fromCharCode(65 + i)}
-                  </span>
-                  {opt}
-                  {checked && i === current.correct && (
-                    <span className="mr-auto text-emerald-400 text-xl">✓</span>
-                  )}
-                  {checked && selected === i && isWrong && (
-                    <span className="mr-auto text-red-400 text-xl">✗</span>
-                  )}
+          return (
+            <button key={i} className={style} onClick={() => handleSelect(i)}>
+              <span className="flex items-center gap-3">
+                <span className="w-7 h-7 rounded-full border border-current flex items-center justify-center shrink-0 font-mono text-sm">
+                  {String.fromCharCode(65 + i)}
                 </span>
-              </button>
-            )
-          })}
-        </div>
+                {opt}
+                {checked && i === current.correct && (
+                  <span className="mr-auto text-emerald-400">✓</span>
+                )}
+                {checked && selected === i && isWrong && (
+                  <span className="mr-auto text-red-400">✗</span>
+                )}
+              </span>
+            </button>
+          )
+        })}
+      </div>
 
-        {/* Explanation */}
-        {checked && (
-          <div
-            className={`rounded-xl px-5 py-4 mb-5 text-xl leading-relaxed ${
-              isCorrect
-                ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300'
-                : 'bg-red-500/10 border border-red-500/30 text-red-300'
-            }`}
+      {/* Explanation */}
+      {checked && (
+        <div
+          className={`rounded-xl px-4 py-3 mb-4 leading-relaxed ${
+            isCorrect
+              ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300'
+              : 'bg-red-500/10 border border-red-500/30 text-red-300'
+          }`}
+        >
+          <span className="font-bold ml-2">{isCorrect ? '✓ נכון!' : '✗ לא נכון.'}</span>
+          {current.explanation}
+        </div>
+      )}
+
+      {/* Action */}
+      <div className="flex justify-end">
+        {!checked ? (
+          <button
+            onClick={handleCheck}
+            disabled={selected === null}
+            className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold transition-all"
           >
-            <span className="font-bold ml-2">{isCorrect ? '✓ נכון!' : '✗ לא נכון.'}</span>
-            {current.explanation}
-          </div>
+            בדוק
+          </button>
+        ) : (
+          <button
+            onClick={handleNext}
+            className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all"
+          >
+            {isLast ? 'סיים ←' : 'הבא ←'}
+          </button>
         )}
-
-        {/* Action */}
-        <div className="flex justify-end">
-          {!checked ? (
-            <button
-              onClick={handleCheck}
-              disabled={selected === null}
-              className="px-7 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed text-white text-xl font-semibold transition-all"
-            >
-              בדוק
-            </button>
-          ) : (
-            <button
-              onClick={handleNext}
-              className="px-7 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xl font-semibold transition-all"
-            >
-              {isLast ? 'סיים ←' : 'הבא ←'}
-            </button>
-          )}
-        </div>
       </div>
     </div>
   )
 }
 
-function ProgressDots({
-  picked,
-  currentIdx,
-}: {
-  picked: Question[]
-  currentIdx: number
-}) {
+function ProgressDots({ picked, currentIdx }: { picked: Question[]; currentIdx: number }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       {picked.map((_, i) => (
         <span
           key={i}
-          className={`w-3 h-3 rounded-full transition-all ${
-            i < currentIdx
-              ? 'bg-emerald-500'
-              : i === currentIdx
-              ? 'bg-white'
-              : 'bg-white/20'
+          className={`w-2.5 h-2.5 rounded-full transition-all ${
+            i < currentIdx ? 'bg-emerald-500' : i === currentIdx ? 'bg-white' : 'bg-white/20'
           }`}
         />
       ))}
-      <span className="text-slate-400 text-base mr-2">
+      <span className="text-slate-400 text-sm mr-1">
         {currentIdx + 1} / {picked.length}
       </span>
     </div>
@@ -240,16 +218,15 @@ function QuizResults({
 
   return (
     <div>
-      {/* Score summary */}
-      <div className="text-center mb-8">
-        <div className="text-6xl mb-3">{emoji}</div>
-        <div className="text-4xl font-black text-white mb-2">
+      <div className="text-center mb-5">
+        <div className="text-4xl mb-2">{emoji}</div>
+        <div className="text-2xl font-black text-white mb-1">
           {score} / {total} נקודות
         </div>
-        <div className="text-2xl text-slate-400 mb-5">{msg}</div>
-        <div className="w-full bg-white/10 rounded-full h-4 overflow-hidden">
+        <div className="text-slate-400 mb-4">{msg}</div>
+        <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
           <div
-            className="h-4 rounded-full transition-all duration-700"
+            className="h-3 rounded-full transition-all duration-700"
             style={{
               width: `${pct}%`,
               background:
@@ -261,34 +238,27 @@ function QuizResults({
             }}
           />
         </div>
-        <div className="text-slate-500 text-lg mt-2">{pct}%</div>
+        <div className="text-slate-500 text-sm mt-1">{pct}%</div>
       </div>
 
-      {/* Per-question breakdown */}
-      <div className="space-y-3 mb-8">
+      <div className="space-y-2 mb-5">
         {picked.map((q, i) => {
           const correct = answers[i] === q.correct
           return (
             <div
               key={q.id}
-              className={`rounded-xl px-5 py-4 border ${
-                correct
-                  ? 'border-emerald-500/30 bg-emerald-500/8'
-                  : 'border-red-500/30 bg-red-500/8'
+              className={`rounded-xl px-4 py-3 border ${
+                correct ? 'border-emerald-500/30 bg-emerald-500/8' : 'border-red-500/30 bg-red-500/8'
               }`}
             >
-              <div className="flex items-start gap-3">
-                <span
-                  className={`text-xl mt-0.5 shrink-0 ${
-                    correct ? 'text-emerald-400' : 'text-red-400'
-                  }`}
-                >
+              <div className="flex items-start gap-2">
+                <span className={`mt-0.5 shrink-0 ${correct ? 'text-emerald-400' : 'text-red-400'}`}>
                   {correct ? '✓' : '✗'}
                 </span>
                 <div className="flex-1">
-                  <p className="text-white text-lg font-medium mb-1">{q.text}</p>
+                  <p className="text-white font-medium">{q.text}</p>
                   {!correct && (
-                    <p className="text-slate-400 text-base">
+                    <p className="text-slate-400 text-sm mt-0.5">
                       התשובה הנכונה:{' '}
                       <span className="text-emerald-400">{q.options[q.correct]}</span>
                     </p>
@@ -302,7 +272,7 @@ function QuizResults({
 
       <button
         onClick={onRetry}
-        className="w-full py-4 rounded-xl bg-white/6 border border-white/10 text-white text-xl hover:bg-white/10 transition-all"
+        className="w-full py-2.5 rounded-xl bg-white/6 border border-white/10 text-white hover:bg-white/10 transition-all"
       >
         נסה שוב עם שאלות אחרות
       </button>

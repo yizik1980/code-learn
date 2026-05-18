@@ -20,14 +20,14 @@ export default function Home() {
       <div className="relative max-w-5xl mx-auto px-6 py-16">
         {/* Header */}
         <header className="text-center mb-16">
-          <div className="text-6xl mb-5">👨‍💻</div>
-          <h1 className="text-6xl font-black text-white mb-4 leading-tight">
+          <div className=" mb-5">👨‍💻</div>
+          <h1 className=" font-black text-white mb-4 leading-tight">
             Code
             <span className="text-transparent bg-clip-text bg-gradient-to-l from-emerald-400 to-cyan-400">
               Learn
             </span>
           </h1>
-          <p className="text-2xl text-slate-400 max-w-xl mx-auto leading-relaxed">
+          <p className=" text-slate-400 max-w-xl mx-auto leading-relaxed">
             ללמוד לתכנת בצורה קלה, מהנה ועם שאלות לאורך הדרך
           </p>
 
@@ -44,7 +44,7 @@ export default function Home() {
 
         {/* Section title */}
         <div className="flex items-center gap-4 mb-8">
-          <h2 className="text-3xl font-bold text-white">קורסים זמינים</h2>
+          <h2 className=" font-bold text-white">קורסים זמינים</h2>
           <div className="flex-1 h-px bg-white/10" />
         </div>
 
@@ -56,7 +56,7 @@ export default function Home() {
         </div>
 
         {/* Footer */}
-        <footer className="text-center text-slate-600 text-base">
+        <footer className="text-center text-slate-600 ">
           <p>כל הקורסים חינמיים · בנוי עם React + Signals</p>
         </footer>
       </div>

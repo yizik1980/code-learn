@@ -58,8 +58,8 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
         onClick={() => setOpen(true)}
         className="my-4 w-full flex items-center gap-3 px-5 py-4 rounded-xl border border-white/10 bg-white/3 hover:bg-white/7 hover:border-emerald-500/40 transition-all group text-right"
       >
-        <span className="text-2xl">📊</span>
-        <span className="flex-1 text-xl text-slate-300 group-hover:text-white transition-colors">
+        <span className="">📊</span>
+        <span className="flex-1  text-slate-300 group-hover:text-white transition-colors">
           {caption || tableName}
         </span>
         <span className="text-sm text-slate-500 bg-white/8 px-3 py-1 rounded-full">
@@ -82,8 +82,8 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
             {/* Dialog header */}
             <div className="sticky top-0 bg-[#111118] flex items-center justify-between px-6 py-4 border-b border-white/10 z-10">
               <div className="flex items-center gap-3">
-                <span className="text-2xl">📊</span>
-                <h3 className="text-xl font-bold text-white">{caption || tableName}</h3>
+                <span className="">📊</span>
+                <h3 className=" font-bold text-white">{caption || tableName}</h3>
               </div>
               <button
                 onClick={() => setOpen(false)}
