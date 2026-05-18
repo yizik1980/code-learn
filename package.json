@@ -1,0 +1,9 @@
+{
+  "name": "codelearn-monorepo",
+  "private": true,
+  "workspaces": ["apps/*"],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/client",
+    "build": "npm run build --workspace=apps/client"
+  }
+}
