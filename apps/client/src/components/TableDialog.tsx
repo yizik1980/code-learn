@@ -46,7 +46,9 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
 
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
@@ -56,53 +58,93 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
       {/* Trigger button */}
       <button
         onClick={() => setOpen(true)}
-        className="my-4 w-full flex items-center gap-3 px-5 py-4 rounded-xl border border-white/10 bg-white/3 hover:bg-white/7 hover:border-emerald-500/40 transition-all group text-right"
+        className="my-4 w-full flex items-center gap-3 px-5 py-4 text-right brutal-card-sm"
+        style={{ background: '#fff' }}
       >
-        <span className="">📊</span>
-        <span className="flex-1  text-slate-300 group-hover:text-white transition-colors">
+        <span style={{ fontSize: '1.3rem' }}>📊</span>
+        <span className="flex-1 font-bold" style={{ color: '#1c1c2e' }}>
           {caption || tableName}
         </span>
-        <span className="text-sm text-slate-500 bg-white/8 px-3 py-1 rounded-full">
+        <span
+          className="font-semibold"
+          style={{
+            background: '#f0ece4',
+            border: '1.5px solid #c4b8a4',
+            borderRadius: 8,
+            padding: '2px 10px',
+            color: '#7a6a5a',
+            fontSize: '0.85rem',
+          }}
+        >
           {rows.length} שורות · {headers.length} עמודות
         </span>
-        <span className="text-slate-500 group-hover:text-emerald-400 transition-colors text-lg">←</span>
+        <span style={{ color: '#c4b8a4', fontSize: '1.1rem' }}>←</span>
       </button>
 
       {/* Modal */}
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
+          style={{ background: 'rgba(28,28,46,0.6)', backdropFilter: 'blur(4px)' }}
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-[#111118] rounded-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto border border-white/12 shadow-2xl"
+            className="w-full max-w-2xl max-h-[85vh] overflow-y-auto"
+            style={{
+              background: '#fef9f0',
+              border: '2px solid #1c1c2e',
+              boxShadow: '6px 6px 0 #1c1c2e',
+              borderRadius: 20,
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Dialog header */}
-            <div className="sticky top-0 bg-[#111118] flex items-center justify-between px-6 py-4 border-b border-white/10 z-10">
+            <div
+              className="sticky top-0 flex items-center justify-between px-6 py-4 z-10"
+              style={{
+                background: '#1c1c2e',
+                borderRadius: '18px 18px 0 0',
+              }}
+            >
               <div className="flex items-center gap-3">
-                <span className="">📊</span>
-                <h3 className=" font-bold text-white">{caption || tableName}</h3>
+                <span style={{ fontSize: '1.3rem' }}>📊</span>
+                <h3 className="font-black" style={{ color: '#fff', fontSize: '1.05rem' }}>
+                  {caption || tableName}
+                </h3>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="w-8 h-8 rounded-lg bg-white/8 hover:bg-white/15 flex items-center justify-center text-slate-400 hover:text-white transition-all text-lg"
+                className="w-8 h-8 flex items-center justify-center font-black"
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1.5px solid rgba(255,255,255,0.25)',
+                  borderRadius: 8,
+                  color: '#fff',
+                  fontSize: '1rem',
+                }}
               >
                 ✕
               </button>
             </div>
 
-            <div className="p-6 space-y-6">
+            <div className="p-6 space-y-5">
               {/* Table */}
-              <div className="overflow-x-auto rounded-xl border border-white/10">
-                <table className="w-full text-lg" dir="ltr">
+              <div
+                className="overflow-x-auto"
+                style={{ border: '2px solid #1c1c2e', borderRadius: 12 }}
+              >
+                <table className="w-full" dir="ltr" style={{ fontSize: '1rem' }}>
                   <thead>
-                    <tr className="bg-[#1e2433]">
+                    <tr style={{ background: '#1c1c2e' }}>
                       {headers.map((h) => (
                         <th
                           key={h}
-                          className="px-5 py-3 text-left text-emerald-400 font-mono font-semibold border-b border-white/10"
+                          className="px-5 py-3 text-left font-black"
+                          style={{
+                            color: '#10b981',
+                            fontFamily: "'Fira Code', Consolas, monospace",
+                            borderBottom: '2px solid #333355',
+                          }}
                         >
                           {h}
                         </th>
@@ -113,10 +155,20 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
                     {rows.map((row, i) => (
                       <tr
                         key={i}
-                        className="border-b border-white/5 last:border-0 hover:bg-white/3 transition-colors"
+                        style={{
+                          background: i % 2 === 0 ? '#fff' : '#faf8f4',
+                          borderBottom: i < rows.length - 1 ? '1px solid #e8e4dc' : 'none',
+                        }}
                       >
                         {row.map((cell, j) => (
-                          <td key={j} className="px-5 py-3 text-slate-300 font-mono">
+                          <td
+                            key={j}
+                            className="px-5 py-3"
+                            style={{
+                              color: '#3a3a50',
+                              fontFamily: "'Fira Code', Consolas, monospace",
+                            }}
+                          >
                             {cell}
                           </td>
                         ))}
@@ -128,11 +180,17 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
 
               {/* SQL section */}
               <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-lg font-bold text-slate-300">SQL ליצירת הטבלה</span>
-                  <div className="flex-1 h-px bg-white/10" />
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="font-black" style={{ color: '#1c1c2e' }}>
+                    SQL ליצירת הטבלה
+                  </span>
+                  <div className="flex-1 h-0.5" style={{ background: '#e8e4dc' }} />
                 </div>
-                <div className="rounded-xl overflow-hidden border border-white/10" dir="ltr">
+                <div
+                  className="overflow-hidden"
+                  dir="ltr"
+                  style={{ border: '2px solid #1c1c2e', borderRadius: 12 }}
+                >
                   <SyntaxHighlighter
                     language="sql"
                     style={atomOneDark}

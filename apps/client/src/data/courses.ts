@@ -1,4 +1,7 @@
 import { sqlLessons } from './sql/lessons'
+import { jsLessons } from './js/lessons'
+import { tsLessons } from './ts/lessons'
+import { reactLessons } from './react_course/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -12,24 +15,13 @@ export const courses: Course[] = [
     lessons: sqlLessons,
   },
   {
-    id: 'python',
-    title: 'Python',
-    description: 'שפת תכנות רב-תכליתית — מדעי נתונים, ווב ואוטומציה',
-    emoji: '🐍',
-    color: '#3b82f6',
-    gradient: 'from-blue-500 to-cyan-600',
-    lessons: [],
-    comingSoon: true,
-  },
-  {
     id: 'javascript',
     title: 'JavaScript',
-    description: 'שפת האינטרנט — לבניית אתרים ואפליקציות',
+    description: 'שפת האינטרנט — משתנים, פונקציות, DOM ו-Async',
     emoji: '⚡',
     color: '#f59e0b',
     gradient: 'from-yellow-400 to-orange-500',
-    lessons: [],
-    comingSoon: true,
+    lessons: jsLessons,
   },
   {
     id: 'typescript',
@@ -38,16 +30,24 @@ export const courses: Course[] = [
     emoji: '🔷',
     color: '#6366f1',
     gradient: 'from-indigo-500 to-purple-600',
-    lessons: [],
-    comingSoon: true,
+    lessons: tsLessons,
   },
   {
     id: 'react',
     title: 'React',
-    description: 'ספריית UI הכי פופולרית לבניית ממשקים',
+    description: 'ספריית UI הכי פופולרית — קומפוננטות, hooks ו-state',
     emoji: '⚛️',
     color: '#06b6d4',
     gradient: 'from-cyan-500 to-blue-600',
+    lessons: reactLessons,
+  },
+  {
+    id: 'python',
+    title: 'Python',
+    description: 'שפת תכנות רב-תכליתית — מדעי נתונים, ווב ואוטומציה',
+    emoji: '🐍',
+    color: '#3b82f6',
+    gradient: 'from-blue-500 to-cyan-600',
     lessons: [],
     comingSoon: true,
   },

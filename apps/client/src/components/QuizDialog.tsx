@@ -7,15 +7,18 @@ interface Props {
   courseId: string
   lessonId: string
   progress?: LessonProgress
+  color?: string
 }
 
-export default function QuizDialog({ questions, courseId, lessonId, progress }: Props) {
+export default function QuizDialog({ questions, courseId, lessonId, progress, color = '#10b981' }: Props) {
   const [open, setOpen] = useState(false)
   const [quizKey, setQuizKey] = useState(0)
 
   useEffect(() => {
     if (!open) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false)
+    }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [open])
@@ -29,44 +32,70 @@ export default function QuizDialog({ questions, courseId, lessonId, progress }: 
 
   return (
     <>
-      {/* Trigger */}
-      <div className="mt-6 rounded-2xl border border-white/10 overflow-hidden">
-        <div className="bg-[#1a1a28] px-5 py-3 flex items-center justify-between border-b border-white/10">
+      {/* Trigger card */}
+      <div
+        className="mt-6 overflow-hidden"
+        style={{
+          background: '#fff',
+          border: '2px solid #1c1c2e',
+          boxShadow: '4px 4px 0 #1c1c2e',
+          borderRadius: 16,
+        }}
+      >
+        {/* Card header */}
+        <div
+          className="px-5 py-3 flex items-center justify-between"
+          style={{
+            background: '#1c1c2e',
+            borderBottom: '2px solid #1c1c2e',
+          }}
+        >
           <div className="flex items-center gap-2">
-            <span>🧠</span>
+            <span style={{ fontSize: '1.3rem' }}>🧠</span>
             <div>
-              <h3 className="font-bold text-white leading-tight">בחן את עצמך</h3>
-              <p className="text-slate-500 text-sm">
+              <h3 className="font-black" style={{ color: '#fff', fontSize: '1rem' }}>
+                בחן את עצמך
+              </h3>
+              <p style={{ color: '#9090b0', fontSize: '0.8rem' }}>
                 {Math.min(5, questions.length)} שאלות אקראיות מתוך {questions.length}
               </p>
             </div>
           </div>
           {done && (
-            <div className="text-right">
-              <div className="text-emerald-400 font-bold">
-                {progress.score}/{progress.total}
-              </div>
-              <div className="text-slate-500 text-sm">נקודות</div>
+            <div
+              className="font-black text-right"
+              style={{
+                background: '#10b981',
+                border: '2px solid #fff',
+                borderRadius: 8,
+                padding: '2px 10px',
+                color: '#fff',
+                fontSize: '0.9rem',
+              }}
+            >
+              {progress.score}/{progress.total} ✓
             </div>
           )}
         </div>
 
+        {/* Card body */}
         <div className="px-5 py-3 flex items-center justify-between">
           {done ? (
-            <div className="flex items-center gap-2 text-emerald-400">
+            <div className="flex items-center gap-2 font-bold" style={{ color: '#10b981' }}>
               <span>✓</span>
               <span>הבחינה הושלמה</span>
             </div>
           ) : (
-            <p className="text-slate-400">מוכן לבדוק את עצמך?</p>
+            <p style={{ color: '#5a5a72' }}>מוכן לבדוק את עצמך?</p>
           )}
           <button
             onClick={handleOpen}
-            className={`px-5 py-2 rounded-xl font-semibold transition-all ${
-              done
-                ? 'bg-white/8 text-slate-300 hover:bg-white/12'
-                : 'bg-emerald-600 hover:bg-emerald-500 text-white'
-            }`}
+            className="brutal-btn px-5 py-2 font-black"
+            style={{
+              background: done ? '#fff' : color,
+              color: done ? '#1c1c2e' : '#fff',
+              fontSize: '0.95rem',
+            }}
           >
             {done ? 'נסה שוב' : 'התחל בחינה ←'}
           </button>
@@ -77,22 +106,41 @@ export default function QuizDialog({ questions, courseId, lessonId, progress }: 
       {open && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(6px)' }}
+          style={{ background: 'rgba(28,28,46,0.6)', backdropFilter: 'blur(6px)' }}
           onClick={() => setOpen(false)}
         >
           <div
-            className="bg-[#0e0e18] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-white/12 shadow-2xl flex flex-col"
+            className="w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col"
+            style={{
+              background: '#fef9f0',
+              border: '2px solid #1c1c2e',
+              boxShadow: '6px 6px 0 #1c1c2e',
+              borderRadius: 20,
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Dialog header */}
-            <div className="sticky top-0 bg-[#0e0e18] flex items-center justify-between px-5 py-3 border-b border-white/10 z-10">
+            <div
+              className="sticky top-0 flex items-center justify-between px-5 py-3 z-10"
+              style={{
+                background: '#1c1c2e',
+                borderRadius: '18px 18px 0 0',
+              }}
+            >
               <div className="flex items-center gap-2">
-                <span>🧠</span>
-                <span className="font-bold text-white">בחינה</span>
+                <span style={{ fontSize: '1.2rem' }}>🧠</span>
+                <span className="font-black" style={{ color: '#fff' }}>בחינה</span>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="w-7 h-7 rounded-lg bg-white/8 hover:bg-white/15 flex items-center justify-center text-slate-400 hover:text-white transition-all text-sm"
+                className="w-8 h-8 flex items-center justify-center font-black transition-all"
+                style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  border: '1.5px solid rgba(255,255,255,0.25)',
+                  borderRadius: 8,
+                  color: '#fff',
+                  fontSize: '1rem',
+                }}
               >
                 ✕
               </button>

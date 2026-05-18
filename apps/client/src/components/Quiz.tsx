@@ -85,7 +85,7 @@ export default function Quiz({ questions, courseId, lessonId, onComplete, embedd
     <div>
       {embedded && (
         <div className="flex items-center justify-between mb-4">
-          <span className="text-slate-400">
+          <span style={{ color: '#8080a0', fontSize: '0.95rem' }}>
             שאלה {currentIdx + 1} מתוך {picked.length}
           </span>
           <ProgressDots picked={picked} currentIdx={currentIdx} />
@@ -93,42 +93,70 @@ export default function Quiz({ questions, courseId, lessonId, onComplete, embedd
       )}
 
       {/* Question */}
-      <p className="font-semibold text-white mb-4 leading-relaxed">
+      <p className="font-bold mb-4 leading-relaxed" style={{ color: '#1c1c2e' }}>
         {current.text}
       </p>
 
       {/* Options */}
       <div className="space-y-2 mb-4">
         {current.options.map((opt, i) => {
-          let style =
-            'w-full text-right px-4 py-3 rounded-xl border transition-all cursor-pointer '
+          let bg = '#fff'
+          let border = '#c4c4cc'
+          let shadow = '2px 2px 0 #c4c4cc'
+          let color = '#3a3a50'
 
           if (!checked) {
-            style += selected === i
-              ? 'border-emerald-500 bg-emerald-500/15 text-white'
-              : 'border-white/10 bg-white/4 text-slate-300 hover:border-white/25 hover:bg-white/8'
+            if (selected === i) {
+              bg = '#eff6ff'
+              border = '#3b82f6'
+              shadow = '2px 2px 0 #3b82f6'
+              color = '#1d4ed8'
+            }
           } else {
             if (i === current.correct) {
-              style += 'border-emerald-500 bg-emerald-500/20 text-emerald-300'
+              bg = '#f0fdf8'
+              border = '#10b981'
+              shadow = '2px 2px 0 #10b981'
+              color = '#065f46'
             } else if (selected === i && isWrong) {
-              style += 'border-red-500 bg-red-500/20 text-red-300'
+              bg = '#fef2f2'
+              border = '#ef4444'
+              shadow = '2px 2px 0 #ef4444'
+              color = '#991b1b'
             } else {
-              style += 'border-white/5 bg-white/2 text-slate-500'
+              bg = '#f8f8f8'
+              border = '#e0e0e8'
+              shadow = 'none'
+              color = '#a0a0b8'
             }
           }
 
           return (
-            <button key={i} className={style} onClick={() => handleSelect(i)}>
+            <button
+              key={i}
+              className="w-full text-right px-4 py-3 font-semibold transition-all cursor-pointer"
+              style={{
+                background: bg,
+                border: `2px solid ${border}`,
+                boxShadow: shadow,
+                borderRadius: 10,
+                color,
+              }}
+              onClick={() => handleSelect(i)}
+            >
               <span className="flex items-center gap-3">
-                <span className="w-7 h-7 rounded-full border border-current flex items-center justify-center shrink-0 font-mono text-sm">
+                <span
+                  className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-black text-sm"
+                  style={{ border: `2px solid ${border}`, color }}
+                >
                   {String.fromCharCode(65 + i)}
                 </span>
                 {opt}
                 {checked && i === current.correct && (
-                  <span className="mr-auto text-emerald-400">✓</span>
+                  <span className="mr-auto font-black" style={{ color: '#10b981' }}>✓</span>
                 )}
                 {checked && selected === i && isWrong && (
-                  <span className="mr-auto text-red-400">✗</span>
+                  <span className="mr-auto font-black" style={{ color: '#ef4444' }}>✗</span>
                 )}
               </span>
             </button>
@@ -139,13 +167,15 @@ export default function Quiz({ questions, courseId, lessonId, onComplete, embedd
       {/* Explanation */}
       {checked && (
         <div
-          className={`rounded-xl px-4 py-3 mb-4 leading-relaxed ${
-            isCorrect
-              ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300'
-              : 'bg-red-500/10 border border-red-500/30 text-red-300'
-          }`}
+          className="rounded-xl px-4 py-3 mb-4 leading-relaxed font-medium"
+          style={{
+            background: isCorrect ? '#f0fdf8' : '#fef2f2',
+            border: `2px solid ${isCorrect ? '#10b981' : '#ef4444'}`,
+            boxShadow: `3px 3px 0 ${isCorrect ? '#10b981' : '#ef4444'}`,
+            color: isCorrect ? '#065f46' : '#991b1b',
+          }}
         >
-          <span className="font-bold ml-2">{isCorrect ? '✓ נכון!' : '✗ לא נכון.'}</span>
+          <span className="font-black ml-2">{isCorrect ? '✓ נכון!' : '✗ לא נכון.'}</span>
           {current.explanation}
         </div>
       )}
@@ -156,14 +186,16 @@ export default function Quiz({ questions, courseId, lessonId, onComplete, embedd
           <button
             onClick={handleCheck}
             disabled={selected === null}
-            className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-30 disabled:cursor-not-allowed text-white font-semibold transition-all"
+            className="brutal-btn px-6 py-2.5 font-black"
+            style={{ background: '#3b82f6', color: '#fff', fontSize: '1rem' }}
           >
             בדוק
           </button>
         ) : (
           <button
             onClick={handleNext}
-            className="px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all"
+            className="brutal-btn px-6 py-2.5 font-black"
+            style={{ background: '#10b981', color: '#fff', fontSize: '1rem' }}
           >
             {isLast ? 'סיים ←' : 'הבא ←'}
           </button>
@@ -179,14 +211,18 @@ function ProgressDots({ picked, currentIdx }: { picked: Question[]; currentIdx: 
       {picked.map((_, i) => (
         <span
           key={i}
-          className={`w-2.5 h-2.5 rounded-full transition-all ${
-            i < currentIdx ? 'bg-emerald-500' : i === currentIdx ? 'bg-white' : 'bg-white/20'
-          }`}
+          className="rounded-full transition-all"
+          style={{
+            width: 10,
+            height: 10,
+            background:
+              i < currentIdx ? '#10b981' : i === currentIdx ? '#1c1c2e' : '#e0e0e8',
+            border: '1.5px solid',
+            borderColor: i < currentIdx ? '#10b981' : i === currentIdx ? '#1c1c2e' : '#c0c0cc',
+            display: 'inline-block',
+          }}
         />
       ))}
-      <span className="text-slate-400 text-sm mr-1">
-        {currentIdx + 1} / {picked.length}
-      </span>
     </div>
   )
 }
@@ -216,29 +252,30 @@ function QuizResults({
       ? 'לא רע! כדאי לחזור על הנושאים שפספסת'
       : 'נסה שוב — הצלחה!'
 
+  const scoreColor = pct >= 80 ? '#10b981' : pct >= 60 ? '#f59e0b' : '#ef4444'
+
   return (
     <div>
       <div className="text-center mb-5">
-        <div className="text-4xl mb-2">{emoji}</div>
-        <div className="text-2xl font-black text-white mb-1">
+        <div style={{ fontSize: '3rem' }} className="mb-2">{emoji}</div>
+        <div className="font-black mb-1" style={{ fontSize: '2rem', color: '#1c1c2e' }}>
           {score} / {total} נקודות
         </div>
-        <div className="text-slate-400 mb-4">{msg}</div>
-        <div className="w-full bg-white/10 rounded-full h-3 overflow-hidden">
+        <div className="mb-4" style={{ color: '#5a5a72' }}>{msg}</div>
+
+        {/* Score bar */}
+        <div
+          className="w-full rounded-full overflow-hidden"
+          style={{ height: 12, background: '#e8e4dc', border: '2px solid #1c1c2e' }}
+        >
           <div
-            className="h-3 rounded-full transition-all duration-700"
-            style={{
-              width: `${pct}%`,
-              background:
-                pct >= 80
-                  ? 'linear-gradient(90deg, #10b981, #34d399)'
-                  : pct >= 60
-                  ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-                  : 'linear-gradient(90deg, #ef4444, #f87171)',
-            }}
+            className="h-full rounded-full transition-all duration-700"
+            style={{ width: `${pct}%`, background: scoreColor }}
           />
         </div>
-        <div className="text-slate-500 text-sm mt-1">{pct}%</div>
+        <div className="mt-1 font-bold" style={{ color: scoreColor, fontSize: '0.95rem' }}>
+          {pct}%
+        </div>
       </div>
 
       <div className="space-y-2 mb-5">
@@ -247,20 +284,27 @@ function QuizResults({
           return (
             <div
               key={q.id}
-              className={`rounded-xl px-4 py-3 border ${
-                correct ? 'border-emerald-500/30 bg-emerald-500/8' : 'border-red-500/30 bg-red-500/8'
-              }`}
+              className="rounded-xl px-4 py-3"
+              style={{
+                background: correct ? '#f0fdf8' : '#fef2f2',
+                border: `2px solid ${correct ? '#10b981' : '#ef4444'}`,
+              }}
             >
               <div className="flex items-start gap-2">
-                <span className={`mt-0.5 shrink-0 ${correct ? 'text-emerald-400' : 'text-red-400'}`}>
+                <span
+                  className="mt-0.5 shrink-0 font-black"
+                  style={{ color: correct ? '#10b981' : '#ef4444' }}
+                >
                   {correct ? '✓' : '✗'}
                 </span>
                 <div className="flex-1">
-                  <p className="text-white font-medium">{q.text}</p>
+                  <p className="font-semibold" style={{ color: '#1c1c2e' }}>{q.text}</p>
                   {!correct && (
-                    <p className="text-slate-400 text-sm mt-0.5">
+                    <p style={{ color: '#8080a0', fontSize: '0.9rem' }} className="mt-0.5">
                       התשובה הנכונה:{' '}
-                      <span className="text-emerald-400">{q.options[q.correct]}</span>
+                      <span className="font-bold" style={{ color: '#10b981' }}>
+                        {q.options[q.correct]}
+                      </span>
                     </p>
                   )}
                 </div>
@@ -272,7 +316,8 @@ function QuizResults({
 
       <button
         onClick={onRetry}
-        className="w-full py-2.5 rounded-xl bg-white/6 border border-white/10 text-white hover:bg-white/10 transition-all"
+        className="brutal-btn w-full py-2.5 font-bold"
+        style={{ background: '#fff', color: '#1c1c2e', fontSize: '1rem' }}
       >
         נסה שוב עם שאלות אחרות
       </button>

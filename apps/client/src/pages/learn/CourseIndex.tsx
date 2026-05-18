@@ -1,11 +1,16 @@
-import { Link } from 'react-router-dom'
+import { Link, useParams, Navigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
-import { getLessonProgress, getCourseStats } from '../../../signals/progress'
-import { sqlLessons } from '../../../data/sql/lessons'
+import { getLessonProgress, getCourseStats } from '../../signals/progress'
+import { courses } from '../../data/courses'
 
-export default function SqlIndex() {
+export default function CourseIndex() {
   useSignals()
-  const stats = getCourseStats('sql', sqlLessons.length)
+  const { courseId } = useParams<{ courseId: string }>()
+
+  const course = courses.find((c) => c.id === courseId)
+  if (!course || course.comingSoon) return <Navigate to="/" replace />
+
+  const stats = getCourseStats(course.id, course.lessons.length)
 
   return (
     <div className="min-h-screen" style={{ background: '#fef9f0' }}>
@@ -29,19 +34,19 @@ export default function SqlIndex() {
 
         {/* Hero */}
         <div className="mb-10">
-          <div style={{ fontSize: '3rem' }} className="mb-3">🗄️</div>
+          <div style={{ fontSize: '3rem' }} className="mb-3">{course.emoji}</div>
           <h1 className="font-black mb-2" style={{ fontSize: '2.8rem', color: '#1c1c2e' }}>
-            SQL
+            {course.title}
           </h1>
           <p className="mb-5" style={{ color: '#5a5a72', fontSize: '1.1rem' }}>
-            שפת השאילתות הסטנדרטית לניהול מסדי נתונים — מהבסיס ועד שאילתות מורכבות
+            {course.description}
           </p>
 
           {/* Progress card */}
           <div className="brutal-card p-5">
             <div className="flex items-center justify-between mb-3">
               <span className="font-bold" style={{ color: '#1c1c2e' }}>התקדמות</span>
-              <span className="font-black" style={{ color: '#10b981' }}>
+              <span className="font-black" style={{ color: course.color }}>
                 {stats.completed} / {stats.total} שיעורים
               </span>
             </div>
@@ -51,10 +56,7 @@ export default function SqlIndex() {
             >
               <div
                 className="h-full rounded-full transition-all duration-700"
-                style={{
-                  width: `${stats.percent}%`,
-                  background: '#10b981',
-                }}
+                style={{ width: `${stats.percent}%`, background: course.color }}
               />
             </div>
             {stats.maxScore > 0 && (
@@ -67,36 +69,36 @@ export default function SqlIndex() {
 
         {/* Lessons list */}
         <div className="space-y-3">
-          {sqlLessons.map((lesson, idx) => {
-            const prog = getLessonProgress('sql', lesson.id)
+          {course.lessons.map((lesson, idx) => {
+            const prog = getLessonProgress(course.id, lesson.id)
 
             return (
               <Link
                 key={lesson.id}
-                to={`/learn/sql/${lesson.id}`}
+                to={`/learn/${course.id}/${lesson.id}`}
                 className="block brutal-card-sm p-4"
                 style={{
                   background: prog?.completed ? '#f0fdf8' : '#ffffff',
-                  borderColor: prog?.completed ? '#10b981' : '#1c1c2e',
-                  boxShadow: prog?.completed ? '3px 3px 0 #10b981' : '3px 3px 0 #1c1c2e',
+                  borderColor: prog?.completed ? course.color : '#1c1c2e',
+                  boxShadow: prog?.completed
+                    ? `3px 3px 0 ${course.color}`
+                    : '3px 3px 0 #1c1c2e',
                 }}
               >
                 <div className="flex items-center gap-4">
-                  {/* Number / Check */}
                   <div
                     className="w-11 h-11 rounded-full flex items-center justify-center font-black shrink-0"
                     style={{
-                      background: prog?.completed ? '#10b981' : '#f0ece4',
+                      background: prog?.completed ? course.color : '#f0ece4',
                       color: prog?.completed ? '#fff' : '#5a5a72',
                       border: '2px solid',
-                      borderColor: prog?.completed ? '#10b981' : '#c4b8a4',
+                      borderColor: prog?.completed ? course.color : '#c4b8a4',
                       fontSize: '1.1rem',
                     }}
                   >
                     {prog?.completed ? '✓' : idx + 1}
                   </div>
 
-                  {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
                       <span style={{ fontSize: '1.2rem' }}>{lesson.emoji}</span>
@@ -107,13 +109,12 @@ export default function SqlIndex() {
                     <p style={{ color: '#8080a0', fontSize: '0.9rem' }}>{lesson.summary}</p>
                   </div>
 
-                  {/* Score badge */}
                   {prog?.completed && (
-                    <div className="shrink-0 text-right">
+                    <div className="shrink-0">
                       <div
                         className="font-black"
                         style={{
-                          background: '#10b981',
+                          background: course.color,
                           color: '#fff',
                           border: '2px solid #1c1c2e',
                           boxShadow: '2px 2px 0 #1c1c2e',

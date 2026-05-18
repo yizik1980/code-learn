@@ -2,13 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800;900&family=Fira+Code:wght@400;500&display=swap');
+
 * {
   font-family: 'Assistant', system-ui, sans-serif;
 }
 
 body {
-  background-color: #08080f;
-  color: #f1f5f9;
+  background-color: #fef9f0;
+  color: #1c1c2e;
   min-height: 100vh;
   font-size: 1.4rem;
 }
@@ -25,22 +27,62 @@ pre,
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #111118;
+  background: #f0ece4;
 }
 ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #c4b8a4;
   border-radius: 3px;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  backdrop-filter: blur(12px);
+/* Neo-brutalism card */
+.brutal-card {
+  background: #ffffff;
+  border: 2px solid #1c1c2e;
+  box-shadow: 4px 4px 0 #1c1c2e;
+  border-radius: 16px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.glow-green {
-  box-shadow: 0 0 30px rgba(16, 185, 129, 0.15);
+.brutal-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1c1c2e;
 }
-.glow-blue {
-  box-shadow: 0 0 30px rgba(59, 130, 246, 0.15);
+
+.brutal-card-sm {
+  background: #ffffff;
+  border: 2px solid #1c1c2e;
+  box-shadow: 3px 3px 0 #1c1c2e;
+  border-radius: 12px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.brutal-card-sm:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1c1c2e;
+}
+
+.brutal-btn {
+  border: 2px solid #1c1c2e;
+  box-shadow: 3px 3px 0 #1c1c2e;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+}
+
+.brutal-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1c1c2e;
+}
+
+.brutal-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1c1c2e;
+}
+
+.brutal-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 3px 3px 0 #1c1c2e;
 }

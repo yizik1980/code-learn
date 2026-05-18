@@ -1,21 +1,24 @@
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link, useNavigate, Navigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
-import { getLessonProgress } from '../../../signals/progress'
-import { sqlLessons } from '../../../data/sql/lessons'
-import LessonContent from '../../../components/LessonContent'
-import QuizDialog from '../../../components/QuizDialog'
+import { getLessonProgress } from '../../signals/progress'
+import { courses } from '../../data/courses'
+import LessonContent from '../../components/LessonContent'
+import QuizDialog from '../../components/QuizDialog'
 
-export default function SqlLesson() {
+export default function CourseLesson() {
   useSignals()
-  const { lessonId } = useParams<{ lessonId: string }>()
+  const { courseId, lessonId } = useParams<{ courseId: string; lessonId: string }>()
   const navigate = useNavigate()
 
-  const lessonIdx = sqlLessons.findIndex((l) => l.id === lessonId)
-  const lesson = sqlLessons[lessonIdx]
-  const prevLesson = lessonIdx > 0 ? sqlLessons[lessonIdx - 1] : null
-  const nextLesson = lessonIdx < sqlLessons.length - 1 ? sqlLessons[lessonIdx + 1] : null
+  const course = courses.find((c) => c.id === courseId)
+  if (!course || course.comingSoon) return <Navigate to="/" replace />
 
-  const prog = getLessonProgress('sql', lessonId ?? '')
+  const lessonIdx = course.lessons.findIndex((l) => l.id === lessonId)
+  const lesson = course.lessons[lessonIdx]
+  const prevLesson = lessonIdx > 0 ? course.lessons[lessonIdx - 1] : null
+  const nextLesson = lessonIdx < course.lessons.length - 1 ? course.lessons[lessonIdx + 1] : null
+
+  const prog = getLessonProgress(course.id, lessonId ?? '')
 
   if (!lesson) {
     return (
@@ -40,11 +43,11 @@ export default function SqlLesson() {
       >
         <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-3">
           <Link
-            to="/learn/sql"
+            to={`/learn/${course.id}`}
             className="font-bold flex items-center gap-1 brutal-btn px-3 py-1.5"
             style={{ background: '#fff', color: '#1c1c2e', fontSize: '0.95rem' }}
           >
-            → SQL
+            → {course.emoji} {course.title}
           </Link>
           <span style={{ color: '#c4b8a4' }}>/</span>
           <span className="font-black truncate flex-1" style={{ color: '#1c1c2e', fontSize: '1rem' }}>
@@ -60,7 +63,7 @@ export default function SqlLesson() {
               fontSize: '0.85rem',
             }}
           >
-            {lessonIdx + 1} / {sqlLessons.length}
+            {lessonIdx + 1} / {course.lessons.length}
           </span>
         </div>
       </nav>
@@ -78,11 +81,11 @@ export default function SqlLesson() {
               className="mt-3 inline-flex items-center gap-2 font-bold"
               style={{
                 background: '#f0fdf8',
-                border: '2px solid #10b981',
-                boxShadow: '3px 3px 0 #10b981',
+                border: `2px solid ${course.color}`,
+                boxShadow: `3px 3px 0 ${course.color}`,
                 borderRadius: 10,
                 padding: '4px 14px',
-                color: '#10b981',
+                color: course.color,
                 fontSize: '1rem',
               }}
             >
@@ -98,9 +101,10 @@ export default function SqlLesson() {
         <QuizDialog
           key={lesson.id}
           questions={lesson.questionBank}
-          courseId="sql"
+          courseId={course.id}
           lessonId={lesson.id}
           progress={prog}
+          color={course.color}
         />
 
         {/* Navigation */}
@@ -110,8 +114,8 @@ export default function SqlLesson() {
         >
           {prevLesson ? (
             <button
-              onClick={() => navigate(`/learn/sql/${prevLesson.id}`)}
-              className="flex items-center gap-3 group brutal-btn px-4 py-2"
+              onClick={() => navigate(`/learn/${course.id}/${prevLesson.id}`)}
+              className="flex items-center gap-3 brutal-btn px-4 py-2"
               style={{ background: '#fff', color: '#1c1c2e' }}
             >
               <span style={{ fontSize: '1.2rem' }}>→</span>
@@ -126,9 +130,9 @@ export default function SqlLesson() {
 
           {nextLesson ? (
             <button
-              onClick={() => navigate(`/learn/sql/${nextLesson.id}`)}
+              onClick={() => navigate(`/learn/${course.id}/${nextLesson.id}`)}
               className="flex items-center gap-3 brutal-btn px-4 py-2"
-              style={{ background: '#10b981', color: '#fff' }}
+              style={{ background: course.color, color: '#fff' }}
             >
               <div className="text-left">
                 <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)' }}>שיעור הבא</div>
@@ -138,7 +142,7 @@ export default function SqlLesson() {
             </button>
           ) : (
             <button
-              onClick={() => navigate('/learn/sql')}
+              onClick={() => navigate(`/learn/${course.id}`)}
               className="flex items-center gap-3 brutal-btn px-4 py-2"
               style={{ background: '#f59e0b', color: '#1c1c2e' }}
             >
