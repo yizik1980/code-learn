@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Quiz from './Quiz'
 import type { Question, LessonProgress } from '../types'
 
@@ -13,6 +13,7 @@ interface Props {
 export default function QuizDialog({ questions, courseId, lessonId, progress, color = '#10b981' }: Props) {
   const [open, setOpen] = useState(false)
   const [quizKey, setQuizKey] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -110,6 +111,7 @@ export default function QuizDialog({ questions, courseId, lessonId, progress, co
           onClick={() => setOpen(false)}
         >
           <div
+            ref={scrollRef}
             className="w-full max-w-2xl max-h-[90vh] overflow-y-auto flex flex-col"
             style={{
               background: '#fef9f0',
@@ -153,6 +155,7 @@ export default function QuizDialog({ questions, courseId, lessonId, progress, co
                 courseId={courseId}
                 lessonId={lessonId}
                 onComplete={() => {}}
+                onStep={() => scrollRef.current?.scrollTo({ top: 0, behavior: 'instant' })}
                 embedded
               />
             </div>

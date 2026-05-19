@@ -8,12 +8,13 @@ interface Props {
   courseId: string
   lessonId: string
   onComplete?: (score: number, total: number) => void
+  onStep?: () => void
   embedded?: boolean
 }
 
 const QUIZ_SIZE = 5
 
-export default function Quiz({ questions, courseId, lessonId, onComplete, embedded }: Props) {
+export default function Quiz({ questions, courseId, lessonId, onComplete, onStep, embedded }: Props) {
   const picked = useMemo(() => pickRandom(questions, QUIZ_SIZE), [questions])
 
   const [currentIdx, setCurrentIdx] = useState(0)
@@ -52,6 +53,7 @@ export default function Quiz({ questions, courseId, lessonId, onComplete, embedd
       setCurrentIdx((i) => i + 1)
       setSelected(null)
       setChecked(false)
+      onStep?.()
     }
   }
 
