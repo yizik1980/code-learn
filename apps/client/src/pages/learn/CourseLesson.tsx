@@ -5,6 +5,7 @@ import { courses } from '../../data/courses'
 import LessonContent from '../../components/LessonContent'
 import QuizDialog from '../../components/QuizDialog'
 import LangToggle from '../../components/LangToggle'
+import NoteBox from '../../components/NoteBox'
 
 export default function CourseLesson() {
   useSignals()
@@ -98,6 +99,9 @@ export default function CourseLesson() {
 
         {/* Content */}
         <LessonContent blocks={lesson.content} />
+
+        {/* Notes */}
+        <NoteBox courseId={course.id} lessonId={lesson.id} color={course.color} />
 
         {/* Quiz */}
         <QuizDialog

@@ -1,10 +1,43 @@
+databases:
+  - name: codelearn-db
+    databaseName: codelearn
+    user: codelearn
+    plan: free
+
 services:
   - type: web
+    name: codelearn-api
+    runtime: node
+    plan: free
+    buildCommand: npm ci --workspace=apps/api
+    startCommand: node apps/api/index.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: codelearn-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGINS
+        fromService:
+          name: codelearn
+          type: web
+          property: host
+          transform: "https://{value}"
+
+  - type: web
     name: codelearn
-    env: static
+    runtime: static
     buildCommand: npm ci && npm run build
     staticPublishPath: ./apps/client/dist
     pullRequestPreviewsEnabled: true
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: codelearn-api
+          type: web
+          property: host
+          transform: "https://{value}"
     routes:
       - type: rewrite
         source: /*
