@@ -2,6 +2,7 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress, getCourseStats } from '../../signals/progress'
 import { courses } from '../../data/courses'
+import LangToggle from '../../components/LangToggle'
 
 export default function CourseIndex() {
   useSignals()
@@ -24,13 +25,16 @@ export default function CourseIndex() {
 
       <div className="relative max-w-3xl mx-auto px-6 py-10">
         {/* Nav */}
-        <Link
-          to="/"
-          className="inline-flex items-center gap-2 font-bold mb-8 brutal-btn px-4 py-2"
-          style={{ background: '#fff', color: '#1c1c2e', fontSize: '1rem' }}
-        >
-          → חזרה לדף הבית
-        </Link>
+        <div className="flex items-center justify-between mb-8">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 font-bold brutal-btn px-4 py-2"
+            style={{ background: '#fff', color: '#1c1c2e', fontSize: '1rem' }}
+          >
+            → חזרה לדף הבית
+          </Link>
+          <LangToggle />
+        </div>
 
         {/* Hero */}
         <div className="mb-10">

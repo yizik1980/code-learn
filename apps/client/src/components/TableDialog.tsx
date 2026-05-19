@@ -17,32 +17,32 @@ function inferColType(values: string[]): 'INT' | 'VARCHAR(100)' {
   return values.every((v) => /^\d+(\.\d+)?$/.test(v.trim())) ? 'INT' : 'VARCHAR(100)'
 }
 
-function buildSQL(tableName: string, headers: string[], rows: string[][]): string {
-  const types = headers.map((_, i) => inferColType(rows.map((r) => r[i])))
+// function buildSQL(tableName: string, headers: string[], rows: string[][]): string {
+//   const types = headers.map((_, i) => inferColType(rows.map((r) => r[i])))
 
-  const colDefs = headers
-    .map((h, i) => {
-      const pk = i === 0 ? ' PRIMARY KEY' : ''
-      return `  ${h} ${types[i]}${pk}`
-    })
-    .join(',\n')
+//   const colDefs = headers
+//     .map((h, i) => {
+//       const pk = i === 0 ? ' PRIMARY KEY' : ''
+//       return `  ${h} ${types[i]}${pk}`
+//     })
+//     .join(',\n')
 
-  const createSQL = `CREATE TABLE ${tableName} (\n${colDefs}\n);`
+//   const createSQL = `CREATE TABLE ${tableName} (\n${colDefs}\n);`
 
-  const valueRows = rows.map((row) => {
-    const vals = row.map((v, i) => (types[i] === 'INT' ? v : `'${v}'`))
-    return `  (${vals.join(', ')})`
-  })
+//   const valueRows = rows.map((row) => {
+//     const vals = row.map((v, i) => (types[i] === 'INT' ? v : `'${v}'`))
+//     return `  (${vals.join(', ')})`
+//   })
 
-  const insertSQL = `INSERT INTO ${tableName} (${headers.join(', ')}) VALUES\n${valueRows.join(',\n')};`
+//   const insertSQL = `INSERT INTO ${tableName} (${headers.join(', ')}) VALUES\n${valueRows.join(',\n')};`
 
-  return `${createSQL}\n\n${insertSQL}`
-}
+//   return `${createSQL}\n\n${insertSQL}`
+// }
 
 export default function TableDialog({ headers, rows, caption = '' }: Props) {
   const [open, setOpen] = useState(false)
   const tableName = extractTableName(caption)
-  const sql = buildSQL(tableName, headers, rows)
+  // const sql = buildSQL(tableName, headers, rows)
 
   useEffect(() => {
     if (!open) return
@@ -178,35 +178,6 @@ export default function TableDialog({ headers, rows, caption = '' }: Props) {
                 </table>
               </div>
 
-              {/* SQL section */}
-              <div>
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="font-black" style={{ color: '#1c1c2e' }}>
-                    SQL ליצירת הטבלה
-                  </span>
-                  <div className="flex-1 h-0.5" style={{ background: '#e8e4dc' }} />
-                </div>
-                <div
-                  className="overflow-hidden"
-                  dir="ltr"
-                  style={{ border: '2px solid #1c1c2e', borderRadius: 12 }}
-                >
-                  <SyntaxHighlighter
-                    language="sql"
-                    style={atomOneDark}
-                    customStyle={{
-                      margin: 0,
-                      padding: '1.25rem 1.5rem',
-                      fontSize: '1rem',
-                      lineHeight: '1.75',
-                      background: '#0d1117',
-                      fontFamily: "'Fira Code', Consolas, monospace",
-                    }}
-                  >
-                    {sql}
-                  </SyntaxHighlighter>
-                </div>
-              </div>
             </div>
           </div>
         </div>

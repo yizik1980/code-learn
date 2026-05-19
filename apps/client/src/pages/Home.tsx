@@ -2,6 +2,7 @@ import { useSignals } from '@preact/signals-react/runtime'
 import { globalStatsSignal } from '../signals/progress'
 import { courses } from '../data/courses'
 import CourseCard from '../components/CourseCard'
+import LangToggle from '../components/LangToggle'
 
 export default function Home() {
   useSignals()
