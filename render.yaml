@@ -11,6 +11,7 @@ services:
     plan: free
     buildCommand: npm ci --workspace=apps/api
     startCommand: node apps/api/index.js
+    healthCheckPath: /api/health
     envVars:
       - key: DATABASE_URL
         fromDatabase:
@@ -19,11 +20,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: ALLOWED_ORIGINS
-        fromService:
-          name: codelearn
-          type: web
-          property: host
-          transform: "https://{value}"
+        sync: false   # set manually in dashboard: https://code-learn-ddjt.onrender.com
 
   - type: web
     name: codelearn
@@ -33,11 +30,7 @@ services:
     pullRequestPreviewsEnabled: true
     envVars:
       - key: VITE_API_URL
-        fromService:
-          name: codelearn-api
-          type: web
-          property: host
-          transform: "https://{value}"
+        sync: false   # set manually in dashboard: https://codelearn-api.onrender.com
     routes:
       - type: rewrite
         source: /*

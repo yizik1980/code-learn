@@ -72,6 +72,16 @@ const writeLimiter = rateLimit({
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
+// GET /api/health
+app.get('/api/health', async (_req, res) => {
+  try {
+    const { rows } = await pool.query('SELECT NOW() AS time')
+    res.json({ status: 'ok', db: 'ok', time: rows[0].time })
+  } catch {
+    res.status(503).json({ status: 'error', db: 'unreachable' })
+  }
+})
+
 // GET /api/notes?courseId=&lessonId=&userToken=
 app.get('/api/notes', validateGetNotes, async (req, res, next) => {
   try {
