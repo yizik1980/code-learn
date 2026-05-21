@@ -85,12 +85,10 @@ app.get('/api/health', async (_req, res) => {
 // GET /api/notes?courseId=&lessonId=&userToken=
 app.get('/api/notes', async (req, res, next) => {
   try {
-    const { courseId, lessonId, userToken } = req.query
     const { rows } = await pool.query(
       `SELECT id, content, created_at
        FROM notes
-       ORDER BY created_at ASC`,
-      [userToken, courseId, lessonId],
+       ORDER BY created_at ASC`
     )
     res.json(rows)
   } catch (err) {
