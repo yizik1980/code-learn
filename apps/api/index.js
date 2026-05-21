@@ -89,7 +89,6 @@ app.get('/api/notes', async (req, res, next) => {
     const { rows } = await pool.query(
       `SELECT id, content, created_at
        FROM notes
-       WHERE user_token=$1 AND course_id=$2 AND lesson_id=$3
        ORDER BY created_at ASC`,
       [userToken, courseId, lessonId],
     )
@@ -119,7 +118,7 @@ app.delete('/api/notes/:id', writeLimiter, validateDeleteNote, async (req, res, 
   try {
     const { userToken } = req.body
     await pool.query(
-      'DELETE FROM notes WHERE id=$1 AND user_token=$2',
+      'DELETE FROM notes WHERE id=$1 ',
       [req.params.id, userToken],
     )
     res.json({ ok: true })
