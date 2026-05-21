@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
+import { useParams } from 'react-router-dom'
 import { fetchNotes, createNote, deleteNote } from '../utils/notesApi'
 import { getUserToken } from '../utils/userToken'
 import type { Note } from '../utils/notesApi'
 
 interface Props {
-  courseId: string
-  lessonId: string
   color?: string
 }
 
@@ -16,7 +15,8 @@ function formatDate(iso: string) {
   })
 }
 
-export default function NoteBox({ courseId, lessonId, color = '#10b981' }: Props) {
+export default function NoteBox({ color = '#10b981' }: Props) {
+  const { courseId = 'general', lessonId = '_index' } = useParams<{ courseId?: string; lessonId?: string }>()
   const userToken = getUserToken()
   const [notes, setNotes] = useState<Note[]>([])
   const [text, setText] = useState('')

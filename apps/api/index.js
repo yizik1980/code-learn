@@ -83,7 +83,7 @@ app.get('/api/health', async (_req, res) => {
 })
 
 // GET /api/notes?courseId=&lessonId=&userToken=
-app.get('/api/notes', validateGetNotes, async (req, res, next) => {
+app.get('/api/notes', async (req, res, next) => {
   try {
     const { courseId, lessonId, userToken } = req.query
     const { rows } = await pool.query(

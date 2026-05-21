@@ -6,6 +6,7 @@ import LessonContent from '../../components/LessonContent'
 import QuizDialog from '../../components/QuizDialog'
 import LangToggle from '../../components/LangToggle'
 import NoteBox from '../../components/NoteBox'
+import { LESSON_MESSAGES } from '../../constants/messages'
 
 export default function CourseLesson() {
   useSignals()
@@ -28,7 +29,7 @@ export default function CourseLesson() {
         className="min-h-screen flex items-center justify-center font-black"
         style={{ background: '#fef9f0', color: '#1c1c2e', fontSize: '1.5rem' }}
       >
-        שיעור לא נמצא
+        {LESSON_MESSAGES.notFound}
       </div>
     )
   }
@@ -92,7 +93,7 @@ export default function CourseLesson() {
                 fontSize: '1rem',
               }}
             >
-              ✓ הושלם · {prog.score}/{prog.total} נקודות
+              {LESSON_MESSAGES.completed} · {prog.score}/{prog.total} {LESSON_MESSAGES.points}
             </div>
           )}
         </div>
@@ -101,7 +102,7 @@ export default function CourseLesson() {
         <LessonContent blocks={lesson.content} />
 
         {/* Notes */}
-        <NoteBox courseId={course.id} lessonId={lesson.id} color={course.color} />
+        <NoteBox color={course.color} />
 
         {/* Quiz */}
         <QuizDialog
@@ -126,7 +127,7 @@ export default function CourseLesson() {
             >
               <span style={{ fontSize: '1.2rem' }}>→</span>
               <div className="text-right">
-                <div style={{ fontSize: '0.8rem', color: '#8080a0' }}>שיעור קודם</div>
+                <div style={{ fontSize: '0.8rem', color: '#8080a0' }}>{LESSON_MESSAGES.prevLesson}</div>
                 <div className="font-bold" style={{ fontSize: '0.95rem' }}>{prevLesson.title}</div>
               </div>
             </button>
@@ -141,7 +142,7 @@ export default function CourseLesson() {
               style={{ background: course.color, color: '#fff' }}
             >
               <div className="text-left">
-                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)' }}>שיעור הבא</div>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.75)' }}>{LESSON_MESSAGES.nextLesson}</div>
                 <div className="font-bold" style={{ fontSize: '0.95rem' }}>{nextLesson.title}</div>
               </div>
               <span style={{ fontSize: '1.2rem' }}>←</span>
@@ -153,8 +154,8 @@ export default function CourseLesson() {
               style={{ background: '#f59e0b', color: '#1c1c2e' }}
             >
               <div className="text-left">
-                <div style={{ fontSize: '0.8rem', color: '#7a6a30' }}>סיימת את הקורס!</div>
-                <div className="font-bold" style={{ fontSize: '0.95rem' }}>חזרה לסיכום</div>
+                <div style={{ fontSize: '0.8rem', color: '#7a6a30' }}>{LESSON_MESSAGES.courseFinished}</div>
+                <div className="font-bold" style={{ fontSize: '0.95rem' }}>{LESSON_MESSAGES.backToSummary}</div>
               </div>
               <span style={{ fontSize: '1.5rem' }}>🏆</span>
             </button>
