@@ -1,8 +1,8 @@
 require('dotenv').config()
 const express = require('express')
-const cors = require('cors')
 const helmet = require('helmet')
 const { initDb } = require('./db')
+const { applyCors } = require('./middleware/cors')
 const { globalLimiter } = require('./middleware/rateLimiter')
 const healthRouter = require('./routes/health')
 const notesRouter = require('./routes/notes')
@@ -20,21 +20,7 @@ app.use(helmet())
 
 // ─── CORS ─────────────────────────────────────────────────────────────────────
 
-const ALLOWED = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173')
-  .split(',')
-  .map((o) => o.trim())
-
-app.use(
-  cors({
-    origin(origin, cb) {
-      if (!origin && !isProd) return cb(null, true)
-      if (ALLOWED.includes(origin)) return cb(null, true)
-      cb(new Error(`CORS: origin '${origin}' not allowed`))
-    },
-    methods: ['GET', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type'],
-  }),
-)
+applyCors(app)
 
 // ─── Body parsing ─────────────────────────────────────────────────────────────
 
