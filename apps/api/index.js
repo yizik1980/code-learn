@@ -3,12 +3,16 @@ const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
+const geoip = require('geoip-lite')
 const { Pool } = require('pg')
 const { validateGetNotes, validateCreateNote, validateDeleteNote } = require('./middleware/validate')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 const isProd = process.env.NODE_ENV === 'production'
+
+// Trust Render's reverse proxy — required for correct IP in rate-limit and geo checks
+app.set('trust proxy', 1)
 
 // ─── Database ────────────────────────────────────────────────────────────────
 
@@ -70,6 +74,25 @@ const writeLimiter = rateLimit({
   message: { error: 'יותר מדי פעולות כתיבה — נסה שוב בעוד כמה דקות' },
 })
 
+// Note creation: 20 per hour per userToken (bypasses IP-rotation)
+const createNoteLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  keyGenerator: (req) => req.body?.userToken || req.ip,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'הגעת למגבלת יצירת הערות לשעה — נסה שוב מאוחר יותר' },
+})
+
+// ─── Geo-restriction — writes allowed from Israel only ───────────────────────
+
+function israelOnly(req, res, next) {
+  if (!isProd) return next()
+  const geo = geoip.lookup(req.ip)
+  if (geo?.country === 'IL') return next()
+  res.status(403).json({ error: 'שירות זה זמין בישראל בלבד' })
+}
+
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 // GET /api/health
@@ -97,7 +120,7 @@ app.get('/api/notes', async (req, res, next) => {
 })
 
 // POST /api/notes
-app.post('/api/notes', writeLimiter, validateCreateNote, async (req, res, next) => {
+app.post('/api/notes', israelOnly, writeLimiter, createNoteLimiter, validateCreateNote, async (req, res, next) => {
   try {
     const { userToken, courseId, lessonId, content } = req.body
     const { rows } = await pool.query(
@@ -112,7 +135,7 @@ app.post('/api/notes', writeLimiter, validateCreateNote, async (req, res, next) 
 })
 
 // DELETE /api/notes/:id
-app.delete('/api/notes/:id', writeLimiter, validateDeleteNote, async (req, res, next) => {
+app.delete('/api/notes/:id', israelOnly, writeLimiter, validateDeleteNote, async (req, res, next) => {
   try {
     const { userToken } = req.body
     await pool.query(
