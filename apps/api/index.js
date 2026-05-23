@@ -3,16 +3,12 @@ const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
 const rateLimit = require('express-rate-limit')
-const geoip = require('geoip-lite')
 const { Pool } = require('pg')
 const { validateGetNotes, validateCreateNote, validateDeleteNote } = require('./middleware/validate')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 const isProd = process.env.NODE_ENV === 'production'
-
-// Trust Render's reverse proxy so req.ip reflects the real client IP
-app.set('trust proxy', 1)
 
 // ─── Database ────────────────────────────────────────────────────────────────
 
@@ -74,15 +70,6 @@ const writeLimiter = rateLimit({
   message: { error: 'יותר מדי פעולות כתיבה — נסה שוב בעוד כמה דקות' },
 })
 
-// ─── Geo-restriction — writes allowed from Israel only ───────────────────────
-
-function israelOnly(req, res, next) {
-  if (!isProd) return next()                         // skip in local dev
-  const geo = geoip.lookup(req.ip)
-  if (geo?.country === 'IL') return next()
-  res.status(403).json({ error: 'שירות זה זמין בישראל בלבד' })
-}
-
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 // GET /api/health
@@ -99,9 +86,9 @@ app.get('/api/health', async (_req, res) => {
 app.get('/api/notes', async (req, res, next) => {
   try {
     const { rows } = await pool.query(
-      `SELECT top 20 id, content, created_at
+      `SELECT id, content, created_at
        FROM notes
-       ORDER BY created_at ASC`
+       ORDER BY created_at ASC`,
     )
     res.json(rows)
   } catch (err) {
@@ -110,7 +97,7 @@ app.get('/api/notes', async (req, res, next) => {
 })
 
 // POST /api/notes
-app.post('/api/notes', israelOnly, writeLimiter, validateCreateNote, async (req, res, next) => {
+app.post('/api/notes', writeLimiter, validateCreateNote, async (req, res, next) => {
   try {
     const { userToken, courseId, lessonId, content } = req.body
     const { rows } = await pool.query(
@@ -125,11 +112,11 @@ app.post('/api/notes', israelOnly, writeLimiter, validateCreateNote, async (req,
 })
 
 // DELETE /api/notes/:id
-app.delete('/api/notes/:id', israelOnly, writeLimiter, validateDeleteNote, async (req, res, next) => {
+app.delete('/api/notes/:id', writeLimiter, validateDeleteNote, async (req, res, next) => {
   try {
     const { userToken } = req.body
     await pool.query(
-      'DELETE FROM notes WHERE id=$1 ',
+      'DELETE FROM notes WHERE id=$1 AND user_token=$2',
       [req.params.id, userToken],
     )
     res.json({ ok: true })
