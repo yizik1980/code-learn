@@ -1,10 +1,13 @@
+const sanitizeHtml = require('sanitize-html')
+
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const ID_RE = /^\d{1,10}$/
 // Alphanumeric + dash/underscore only — prevents path traversal in courseId/lessonId
 const SAFE_ID_RE = /^[a-zA-Z0-9_-]{1,100}$/
 
+// Strip all HTML tags and attributes — robust against malformed/nested tag bypasses
 function stripHtml(str) {
-  return str.replace(/<[^>]*>/g, '').trim()
+  return sanitizeHtml(str, { allowedTags: [], allowedAttributes: {} }).trim()
 }
 
 function userToken(value) {
