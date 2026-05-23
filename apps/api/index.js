@@ -2,33 +2,23 @@ require('dotenv').config()
 const express = require('express')
 const cors = require('cors')
 const helmet = require('helmet')
-const rateLimit = require('express-rate-limit')
-const geoip = require('geoip-lite')
-const { Pool } = require('pg')
-const { validateGetNotes, validateCreateNote, validateDeleteNote } = require('./middleware/validate')
+const { initDb } = require('./db')
+const { globalLimiter } = require('./middleware/rateLimiter')
+const healthRouter = require('./routes/health')
+const notesRouter = require('./routes/notes')
 
 const app = express()
 const PORT = process.env.PORT || 3001
 const isProd = process.env.NODE_ENV === 'production'
 
-// Trust Render's reverse proxy — required for correct IP in rate-limit and geo checks
+// Trust Render's reverse proxy — required for correct IP in rate-limit checks
 app.set('trust proxy', 1)
 
-// ─── Database ────────────────────────────────────────────────────────────────
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL?.includes('localhost') ? false : { rejectUnauthorized: false },
-  max: 10,
-  idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 5_000,
-})
-
-// ─── Security headers (helmet) ───────────────────────────────────────────────
+// ─── Security headers ─────────────────────────────────────────────────────────
 
 app.use(helmet())
 
-// ─── CORS — whitelist only known origins ─────────────────────────────────────
+// ─── CORS ─────────────────────────────────────────────────────────────────────
 
 const ALLOWED = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173')
   .split(',')
@@ -37,7 +27,6 @@ const ALLOWED = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:5173')
 app.use(
   cors({
     origin(origin, cb) {
-      // allow server-to-server / curl in dev (no origin header)
       if (!origin && !isProd) return cb(null, true)
       if (ALLOWED.includes(origin)) return cb(null, true)
       cb(new Error(`CORS: origin '${origin}' not allowed`))
@@ -47,139 +36,34 @@ app.use(
   }),
 )
 
-// ─── Body parsing — hard limit to prevent large-payload attacks ───────────────
+// ─── Body parsing ─────────────────────────────────────────────────────────────
 
 app.use(express.json({ limit: '10kb' }))
 
 // ─── Rate limiting ────────────────────────────────────────────────────────────
 
-// Global: 200 requests per 15 min per IP
-app.use(
-  '/api',
-  rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 200,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { error: 'יותר מדי בקשות — נסה שוב בעוד כמה דקות' },
-  }),
-)
-
-// Write operations: stricter — 30 per 15 min per IP
-const writeLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 30,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'יותר מדי פעולות כתיבה — נסה שוב בעוד כמה דקות' },
-})
-
-// Note creation: 20 per hour per userToken (bypasses IP-rotation)
-const createNoteLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 20,
-  keyGenerator: (req) => req.body?.userToken || req.ip,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'הגעת למגבלת יצירת הערות לשעה — נסה שוב מאוחר יותר' },
-})
-
-// ─── Geo-restriction — writes allowed from Israel only ───────────────────────
-
-function israelOnly(req, res, next) {
-  if (!isProd) return next()
-  const geo = geoip.lookup(req.ip)
-  if (geo?.country === 'IL') return next()
-  res.status(403).json({ error: 'שירות זה זמין בישראל בלבד' })
-}
+app.use('/api', globalLimiter)
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
-// GET /api/health
-app.get('/api/health', async (_req, res) => {
-  try {
-    const { rows } = await pool.query('SELECT NOW() AS time')
-    res.json({ status: 'ok', db: 'ok', time: rows[0].time })
-  } catch {
-    res.status(503).json({ status: 'error', db: 'unreachable' })
-  }
-})
-
-// GET /api/notes?courseId=&lessonId=&userToken=
-app.get('/api/notes', async (req, res, next) => {
-  try {
-    const { rows } = await pool.query(
-      `SELECT id, content, created_at
-       FROM notes
-       ORDER BY created_at ASC`,
-    )
-    res.json(rows)
-  } catch (err) {
-    next(err)
-  }
-})
-
-// POST /api/notes
-app.post('/api/notes', israelOnly, writeLimiter, createNoteLimiter, validateCreateNote, async (req, res, next) => {
-  try {
-    const { userToken, courseId, lessonId, content } = req.body
-    const { rows } = await pool.query(
-      `INSERT INTO notes (user_token, course_id, lesson_id, content)
-       VALUES ($1, $2, $3, $4) RETURNING id, content, created_at`,
-      [userToken, courseId, lessonId, content],
-    )
-    res.status(201).json(rows[0])
-  } catch (err) {
-    next(err)
-  }
-})
-
-// DELETE /api/notes/:id
-app.delete('/api/notes/:id', israelOnly, writeLimiter, validateDeleteNote, async (req, res, next) => {
-  try {
-    const { userToken } = req.body
-    await pool.query(
-      'DELETE FROM notes WHERE id=$1 AND user_token=$2',
-      [req.params.id, userToken],
-    )
-    res.json({ ok: true })
-  } catch (err) {
-    next(err)
-  }
-})
+app.use('/api', healthRouter)
+app.use('/api/notes', notesRouter)
 
 // ─── 404 ─────────────────────────────────────────────────────────────────────
 
 app.use((_req, res) => res.status(404).json({ error: 'not found' }))
 
-// ─── Global error handler — never leak stack traces to client ─────────────────
+// ─── Global error handler ─────────────────────────────────────────────────────
 
 app.use((err, _req, res, _next) => {
   const status = err.status ?? 500
   if (!isProd) console.error(err)
-  // In production only log, never expose internals
   if (isProd && status === 500) console.error('[error]', err.message)
   res.status(status).json({ error: isProd && status === 500 ? 'שגיאת שרת' : err.message })
 })
 
-// ─── Init ─────────────────────────────────────────────────────────────────────
+// ─── Start ────────────────────────────────────────────────────────────────────
 
-async function init() {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS notes (
-      id         SERIAL PRIMARY KEY,
-      user_token TEXT NOT NULL,
-      course_id  TEXT NOT NULL,
-      lesson_id  TEXT NOT NULL,
-      content    TEXT NOT NULL,
-      created_at TIMESTAMPTZ DEFAULT NOW()
-    );
-    CREATE INDEX IF NOT EXISTS notes_lookup
-      ON notes (user_token, course_id, lesson_id);
-  `)
-  console.log('DB ready')
-}
-
-init()
+initDb()
   .then(() => app.listen(PORT, () => console.log(`API listening on :${PORT}`)))
   .catch((err) => { console.error('DB init failed', err); process.exit(1) })
