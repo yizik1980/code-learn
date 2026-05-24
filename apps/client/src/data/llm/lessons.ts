@@ -238,6 +238,88 @@ server.tool(
 const transport = new StdioServerTransport()
 await server.connect(transport)`,
       },
+      { type: 'heading', text: 'JSON-RPC over stdio ו-SSE' },
+      {
+        type: 'text',
+        text: 'MCP מבוסס על JSON-RPC 2.0 — פרוטוקול קריאה לפונקציות מרוחקות בפורמט JSON. כל הודעה היא אובייקט JSON עם שדות קבועים. MCP תומך בשני transport layers:',
+      },
+      {
+        type: 'table',
+        caption: 'stdio לעומת SSE',
+        headers: ['תכונה', 'stdio', 'SSE (HTTP)'],
+        rows: [
+          ['שימוש', 'תהליך מקומי (Claude Desktop, IDE)', 'שרת מרוחק / web'],
+          ['אופן חיבור', 'Host מריץ את ה-server כ-subprocess', 'HTTP GET לנקודת /sse'],
+          ['כיוון נתונים', 'stdin/stdout דו-כיווני', 'SSE מ-server + POST מ-client'],
+          ['אבטחה', 'מוגן ע"י OS (process isolation)', 'דורש auth כי חשוף לרשת'],
+          ['latency', 'נמוך מאוד (IPC)', 'תלוי רשת'],
+        ],
+      },
+      {
+        type: 'code',
+        lang: 'text',
+        caption: 'פורמט JSON-RPC 2.0 — מה עובר בין Host ל-Server',
+        code: `// Host → Server: בקשה להפעיל tool
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "get_lesson_notes",
+    "arguments": {
+      "courseId": "sql",
+      "lessonId": "sql-join",
+      "userToken": "abc-123"
+    }
+  }
+}
+
+// Server → Host: תשובה
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "content": [{ "type": "text", "text": "הערה: JOIN מחבר טבלאות לפי תנאי" }]
+  }
+}
+
+// Host ← Server: Notification (ללא id — לא מצפה לתשובה)
+{
+  "jsonrpc": "2.0",
+  "method": "notifications/tools/list_changed"
+}`,
+      },
+      {
+        type: 'code',
+        lang: 'typescript',
+        caption: 'SSE Transport — חשיפת MCP Server דרך HTTP',
+        code: `import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js'
+import express from 'express'
+
+const app = express()
+const server = new McpServer({ name: 'codelearn-remote', version: '1.0.0' })
+
+// ... הגדרת tools כרגיל ...
+
+// נקודת כניסה SSE — ה-Host מתחבר כאן
+app.get('/sse', async (req, res) => {
+  const transport = new SSEServerTransport('/messages', res)
+  await server.connect(transport)
+})
+
+// ה-Host שולח בקשות JSON-RPC לכאן
+app.post('/messages', express.json(), async (req, res) => {
+  // ה-SDK מטפל בנתב ומחזיר תשובה
+  await transport.handlePostMessage(req, res)
+})
+
+app.listen(3002, () => console.log('MCP SSE server on :3002'))`,
+      },
+      {
+        type: 'tip',
+        text: 'stdio = מושלם לפיתוח מקומי עם Claude Desktop. SSE = לחשיפת MCP Server כ-API מרוחק שניתן לגשת אליו מהאינטרנט. בשניהם פורמט ה-JSON-RPC זהה לחלוטין.',
+      },
       { type: 'heading', text: 'הגדרת מספר Tools' },
       {
         type: 'code',
