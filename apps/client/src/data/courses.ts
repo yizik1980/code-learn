@@ -4,6 +4,8 @@ import { tsLessons } from './ts/lessons'
 import { reactLessons } from './react_course/lessons'
 import { cloudLessons } from './cloud/lessons'
 import { devopsLessons } from './devops/lessons'
+import { llmLessons } from './llm/lessons'
+import { csharpLessons } from './csharp/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -43,16 +45,7 @@ export const courses: Course[] = [
     gradient: 'from-cyan-500 to-blue-600',
     lessons: reactLessons,
   },
-  {
-    id: 'python',
-    title: 'Python',
-    description: 'שפת תכנות רב-תכליתית — מדעי נתונים, ווב ואוטומציה',
-    emoji: '🐍',
-    color: '#3b82f6',
-    gradient: 'from-blue-500 to-cyan-600',
-    lessons: [],
-    comingSoon: true,
-  },
+
   {
     id: 'cloud',
     title: 'תחזוק בענן',
@@ -70,5 +63,23 @@ export const courses: Course[] = [
     color: '#f97316',
     gradient: 'from-orange-500 to-red-600',
     lessons: devopsLessons,
+  },
+  {
+    id: 'csharp',
+    title: 'C# & .NET',
+    description: 'C# 12/13, ASP.NET Core, EF Core, ביצועים ו-.NET מודרני',
+    emoji: '🔷',
+    color: '#512bd4',
+    gradient: 'from-purple-600 to-violet-800',
+    lessons: csharpLessons,
+  },
+  {
+    id: 'llm',
+    title: 'LLM & MCP',
+    description: 'חיבור מערכות קיימות ל-AI — Claude API, MCP Server, Tool Use ב-Node.js ו-C#',
+    emoji: '🤖',
+    color: '#8b5cf6',
+    gradient: 'from-violet-500 to-purple-700',
+    lessons: llmLessons,
   },
 ]
