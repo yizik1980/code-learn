@@ -3,9 +3,8 @@ import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress } from '../../signals/progress'
 import { courses } from '../../data/courses'
 import LessonContent from '../../components/LessonContent'
-import QuizDialog from '../../components/QuizDialog'
-import LangToggle from '../../components/LangToggle'
-import NoteBox from '../../components/NoteBox'
+import QuizDialog from '../../components/QuizDialog';
+import NoteBox from '../../components/NoteBox';
 import { LESSON_MESSAGES } from '../../constants/messages'
 
 export default function CourseLesson() {
@@ -68,7 +67,6 @@ export default function CourseLesson() {
           >
             {lessonIdx + 1} / {course.lessons.length}
           </span>
-          <LangToggle />
         </div>
       </nav>
 

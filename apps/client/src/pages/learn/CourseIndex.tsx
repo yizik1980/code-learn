@@ -2,7 +2,6 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress, getCourseStats } from '../../signals/progress'
 import { courses } from '../../data/courses'
-import LangToggle from '../../components/LangToggle'
 import NoteBox from '../../components/NoteBox'
 
 export default function CourseIndex() {
@@ -34,7 +33,6 @@ export default function CourseIndex() {
           >
             → חזרה לדף הבית
           </Link>
-          <LangToggle />
         </div>
 
         {/* Hero */}

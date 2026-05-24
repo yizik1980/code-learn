@@ -2,7 +2,6 @@ import { useSignals } from '@preact/signals-react/runtime'
 import { globalStatsSignal } from '../signals/progress'
 import { courses } from '../data/courses'
 import CourseCard from '../components/CourseCard'
-import LangToggle from '../components/LangToggle'
 
 export default function Home() {
   useSignals()
@@ -10,7 +9,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen" style={{ background: '#fef9f0' }}>
-      {/* Decorative dots background */}
       <div
         className="absolute inset-0 pointer-events-none opacity-30"
         style={{
