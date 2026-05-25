@@ -6,6 +6,8 @@ import { cloudLessons } from './cloud/lessons'
 import { devopsLessons } from './devops/lessons'
 import { llmLessons } from './llm/lessons'
 import { csharpLessons } from './csharp/lessons'
+import { testingLessons } from './testing/lessons'
+import { angularLessons } from './angular/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -65,6 +67,15 @@ export const courses: Course[] = [
     lessons: devopsLessons,
   },
   {
+    id: 'testing',
+    title: 'Unit & Integration Tests',
+    description: 'Jest, Vitest, React Testing Library, Supertest ו-xUnit — בדיקות אוטומטיות מ-unit ועד API',
+    emoji: '🧪',
+    color: '#10b981',
+    gradient: 'from-emerald-500 to-green-700',
+    lessons: testingLessons,
+  },
+  {
     id: 'csharp',
     title: 'C# & .NET',
     description: 'C# 12/13, ASP.NET Core, EF Core, ביצועים ו-.NET מודרני',
@@ -72,6 +83,15 @@ export const courses: Course[] = [
     color: '#512bd4',
     gradient: 'from-purple-600 to-violet-800',
     lessons: csharpLessons,
+  },
+  {
+    id: 'angular',
+    title: 'Angular',
+    description: 'Framework מלא — Components, Services, Routing, Forms ו-Signals',
+    emoji: '🅰️',
+    color: '#dd0031',
+    gradient: 'from-red-600 to-rose-700',
+    lessons: angularLessons,
   },
   {
     id: 'llm',
