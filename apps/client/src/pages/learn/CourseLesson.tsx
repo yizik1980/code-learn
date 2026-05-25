@@ -6,6 +6,7 @@ import LessonContent from '../../components/LessonContent'
 import QuizDialog from '../../components/QuizDialog';
 import NoteBox from '../../components/NoteBox';
 import { LESSON_MESSAGES } from '../../constants/messages'
+import { useLessonEntrance } from '../../hooks/useLessonEntrance'
 
 export default function CourseLesson() {
   useSignals()
@@ -13,6 +14,10 @@ export default function CourseLesson() {
   const navigate = useNavigate()
 
   const course = courses.find((c) => c.id === courseId)
+
+  // must be called before early returns (Rules of Hooks)
+  useLessonEntrance(course?.color ?? '#6366f1')
+
   if (!course || course.comingSoon) return <Navigate to="/" replace />
 
   const lessonIdx = course.lessons.findIndex((l) => l.id === lessonId)
