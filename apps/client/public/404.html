@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      // SPA fallback: encode the current path into the redirect URL
+      // index.html reads it back and restores the URL before React boots
+      var path = location.pathname + location.search
+      var encoded = encodeURIComponent(path)
+      location.replace('/?p=' + encoded)
+    </script>
+  </head>
+  <body></body>
+</html>

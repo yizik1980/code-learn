@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeLearn - ללמוד לתכנת בעברית | SQL, Python, JavaScript</title>
+    <title>CodeLearn - ללמוד לתכנת בעברית | SQL, JavaScript, TypeScript, React, Angular, C#</title>
     <meta
       name="description"
-      content="CodeLearn — פלטפורמת לימוד שפות תכנות בעברית. שיעורים מסבירים, גופן גדול, שאלות לאורך הדרך. SQL, Python, JavaScript ועוד. חינמי לחלוטין."
+      content="CodeLearn — פלטפורמת לימוד תכנות בעברית. קורסים ב-SQL, JavaScript, TypeScript, React, Angular, C# .NET, Linux, DevOps, בדיקות אוטומטיות ו-AI. שיעורים עם שאלות ומשוב מיידי. חינמי לחלוטין."
     />
     <meta
       name="keywords"
-      content="לימוד תכנות עברית, SQL עברית, Python עברית, JavaScript עברית, קורס SQL חינם, ללמוד SQL, שפות תכנות, קורסי תכנות, מדריך SQL"
+      content="לימוד תכנות עברית, קורסי תכנות עברית, SQL עברית, JavaScript עברית, TypeScript עברית, React עברית, Angular עברית, C# עברית, NET עברית, לימוד Angular, לימוד React, לימוד TypeScript, קורס SQL חינם, ללמוד SQL, Linux עברית, DevOps עברית, Docker עברית, CI/CD עברית, AWS עברית, בדיקות אוטומטיות עברית, unit tests עברית, Jest עברית, Vitest, xUnit, LLM עברית, MCP, Claude API, AI תכנות, מדריך תכנות עברית, שפות תכנות"
     />
     <meta name="author" content="CodeLearn" />
     <meta name="robots" content="index, follow" />
@@ -21,7 +21,7 @@
     <meta property="og:title" content="CodeLearn - ללמוד לתכנת בעברית" />
     <meta
       property="og:description"
-      content="קורסי תכנות בעברית — SQL, Python, JavaScript. שיעורים קלים להבנה עם שאלות לאורך הדרך. חינמי."
+      content="קורסי תכנות בעברית — SQL, JavaScript, TypeScript, React, Angular, C# .NET, Linux, DevOps, בדיקות אוטומטיות ו-AI. שיעורים קלים עם שאלות ומשוב מיידי. חינמי."
     />
     <meta property="og:locale" content="he_IL" />
 
@@ -30,7 +30,7 @@
     <meta name="twitter:title" content="CodeLearn - ללמוד לתכנת בעברית" />
     <meta
       name="twitter:description"
-      content="קורסי תכנות בעברית — SQL, Python, JavaScript. שיעורים קלים עם שאלות וניקוד."
+      content="קורסי תכנות בעברית — SQL, JavaScript, TypeScript, React, Angular, C# .NET, Linux, DevOps, בדיקות ו-AI. שיעורים קלים עם שאלות וניקוד. חינמי."
     />
 
     <!-- Canonical -->
@@ -60,6 +60,13 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Restore path that was encoded by 404.html before React Router boots
+      (function () {
+        var p = new URLSearchParams(location.search).get('p')
+        if (p) history.replaceState(null, '', decodeURIComponent(p))
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
