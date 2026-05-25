@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Quiz from './Quiz'
 import type { Question, LessonProgress } from '../types'
+import { playQuizSuccess, fireQuizConfetti } from '../utils/celebration'
 
 interface Props {
   questions: Question[]
@@ -154,7 +155,13 @@ export default function QuizDialog({ questions, courseId, lessonId, progress, co
                 questions={questions}
                 courseId={courseId}
                 lessonId={lessonId}
-                onComplete={() => {}}
+                onComplete={(score, total) => {
+                  playQuizSuccess(score, total)
+                  fireQuizConfetti(color, score, total)
+                  if (score === total) {
+                    setTimeout(() => setOpen(false), 1800)
+                  }
+                }}
                 onStep={() => scrollRef.current?.scrollTo({ top: 0, behavior: 'instant' })}
                 embedded
               />
