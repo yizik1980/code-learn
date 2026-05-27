@@ -8,6 +8,7 @@ import { llmLessons } from './llm/lessons'
 import { csharpLessons } from './csharp/lessons'
 import { testingLessons } from './testing/lessons'
 import { angularLessons } from './angular/lessons'
+import { patternsLessons } from './patterns/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -92,6 +93,15 @@ export const courses: Course[] = [
     color: '#dd0031',
     gradient: 'from-red-600 to-rose-700',
     lessons: angularLessons,
+  },
+  {
+    id: 'patterns',
+    title: 'SOLID & Design Patterns',
+    description: 'SOLID, Creational, Structural ו-Behavioral Patterns, Event-Driven Architecture, CQRS ו-Event Sourcing',
+    emoji: '🏛️',
+    color: '#0891b2',
+    gradient: 'from-cyan-600 to-teal-700',
+    lessons: patternsLessons,
   },
   {
     id: 'llm',
