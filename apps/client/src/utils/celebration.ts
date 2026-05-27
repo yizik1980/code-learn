@@ -19,7 +19,7 @@ function playNotes(notes: { freq: number; start: number; dur: number; vol?: numb
       osc.start(t)
       osc.stop(t + dur)
     })
-    setTimeout(() => ctx.close(), notes.at(-1)!.start * 1000 + 900)
+    setTimeout(() => ctx.close(), notes[notes.length - 1].start * 1000 + 900)
   } catch {
     // AudioContext not available
   }
