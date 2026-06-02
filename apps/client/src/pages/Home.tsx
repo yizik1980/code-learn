@@ -1,11 +1,23 @@
 import { useSignals } from '@preact/signals-react/runtime'
 import { globalStatsSignal } from '../signals/progress'
+import { userNameSignal } from '../signals/userName'
 import { courses } from '../data/courses'
 import CourseCard from '../components/CourseCard'
+
+function getTimeGreeting(name: string): string {
+  const hour = new Date().getHours()
+  let greeting: string
+  if (hour >= 5 && hour < 12) greeting = 'בוקר טוב'
+  else if (hour >= 12 && hour < 17) greeting = 'צהריים טובים'
+  else if (hour >= 17 && hour < 21) greeting = 'ערב טוב'
+  else greeting = 'לילה טוב'
+  return name ? `${greeting}, ${name}!` : `${greeting}!`
+}
 
 export default function Home() {
   useSignals()
   const stats = globalStatsSignal.value
+  const name = userNameSignal.value
 
   return (
     <div className="min-h-screen" style={{ background: '#fef9f0' }}>
@@ -44,8 +56,15 @@ export default function Home() {
           </h1>
 
           <p
-            className="max-w-xl mx-auto leading-relaxed"
-            style={{ color: '#5a5a72', fontSize: '1.2rem' }}
+            className="max-w-xl mx-auto leading-relaxed font-bold"
+            style={{ color: '#1c1c2e', fontSize: '1.3rem' }}
+          >
+            {getTimeGreeting(name)}
+          </p>
+
+          <p
+            className="max-w-xl mx-auto leading-relaxed mt-2"
+            style={{ color: '#5a5a72', fontSize: '1.1rem' }}
           >
             ללמוד לתכנת בצורה קלה, מהנה ועם שאלות לאורך הדרך
           </p>
