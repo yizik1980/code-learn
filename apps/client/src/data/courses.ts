@@ -9,6 +9,7 @@ import { csharpLessons } from './csharp/lessons'
 import { testingLessons } from './testing/lessons'
 import { angularLessons } from './angular/lessons'
 import { patternsLessons } from './patterns/lessons'
+import { architectureLessons } from './architecture/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -102,6 +103,15 @@ export const courses: Course[] = [
     color: '#0891b2',
     gradient: 'from-cyan-600 to-teal-700',
     lessons: patternsLessons,
+  },
+  {
+    id: 'architecture',
+    title: 'Software Architecture',
+    description: 'ארכיטקטורת תוכנה — מונוליט, מיקרוסרביסים, DDD, CQRS, Scalability ו-Security',
+    emoji: '🏗️',
+    color: '#0f766e',
+    gradient: 'from-teal-600 to-emerald-800',
+    lessons: architectureLessons,
   },
   {
     id: 'llm',
