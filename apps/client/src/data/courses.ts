@@ -1,3 +1,4 @@
+import { pythonLessons } from './python/lessons'
 import { sqlLessons } from './sql/lessons'
 import { jsLessons } from './js/lessons'
 import { tsLessons } from './ts/lessons'
@@ -13,6 +14,15 @@ import { architectureLessons } from './architecture/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
+  {
+    id: 'python',
+    title: 'Python',
+    description: 'שפת הבינה המלאכותית — משתנים, פונקציות, רשימות, קבצים ועוד',
+    emoji: '🐍',
+    color: '#3b82f6',
+    gradient: 'from-blue-500 to-indigo-600',
+    lessons: pythonLessons,
+  },
   {
     id: 'sql',
     title: 'SQL',

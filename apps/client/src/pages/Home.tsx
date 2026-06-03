@@ -29,59 +29,55 @@ export default function Home() {
         }}
       />
 
-      <div className="relative max-w-5xl mx-auto px-6 py-14">
-        {/* Header */}
-        <header className="text-center mb-14">
-          <div className="text-6xl mb-4">👨‍💻</div>
-
-          <h1
-            className="font-black mb-3 leading-tight"
-            style={{ fontSize: '3.5rem', color: '#1c1c2e' }}
+      {/* Top bar */}
+      <header
+        className="sticky top-0 z-40 flex items-center justify-between px-6"
+        style={{
+          height: 52,
+          background: '#1c1c2e',
+          borderBottom: '2px solid #1c1c2e',
+          boxShadow: '0 2px 0 #10b981',
+        }}
+      >
+        <div className="flex items-center gap-2">
+          <span>👨‍💻</span>
+          <span className="font-black text-white text-lg leading-none">Code</span>
+          <span
+            className="font-black text-sm px-2 py-0.5 leading-none"
+            style={{
+              background: '#10b981',
+              color: '#fff',
+              border: '2px solid #10b981',
+              borderRadius: 8,
+            }}
           >
-            Code
+            Learn
+          </span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {name && (
+            <span className="text-sm font-bold" style={{ color: '#a0998c' }}>
+              {getTimeGreeting(name)}
+            </span>
+          )}
+          {stats.totalMax > 0 && (
             <span
+              className="flex items-center gap-1 text-sm font-black px-3 py-1"
               style={{
-                color: '#fff',
-                background: '#10b981',
-                border: '2px solid #1c1c2e',
-                boxShadow: '4px 4px 0 #1c1c2e',
-                borderRadius: 12,
-                padding: '0 12px',
-                marginRight: 6,
-                display: 'inline-block',
+                background: '#fef9f0',
+                color: '#1c1c2e',
+                border: '2px solid #10b981',
+                borderRadius: 8,
               }}
             >
-              Learn
+              ⭐ <span style={{ color: '#f59e0b' }}>{stats.totalScore}</span>/{stats.totalMax}
             </span>
-          </h1>
-
-          <p
-            className="max-w-xl mx-auto leading-relaxed font-bold"
-            style={{ color: '#1c1c2e', fontSize: '1.3rem' }}
-          >
-            {getTimeGreeting(name)}
-          </p>
-
-          <p
-            className="max-w-xl mx-auto leading-relaxed mt-2"
-            style={{ color: '#5a5a72', fontSize: '1.1rem' }}
-          >
-            ללמוד לתכנת בצורה קלה, מהנה ועם שאלות לאורך הדרך
-          </p>
-
-          {stats.totalMax > 0 && (
-            <div
-              className="inline-flex items-center gap-2 mt-5 px-5 py-2 brutal-card-sm"
-              style={{ fontSize: '1.1rem', color: '#1c1c2e' }}
-            >
-              ⭐ הצברת{' '}
-              <span className="font-black" style={{ color: '#f59e0b' }}>
-                {stats.totalScore}/{stats.totalMax}
-              </span>{' '}
-              נקודות
-            </div>
           )}
-        </header>
+        </div>
+      </header>
+
+      <div className="relative max-w-5xl mx-auto px-6 py-10">
 
         {/* Section title */}
         <div className="flex items-center gap-4 mb-7">
