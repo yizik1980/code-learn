@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#1c1c2e"/>
+  <rect x="56" y="56" width="400" height="400" rx="72" fill="#1c1c2e"/>
+  <!-- Code brackets -->
+  <text x="256" y="300" font-family="monospace" font-size="220" font-weight="bold"
+        text-anchor="middle" fill="#10b981">&lt;/&gt;</text>
+</svg>
