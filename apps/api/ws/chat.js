@@ -29,6 +29,7 @@ function createChatServer(httpServer) {
         text,
         userId: String(parsed.userId ?? 'anon').slice(0, 64),
         name: String(parsed.name ?? 'אנונימי').slice(0, 30),
+        avatar: String(parsed.avatar ?? '🐶').slice(0, 8),
         at: Date.now(),
       })
 
