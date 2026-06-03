@@ -83,7 +83,25 @@ export default function ChatWidget() {
   const userName = userData.name || 'אנונימי'
   const myAvatar = userAvatarSignal.value
 
-  useEffect(() => { getMessages().then(setMessages) }, [])
+  useEffect(() => {
+    getMessages().then((msgs) => {
+      setMessages(msgs)
+      if (!localStorage.getItem('cl_welcomed')) {
+        localStorage.setItem('cl_welcomed', '1')
+        const welcome: ChatMessage = {
+          id: 'welcome-' + Date.now(),
+          text: 'ברוך בואך לאתר יחודי שמשתדל להתייעל כל יום 🙌\nאם יש איזה נושא או תת-נושא שהיית רוצה לעדכן — אשמח אם תשאיר הודעה בצ\'אט!',
+          userId: 'system',
+          name: 'צוות CodeLearn',
+          avatar: '👨‍💻',
+          at: Date.now(),
+          direction: 'in',
+        }
+        addMessage(welcome)
+        setMessages((prev) => [...prev, welcome])
+      }
+    })
+  }, [])
 
   useEffect(() => { requestNotificationPermission() }, [])
 
