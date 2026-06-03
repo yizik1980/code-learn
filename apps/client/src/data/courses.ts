@@ -3,6 +3,7 @@ import { sqlLessons } from './sql/lessons'
 import { jsLessons } from './js/lessons'
 import { tsLessons } from './ts/lessons'
 import { reactLessons } from './react_course/lessons'
+import { reactNativeLessons } from './react_native/lessons'
 import { cloudLessons } from './cloud/lessons'
 import { devopsLessons } from './devops/lessons'
 import { llmLessons } from './llm/lessons'
@@ -60,6 +61,15 @@ export const courses: Course[] = [
     lessons: reactLessons,
   },
 
+  {
+    id: 'react-native',
+    title: 'React Native',
+    description: 'בניית אפליקציות מובייל ל-iOS ו-Android עם React — מ-Hello World עד פרסום בחנות',
+    emoji: '📱',
+    color: '#0ea5e9',
+    gradient: 'from-sky-500 to-blue-600',
+    lessons: reactNativeLessons,
+  },
   {
     id: 'cloud',
     title: 'תחזוק בענן',
