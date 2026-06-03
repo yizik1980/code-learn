@@ -6,6 +6,7 @@ import CourseIndex from './pages/learn/CourseIndex'
 import CourseLesson from './pages/learn/CourseLesson'
 import ScrollToTop from './components/ScrollToTop'
 import NamePromptModal from './components/NamePromptModal'
+import ChatWidget from './components/ChatWidget'
 import { userNameSignal } from './signals/userName'
 
 export default function App() {
@@ -17,6 +18,7 @@ export default function App() {
     <BrowserRouter>
       <ScrollToTop />
       {showModal && <NamePromptModal onClose={() => setDismissed(true)} />}
+      <ChatWidget />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/learn/:courseId" element={<CourseIndex />} />

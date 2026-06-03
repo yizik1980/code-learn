@@ -1,9 +1,11 @@
 require('dotenv').config()
+const http = require('http')
 const express = require('express')
 const helmet = require('helmet')
 const { initDb } = require('./db')
 const { applyCors } = require('./middleware/cors')
 const { globalLimiter } = require('./middleware/rateLimiter')
+const { createChatServer } = require('./ws/chat')
 const healthRouter = require('./routes/health')
 const notesRouter = require('./routes/notes')
 
@@ -50,6 +52,9 @@ app.use((err, _req, res, _next) => {
 
 // ─── Start ────────────────────────────────────────────────────────────────────
 
+const httpServer = http.createServer(app)
+createChatServer(httpServer)
+
 initDb()
-  .then(() => app.listen(PORT, () => console.log(`API listening on :${PORT}`)))
+  .then(() => httpServer.listen(PORT, () => console.log(`API listening on :${PORT}`)))
   .catch((err) => { console.error('DB init failed', err); process.exit(1) })
