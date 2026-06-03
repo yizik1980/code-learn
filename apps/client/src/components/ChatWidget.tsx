@@ -54,6 +54,17 @@ function playReceive() {
   })
 }
 
+function requestNotificationPermission() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission()
+  }
+}
+
+function sendDesktopNotification(name: string, avatar: string, text: string) {
+  if (!('Notification' in window) || Notification.permission !== 'granted') return
+  new Notification(`${avatar} ${name}`, { body: text, icon: '/favicon.ico' })
+}
+
 export default function ChatWidget() {
   useSignals()
   const [open, setOpen] = useState(false)
@@ -73,6 +84,8 @@ export default function ChatWidget() {
   const myAvatar = userAvatarSignal.value
 
   useEffect(() => { getMessages().then(setMessages) }, [])
+
+  useEffect(() => { requestNotificationPermission() }, [])
 
   useEffect(() => { openRef.current = open }, [open])
 
@@ -106,7 +119,10 @@ export default function ChatWidget() {
           playSend()
         } else {
           playReceive()
-          if (!openRef.current) setUnread((n) => n + 1)
+          if (!openRef.current) {
+            setUnread((n) => n + 1)
+            if (!document.hasFocus()) sendDesktopNotification(msg.name, msg.avatar, msg.text)
+          }
         }
       } catch {}
     }
@@ -199,6 +215,22 @@ export default function ChatWidget() {
               >
                 נקה
               </button>
+              <button
+                onClick={() => setOpen(false)}
+                title="סגור צ'אט"
+                className="flex items-center justify-center opacity-70 hover:opacity-100"
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#fef9f0',
+                  fontSize: 18,
+                  lineHeight: 1,
+                  padding: '0 2px',
+                }}
+              >
+                ✕
+              </button>
             </div>
 
             {/* Avatar picker dropdown */}
@@ -276,7 +308,7 @@ export default function ChatWidget() {
                       background: msg.direction === 'out' ? '#1c1c2e' : '#fff',
                       color: msg.direction === 'out' ? '#fef9f0' : '#1c1c2e',
                       border: '2px solid #1c1c2e',
-                      borderRadius: msg.direction === 'out' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
+                      borderRadius: msg.direction === 'out' ? '12px 12px 12px 4px' : '12px 12px 4px 12px',
                       boxShadow: '2px 2px 0 #1c1c2e',
                       wordBreak: 'break-word',
                     }}
