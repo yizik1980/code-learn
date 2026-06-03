@@ -2,16 +2,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getUserData } from '../utils/userStorage'
 import { userAvatarSignal, setUserAvatar } from '../signals/userName'
+import { getMessages, addMessage, clearMessages } from '../utils/chatDb'
 
-interface ChatMessage {
-  id: string
-  text: string
-  userId: string
-  name: string
-  avatar: string
-  at: number
-  direction: 'out' | 'in'
-}
+import type { ChatMessage } from '../utils/chatDb'
 
 const AVATARS = [
   '🐶','🐱','🐭','🐰','🦊','🐻','🐼','🐨','🐯','🦁',
@@ -79,6 +72,8 @@ export default function ChatWidget() {
   const userName = userData.name || 'אנונימי'
   const myAvatar = userAvatarSignal.value
 
+  useEffect(() => { getMessages().then(setMessages) }, [])
+
   useEffect(() => { openRef.current = open }, [open])
 
   // Document title
@@ -106,6 +101,7 @@ export default function ChatWidget() {
           direction: isOwn ? 'out' : 'in',
         }
         setMessages((prev) => [...prev, msg])
+        addMessage(msg)
         if (isOwn) {
           playSend()
         } else {
@@ -197,7 +193,7 @@ export default function ChatWidget() {
                 {myAvatar}
               </button>
               <button
-                onClick={() => setMessages([])}
+                onClick={() => { clearMessages(); setMessages([]) }}
                 className="text-xs opacity-60 hover:opacity-100"
                 style={{ color: '#fef9f0' }}
               >
