@@ -101,6 +101,8 @@ export default function CalendarPage() {
   const [recurUntil, setRecurUntil] = useState('')
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const [mobileSelected, setMobileSelected] = useState<{ courseId: string; duration: Duration } | null>(null)
+  const [tooltipId, setTooltipId] = useState<string | null>(null)
+  const tooltipTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     const h = () => setIsMobile(window.innerWidth < 768)
@@ -434,24 +436,62 @@ export default function CalendarPage() {
             )}
             {courses.map(course => {
               const isSelected = mobileSelected?.courseId === course.id
-              return (
+              const showTip = tooltipId === course.id
+
+              return isMobile ? (
+                // מובייל — אייקון בלבד + tooltip
                 <div
                   key={course.id}
-                  draggable={!isMobile}
-                  onDragStart={!isMobile ? () => { dragRef.current = { courseId: course.id, duration } } : undefined}
-                  onClick={isMobile ? () => setMobileSelected(isSelected ? null : { courseId: course.id, duration }) : undefined}
-                  className="flex items-center gap-2 px-2 py-2 select-none flex-shrink-0"
+                  className="relative flex-shrink-0"
+                  style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+                >
+                  {/* Tooltip */}
+                  {showTip && (
+                    <div style={{
+                      position: 'absolute', bottom: '110%', left: '50%', transform: 'translateX(-50%)',
+                      background: '#1c1c2e', color: '#fef9f0', borderRadius: 6, padding: '4px 10px',
+                      fontSize: 11, fontWeight: 700, whiteSpace: 'nowrap', zIndex: 50,
+                      pointerEvents: 'none', boxShadow: '2px 2px 0 #10b981',
+                    }}>
+                      {course.title}
+                      <div style={{ position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)', borderWidth: 5, borderStyle: 'solid', borderColor: '#1c1c2e transparent transparent transparent' }} />
+                    </div>
+                  )}
+                  <div
+                    onClick={() => setMobileSelected(isSelected ? null : { courseId: course.id, duration })}
+                    onMouseEnter={() => { if (tooltipTimer.current) clearTimeout(tooltipTimer.current); setTooltipId(course.id) }}
+                    onMouseLeave={() => { tooltipTimer.current = setTimeout(() => setTooltipId(null), 300) }}
+                    onTouchStart={() => { if (tooltipTimer.current) clearTimeout(tooltipTimer.current); setTooltipId(course.id); tooltipTimer.current = setTimeout(() => setTooltipId(null), 1500) }}
+                    className="select-none flex items-center justify-center"
+                    style={{
+                      width: 44, height: 44, borderRadius: 10, fontSize: 22,
+                      border: `2px solid ${isSelected ? course.color : '#e8e0d4'}`,
+                      borderBottomWidth: isSelected ? 2 : 4,
+                      borderBottomColor: course.color,
+                      background: isSelected ? course.color + '18' : '#fef9f0',
+                      cursor: 'pointer',
+                      boxShadow: isSelected ? `2px 2px 0 ${course.color}` : 'none',
+                      transition: 'all 0.1s',
+                    }}
+                  >
+                    {course.emoji}
+                  </div>
+                </div>
+              ) : (
+                // דסקטופ — אייקון + שם
+                <div
+                  key={course.id}
+                  draggable
+                  onDragStart={() => { dragRef.current = { courseId: course.id, duration } }}
+                  className="flex items-center gap-2 px-2 py-2 select-none"
                   style={{
                     border: `2px solid ${isSelected ? course.color : '#e8e0d4'}`,
-                    borderRightWidth: 4,
-                    borderRightColor: course.color,
-                    borderRadius: 8,
-                    background: isSelected ? course.color + '18' : '#fef9f0',
-                    cursor: isMobile ? 'pointer' : 'grab',
-                    transition: 'all 0.1s',
-                    boxShadow: isSelected ? `2px 2px 0 ${course.color}` : 'none',
-                    minWidth: isMobile ? 'max-content' : undefined,
+                    borderRightWidth: 4, borderRightColor: course.color,
+                    borderRadius: 8, background: '#fef9f0', cursor: 'grab',
+                    transition: 'box-shadow 0.1s',
                   }}
+                  onMouseEnter={e => (e.currentTarget.style.boxShadow = `2px 2px 0 ${course.color}`)}
+                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
                 >
                   <span style={{ fontSize: 16 }}>{course.emoji}</span>
                   <span className="text-xs font-bold" style={{ color: '#1c1c2e' }}>{course.title}</span>
