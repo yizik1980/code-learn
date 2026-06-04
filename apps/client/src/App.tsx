@@ -2,6 +2,7 @@ import { useSignals } from '@preact/signals-react/runtime'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState } from 'react'
 import Home from './pages/Home'
+import CalendarPage from './pages/Calendar'
 import CourseIndex from './pages/learn/CourseIndex'
 import CourseLesson from './pages/learn/CourseLesson'
 import ScrollToTop from './components/ScrollToTop'
@@ -21,6 +22,7 @@ export default function App() {
       <ChatWidget />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/calendar" element={<CalendarPage />} />
         <Route path="/learn/:courseId" element={<CourseIndex />} />
         <Route path="/learn/:courseId/:lessonId" element={<CourseLesson />} />
       </Routes>

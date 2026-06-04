@@ -1,8 +1,20 @@
 import { useSignals } from '@preact/signals-react/runtime'
+import { Link } from 'react-router-dom'
 import { globalStatsSignal } from '../signals/progress'
 import { userNameSignal } from '../signals/userName'
 import { courses } from '../data/courses'
 import CourseCard from '../components/CourseCard'
+
+interface TodaySession { id: string; courseId: string; duration: 10 | 20 | 30 }
+
+function getTodaySessions(): TodaySession[] {
+  try {
+    const today = new Date()
+    const key = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
+    const schedule = JSON.parse(localStorage.getItem('cl_schedule') ?? '{}') as Record<string, TodaySession[]>
+    return schedule[key] ?? []
+  } catch { return [] }
+}
 
 function getTimeGreeting(name: string): string {
   const hour = new Date().getHours()
@@ -18,6 +30,7 @@ export default function Home() {
   useSignals()
   const stats = globalStatsSignal.value
   const name = userNameSignal.value
+  const todaySessions = getTodaySessions()
 
   return (
     <div className="min-h-screen" style={{ background: '#fef9f0' }}>
@@ -74,10 +87,68 @@ export default function Home() {
               ⭐ <span style={{ color: '#f59e0b' }}>{stats.totalScore}</span>/{stats.totalMax}
             </span>
           )}
+          <Link
+            to="/calendar"
+            className="flex items-center gap-1 text-sm font-black px-3 py-1"
+            style={{
+              background: '#fef9f0',
+              color: '#1c1c2e',
+              border: '2px solid #6366f1',
+              borderRadius: 8,
+              textDecoration: 'none',
+            }}
+          >
+            📅 לוח למידה
+          </Link>
         </div>
       </header>
 
       <div className="relative max-w-5xl mx-auto px-6 py-10">
+
+        {/* Today's plan */}
+        {todaySessions.length > 0 && (
+          <div className="mb-8 p-4" style={{ border: '2px solid #1c1c2e', borderRadius: 14, background: '#fff', boxShadow: '4px 4px 0 #1c1c2e' }}>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="text-lg">📅</span>
+              <span className="font-black" style={{ color: '#1c1c2e' }}>תוכנית הלמידה שלך להיום</span>
+              <div className="flex-1 h-0.5 mr-2" style={{ background: '#1c1c2e', opacity: 0.1 }} />
+              <Link to="/calendar" className="text-xs font-bold" style={{ color: '#6366f1', textDecoration: 'none' }}>
+                לעריכה ←
+              </Link>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {todaySessions.map(session => {
+                const course = courses.find(c => c.id === session.courseId)
+                if (!course) return null
+                return (
+                  <Link
+                    key={session.id}
+                    to={`/learn/${course.id}`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    <div
+                      className="flex items-center gap-2 px-3 py-2"
+                      style={{
+                        border: `2px solid ${course.color}`,
+                        borderRadius: 10,
+                        background: course.color + '12',
+                        cursor: 'pointer',
+                        transition: 'box-shadow 0.12s',
+                        boxShadow: `2px 2px 0 ${course.color}`,
+                      }}
+                    >
+                      <span style={{ fontSize: 18 }}>{course.emoji}</span>
+                      <div>
+                        <p className="font-black text-sm leading-none" style={{ color: '#1c1c2e' }}>{course.title}</p>
+                        <p className="text-xs mt-0.5" style={{ color: course.color, fontWeight: 700 }}>{session.duration} דקות</p>
+                      </div>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Section title */}
         <div className="flex items-center gap-4 mb-7">
