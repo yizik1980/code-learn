@@ -12,6 +12,7 @@ import { testingLessons } from './testing/lessons'
 import { angularLessons } from './angular/lessons'
 import { patternsLessons } from './patterns/lessons'
 import { architectureLessons } from './architecture/lessons'
+import { vibeCodingLessons } from './vibe_coding/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -132,6 +133,15 @@ export const courses: Course[] = [
     color: '#0f766e',
     gradient: 'from-teal-600 to-emerald-800',
     lessons: architectureLessons,
+  },
+  {
+    id: 'vibe-coding',
+    title: 'Vibe Coding',
+    description: 'פיתוח תוכנה עם AI — פרומפטים, workflow, debug ו-best practices לעידן ה-AI',
+    emoji: '✨',
+    color: '#a855f7',
+    gradient: 'from-purple-500 to-pink-600',
+    lessons: vibeCodingLessons,
   },
   {
     id: 'llm',
