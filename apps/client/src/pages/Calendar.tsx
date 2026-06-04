@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { courses } from '../data/courses'
 
@@ -99,6 +99,14 @@ export default function CalendarPage() {
   const [confirmDrop, setConfirmDrop] = useState<{ key: string; drag: DragState } | null>(null)
   const [showRecur, setShowRecur] = useState(false)
   const [recurUntil, setRecurUntil] = useState('')
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
+  const [mobileSelected, setMobileSelected] = useState<{ courseId: string; duration: Duration } | null>(null)
+
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth < 768)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
 
   const grid = buildGrid(year, month)
   const todayKey = toKey(now)
@@ -169,6 +177,14 @@ export default function CalendarPage() {
     setRecurUntil('')
   }
 
+  function handleDayClick(key: string) {
+    if (!isMobile || !mobileSelected) return
+    setConfirmDrop({ key, drag: { courseId: mobileSelected.courseId, duration: mobileSelected.duration } })
+    setShowRecur(false)
+    setRecurUntil('')
+    setMobileSelected(null)
+  }
+
   function removeSession(key: string, id: string) {
     setSchedule(prev => {
       const next = { ...prev, [key]: (prev[key] ?? []).filter(s => s.id !== id) }
@@ -196,71 +212,10 @@ export default function CalendarPage() {
         </Link>
       </header>
 
-      <div className="flex" style={{ minHeight: 'calc(100vh - 52px)' }}>
+      <div className="flex flex-col md:flex-row" style={{ minHeight: 'calc(100vh - 52px)' }}>
 
-        {/* Sidebar */}
-        <aside
-          className="flex flex-col gap-5 p-4"
-          style={{ width: 210, background: '#fff', borderLeft: '2px solid #e8e0d4', flexShrink: 0, overflowY: 'auto' }}
-        >
-          {/* Duration selector */}
-          <div>
-            <p className="font-black text-xs mb-2" style={{ color: '#5a5a72', letterSpacing: '0.05em' }}>משך סשן</p>
-            <div className="flex gap-1.5">
-              {DURATIONS.map(d => (
-                <button
-                  key={d}
-                  onClick={() => setDuration(d)}
-                  style={{
-                    flex: 1, padding: '6px 0', borderRadius: 8, fontSize: 12, fontWeight: 900, cursor: 'pointer',
-                    border: '2px solid #1c1c2e',
-                    background: duration === d ? '#1c1c2e' : '#fff',
-                    color: duration === d ? '#10b981' : '#1c1c2e',
-                    transition: 'all 0.12s',
-                  }}
-                >
-                  {d}′
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Course list */}
-          <div>
-            <p className="font-black text-xs mb-2" style={{ color: '#5a5a72', letterSpacing: '0.05em' }}>גרור קורס ←</p>
-            <div className="flex flex-col gap-2">
-              {courses.map(course => (
-                <div
-                  key={course.id}
-                  draggable
-                  onDragStart={() => { dragRef.current = { courseId: course.id, duration } }}
-                  className="flex items-center gap-2 px-2 py-2 select-none"
-                  style={{
-                    border: '2px solid #e8e0d4',
-                    borderRightWidth: 4,
-                    borderRightColor: course.color,
-                    borderRadius: 8,
-                    background: '#fef9f0',
-                    cursor: 'grab',
-                    transition: 'box-shadow 0.1s',
-                  }}
-                  onMouseEnter={e => (e.currentTarget.style.boxShadow = `2px 2px 0 ${course.color}`)}
-                  onMouseLeave={e => (e.currentTarget.style.boxShadow = 'none')}
-                >
-                  <span style={{ fontSize: 16 }}>{course.emoji}</span>
-                  <span className="text-xs font-bold truncate" style={{ color: '#1c1c2e', flex: 1 }}>{course.title}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <p className="text-xs" style={{ color: '#c4b8a4', lineHeight: 1.5 }}>
-            בחר משך, גרור קורס ליום בלוח
-          </p>
-        </aside>
-
-        {/* Calendar */}
-        <main className="flex-1 p-5 overflow-auto">
+        {/* Calendar — ראשון במובייל */}
+        <main className="flex-1 p-3 md:p-5 overflow-auto order-1 md:order-2">
 
           {/* Month nav */}
           <div className="flex items-center justify-between mb-4">
@@ -283,6 +238,20 @@ export default function CalendarPage() {
               הבא ‹
             </button>
           </div>
+
+          {/* Mobile: banner קורס נבחר */}
+          {isMobile && mobileSelected && (() => {
+            const c = courses.find(x => x.id === mobileSelected.courseId)
+            return c ? (
+              <div className="flex items-center gap-2 mb-3 px-3 py-2" style={{ border: `2px solid ${c.color}`, borderRadius: 10, background: c.color + '14' }}>
+                <span style={{ fontSize: 18 }}>{c.emoji}</span>
+                <p className="text-sm font-black flex-1" style={{ color: '#1c1c2e' }}>
+                  {c.title} · {mobileSelected.duration}′ — בחר יום בלוח
+                </p>
+                <button onClick={() => setMobileSelected(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 18 }}>×</button>
+              </div>
+            ) : null
+          })()}
 
           {/* Grid */}
           <div style={{ border: '2px solid #1c1c2e', borderRadius: 12, overflow: 'hidden', boxShadow: '4px 4px 0 #1c1c2e' }}>
@@ -317,9 +286,10 @@ export default function CalendarPage() {
                   return (
                     <div
                       key={di}
-                      onDragOver={key ? (e) => { e.preventDefault(); setDropTarget(key) } : undefined}
-                      onDragLeave={() => setDropTarget(null)}
-                      onDrop={key ? () => drop(key) : undefined}
+                      onDragOver={!isMobile && key ? (e) => { e.preventDefault(); setDropTarget(key) } : undefined}
+                      onDragLeave={!isMobile ? () => setDropTarget(null) : undefined}
+                      onDrop={!isMobile && key ? () => drop(key) : undefined}
+                      onClick={isMobile && key ? () => handleDayClick(key) : undefined}
                       style={{
                         minHeight: 88,
                         borderLeft: di > 0 ? '1px solid #e8e0d4' : undefined,
@@ -413,9 +383,83 @@ export default function CalendarPage() {
           </div>
 
           <p className="text-center mt-3 text-xs" style={{ color: '#c4b8a4' }}>
-            גרור קורס מהסרגל אל יום בלוח · גרור סשן קיים להזזה · ריחוף → × למחיקה
+            {isMobile
+              ? 'בחר קורס למטה, לאחר מכן בחר יום בלוח · לחיצה ארוכה על סשן → × למחיקה'
+              : 'גרור קורס מהסרגל אל יום בלוח · גרור סשן קיים להזזה · ריחוף → × למחיקה'}
           </p>
         </main>
+
+        {/* Sidebar / Panel קורסים */}
+        <aside
+          className="order-2 md:order-1 flex-shrink-0"
+          style={{
+            width: isMobile ? '100%' : 210,
+            background: '#fff',
+            borderLeft: isMobile ? 'none' : '2px solid #e8e0d4',
+            borderTop: isMobile ? '2px solid #e8e0d4' : 'none',
+          }}
+        >
+          {/* Duration */}
+          <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+            <p className="font-black text-xs flex-shrink-0" style={{ color: '#5a5a72' }}>משך:</p>
+            <div className="flex gap-1.5">
+              {DURATIONS.map(d => (
+                <button
+                  key={d}
+                  onClick={() => {
+                    setDuration(d)
+                    if (mobileSelected) setMobileSelected({ ...mobileSelected, duration: d })
+                  }}
+                  style={{
+                    width: 44, padding: '5px 0', borderRadius: 8, fontSize: 12, fontWeight: 900, cursor: 'pointer',
+                    border: '2px solid #1c1c2e',
+                    background: duration === d ? '#1c1c2e' : '#fff',
+                    color: duration === d ? '#10b981' : '#1c1c2e',
+                    transition: 'all 0.12s',
+                  }}
+                >
+                  {d}′
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Courses */}
+          <div
+            className={isMobile ? 'flex overflow-x-auto gap-2 px-4 pb-4' : 'flex flex-col gap-2 p-4'}
+            style={isMobile ? { scrollbarWidth: 'none' } : {}}
+          >
+            {!isMobile && (
+              <p className="font-black text-xs mb-1" style={{ color: '#5a5a72' }}>גרור קורס ←</p>
+            )}
+            {courses.map(course => {
+              const isSelected = mobileSelected?.courseId === course.id
+              return (
+                <div
+                  key={course.id}
+                  draggable={!isMobile}
+                  onDragStart={!isMobile ? () => { dragRef.current = { courseId: course.id, duration } } : undefined}
+                  onClick={isMobile ? () => setMobileSelected(isSelected ? null : { courseId: course.id, duration }) : undefined}
+                  className="flex items-center gap-2 px-2 py-2 select-none flex-shrink-0"
+                  style={{
+                    border: `2px solid ${isSelected ? course.color : '#e8e0d4'}`,
+                    borderRightWidth: 4,
+                    borderRightColor: course.color,
+                    borderRadius: 8,
+                    background: isSelected ? course.color + '18' : '#fef9f0',
+                    cursor: isMobile ? 'pointer' : 'grab',
+                    transition: 'all 0.1s',
+                    boxShadow: isSelected ? `2px 2px 0 ${course.color}` : 'none',
+                    minWidth: isMobile ? 'max-content' : undefined,
+                  }}
+                >
+                  <span style={{ fontSize: 16 }}>{course.emoji}</span>
+                  <span className="text-xs font-bold" style={{ color: '#1c1c2e' }}>{course.title}</span>
+                </div>
+              )
+            })}
+          </div>
+        </aside>
       </div>
 
       {/* מודל חזרה שבועית */}

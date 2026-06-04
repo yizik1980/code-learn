@@ -1,4 +1,5 @@
 import { useSignals } from '@preact/signals-react/runtime'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { globalStatsSignal } from '../signals/progress'
 import { userNameSignal } from '../signals/userName'
@@ -31,6 +32,10 @@ export default function Home() {
   const stats = globalStatsSignal.value
   const name = userNameSignal.value
   const todaySessions = getTodaySessions()
+  const [search, setSearch] = useState('')
+  const filteredCourses = search.trim()
+    ? courses.filter(c => c.title.toLowerCase().includes(search.toLowerCase()) || c.description.includes(search))
+    : courses
 
   return (
     <div className="min-h-screen" style={{ background: '#fef9f0' }}>
@@ -42,13 +47,13 @@ export default function Home() {
         }}
       />
 
-      {/* Top bar */}
+      {/* Top bar + mobile search — sticky block */}
+      <div className="sticky top-0 z-40">
       <header
-        className="sticky top-0 z-40 flex items-center justify-between px-6"
+        className="flex items-center justify-between px-6"
         style={{
           height: 52,
           background: '#1c1c2e',
-          borderBottom: '2px solid #1c1c2e',
           boxShadow: '0 2px 0 #10b981',
         }}
       >
@@ -69,6 +74,31 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-4">
+          {/* Search — desktop only */}
+          <div className="relative items-center hidden md:flex">
+            <span className="absolute" style={{ right: 10, color: '#5a5a72', fontSize: 14, pointerEvents: 'none' }}>🔍</span>
+            <input
+              type="text"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="חיפוש קורס..."
+              className="text-sm font-bold"
+              style={{
+                paddingRight: 32, paddingLeft: 10, paddingTop: 5, paddingBottom: 5,
+                background: '#2d2d40', color: '#fef9f0', border: '2px solid #3d3d54',
+                borderRadius: 8, outline: 'none', width: 180,
+              }}
+            />
+            {search && (
+              <button
+                onClick={() => setSearch('')}
+                style={{ position: 'absolute', left: 8, background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 16, lineHeight: 1 }}
+              >
+                ×
+              </button>
+            )}
+          </div>
+
           {name && (
             <span className="text-sm font-bold" style={{ color: '#a0998c' }}>
               {getTimeGreeting(name)}
@@ -102,6 +132,34 @@ export default function Home() {
           </Link>
         </div>
       </header>
+
+      {/* Search — mobile only, below header */}
+      <div className="flex md:hidden px-4 py-2" style={{ background: '#1c1c2e', borderBottom: '2px solid #10b981' }}>
+        <div className="relative flex items-center w-full">
+          <span className="absolute" style={{ right: 10, color: '#5a5a72', fontSize: 14, pointerEvents: 'none' }}>🔍</span>
+          <input
+            type="text"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            placeholder="חיפוש קורס..."
+            className="text-sm font-bold w-full"
+            style={{
+              paddingRight: 32, paddingLeft: search ? 32 : 10, paddingTop: 7, paddingBottom: 7,
+              background: '#2d2d40', color: '#fef9f0', border: '2px solid #3d3d54',
+              borderRadius: 8, outline: 'none',
+            }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch('')}
+              style={{ position: 'absolute', left: 10, background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 18, lineHeight: 1 }}
+            >
+              ×
+            </button>
+          )}
+        </div>
+      </div>
+      </div>{/* end sticky block */}
 
       <div className="relative max-w-5xl mx-auto px-6 py-10">
 
@@ -160,9 +218,14 @@ export default function Home() {
 
         {/* Courses grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-14">
-          {courses.map((course) => (
-            <CourseCard key={course.id} course={course} />
-          ))}
+          {filteredCourses.length > 0
+            ? filteredCourses.map((course) => <CourseCard key={course.id} course={course} />)
+            : (
+              <p className="col-span-3 text-center py-12 font-bold" style={{ color: '#a0998c' }}>
+                לא נמצאו קורסים עבור "{search}"
+              </p>
+            )
+          }
         </div>
 
         {/* Footer */}
