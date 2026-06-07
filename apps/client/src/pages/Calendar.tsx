@@ -3,6 +3,18 @@ import { Link } from 'react-router-dom'
 import { courses } from '../data/courses'
 
 const STORAGE_KEY = 'cl_schedule'
+const TASKS_KEY = 'cl_tasks'
+
+interface Task { id: string; title: string; done: boolean }
+type TaskMap = Record<string, Task[]>
+
+function loadTaskMap(): TaskMap {
+  try { return JSON.parse(localStorage.getItem(TASKS_KEY) ?? '{}') }
+  catch { return {} }
+}
+function saveTaskMap(m: TaskMap) {
+  localStorage.setItem(TASKS_KEY, JSON.stringify(m))
+}
 
 type Duration = 10 | 20 | 30
 
@@ -101,6 +113,9 @@ export default function CalendarPage() {
   const [recurUntil, setRecurUntil] = useState('')
   const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768)
   const [mobileSelected, setMobileSelected] = useState<{ courseId: string; duration: Duration } | null>(null)
+  const [taskMap, setTaskMap] = useState<TaskMap>(loadTaskMap)
+  const [addingTaskKey, setAddingTaskKey] = useState<string | null>(null)
+  const [taskInput, setTaskInput] = useState('')
   const [tooltipId, setTooltipId] = useState<string | null>(null)
   const tooltipTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -196,6 +211,35 @@ export default function CalendarPage() {
     })
   }
 
+  function addTask(key: string) {
+    const title = taskInput.trim()
+    if (!title) return
+    setTaskMap(prev => {
+      const next = { ...prev, [key]: [...(prev[key] ?? []), { id: crypto.randomUUID(), title, done: false }] }
+      saveTaskMap(next)
+      return next
+    })
+    setTaskInput('')
+    setAddingTaskKey(null)
+  }
+
+  function toggleTask(key: string, taskId: string) {
+    setTaskMap(prev => {
+      const next = { ...prev, [key]: (prev[key] ?? []).map(t => t.id === taskId ? { ...t, done: !t.done } : t) }
+      saveTaskMap(next)
+      return next
+    })
+  }
+
+  function removeTask(key: string, taskId: string) {
+    setTaskMap(prev => {
+      const next = { ...prev, [key]: (prev[key] ?? []).filter(t => t.id !== taskId) }
+      if (!next[key].length) delete next[key]
+      saveTaskMap(next)
+      return next
+    })
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#fef9f0', direction: 'rtl' }}>
 
@@ -284,6 +328,7 @@ export default function CalendarPage() {
                   const isShabbat = di === 6
                   const isDropping = key !== null && key === dropTarget
                   const sessions: Session[] = key ? (schedule[key] ?? []) : []
+                  const tasks: Task[] = key ? (taskMap[key] ?? []) : []
 
                   return (
                     <div
@@ -375,6 +420,44 @@ export default function CalendarPage() {
                               )
                             })}
                           </div>
+
+                          {/* משימות */}
+                          {tasks.length > 0 && (
+                            <div className="flex flex-col gap-0.5 mt-0.5">
+                              {tasks.map(task => (
+                                <div key={task.id} className="flex items-center gap-0.5 group" style={{ fontSize: 9 }}>
+                                  <button
+                                    onClick={e => { e.stopPropagation(); toggleTask(key!, task.id) }}
+                                    style={{ width: 11, height: 11, borderRadius: 3, border: `1.5px solid ${task.done ? '#10b981' : '#c4b8a4'}`, background: task.done ? '#10b981' : '#fff', flexShrink: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 7 }}
+                                  >{task.done ? '✓' : ''}</button>
+                                  <span className="flex-1 truncate" style={{ color: task.done ? '#a0998c' : '#1c1c2e', textDecoration: task.done ? 'line-through' : 'none', fontWeight: 600 }}>{task.title}</span>
+                                  <button onClick={e => { e.stopPropagation(); removeTask(key!, task.id) }} className="opacity-0 group-hover:opacity-100" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', padding: 0, lineHeight: 1, fontSize: 10, flexShrink: 0 }}>×</button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* כפתור הוספת משימה */}
+                          {addingTaskKey === key ? (
+                            <input
+                              autoFocus
+                              value={taskInput}
+                              onChange={e => setTaskInput(e.target.value)}
+                              onKeyDown={e => { if (e.key === 'Enter') { e.stopPropagation(); addTask(key!) } if (e.key === 'Escape') { setAddingTaskKey(null); setTaskInput('') } }}
+                              onBlur={() => { if (taskInput.trim()) addTask(key!); else { setAddingTaskKey(null); setTaskInput('') } }}
+                              placeholder="משימה..."
+                              className="w-full mt-1"
+                              style={{ fontSize: 9, border: '1.5px solid #6366f1', borderRadius: 4, padding: '2px 4px', outline: 'none', background: '#fff' }}
+                            />
+                          ) : (
+                            <button
+                              onClick={e => { e.stopPropagation(); setAddingTaskKey(key); setTaskInput('') }}
+                              className="w-full mt-1 opacity-0 hover:opacity-100 group-hover:opacity-60"
+                              style={{ fontSize: 9, color: '#6366f1', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'right', padding: '1px 0', fontWeight: 700 }}
+                            >
+                              + משימה
+                            </button>
+                          )}
                         </>
                       )}
                     </div>

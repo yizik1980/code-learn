@@ -151,26 +151,12 @@ export default function Home() {
                 const course = courses.find(c => c.id === session.courseId)
                 if (!course) return null
                 return (
-                  <Link
-                    key={session.id}
-                    to={`/learn/${course.id}`}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <div
-                      className="flex items-center gap-2 px-3 py-2"
-                      style={{
-                        border: `2px solid ${course.color}`,
-                        borderRadius: 10,
-                        background: course.color + '12',
-                        cursor: 'pointer',
-                        transition: 'box-shadow 0.12s',
-                        boxShadow: `2px 2px 0 ${course.color}`,
-                      }}
-                    >
+                  <Link key={session.id} to={`/learn/${course.id}`} style={{ textDecoration: 'none' }}>
+                    <div className="flex items-center gap-2 px-3 py-2" style={{ border: `2px solid ${course.color}`, borderRadius: 10, background: course.color + '12', boxShadow: `2px 2px 0 ${course.color}` }}>
                       <span style={{ fontSize: 18 }}>{course.emoji}</span>
                       <div>
                         <p className="font-black text-sm leading-none" style={{ color: '#1c1c2e' }}>{course.title}</p>
-                        <p className="text-xs mt-0.5" style={{ color: course.color, fontWeight: 700 }}>{session.duration} דקות</p>
+                        <p className="text-xs mt-0.5 font-bold" style={{ color: course.color }}>{session.duration} דקות</p>
                       </div>
                     </div>
                   </Link>
