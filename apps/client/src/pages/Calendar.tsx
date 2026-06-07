@@ -338,7 +338,8 @@ export default function CalendarPage() {
                       onDrop={!isMobile && key ? () => drop(key) : undefined}
                       onClick={isMobile && key ? () => handleDayClick(key) : undefined}
                       style={{
-                        minHeight: 88,
+                        height: 96,
+                        overflow: 'hidden',
                         borderLeft: di > 0 ? '1px solid #e8e0d4' : undefined,
                         background: !day
                           ? '#f4f0e8'
@@ -430,7 +431,7 @@ export default function CalendarPage() {
                                     onClick={e => { e.stopPropagation(); toggleTask(key!, task.id) }}
                                     style={{ width: 11, height: 11, borderRadius: 3, border: `1.5px solid ${task.done ? '#10b981' : '#c4b8a4'}`, background: task.done ? '#10b981' : '#fff', flexShrink: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 7 }}
                                   >{task.done ? '✓' : ''}</button>
-                                  <span className="flex-1 truncate" style={{ color: task.done ? '#a0998c' : '#1c1c2e', textDecoration: task.done ? 'line-through' : 'none', fontWeight: 600 }}>{task.title}</span>
+                                  <span className="flex-1" style={{ color: task.done ? '#a0998c' : '#1c1c2e', textDecoration: task.done ? 'line-through' : 'none', fontWeight: 600, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{task.title}</span>
                                   <button onClick={e => { e.stopPropagation(); removeTask(key!, task.id) }} className="opacity-0 group-hover:opacity-100" style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#ef4444', padding: 0, lineHeight: 1, fontSize: 10, flexShrink: 0 }}>×</button>
                                 </div>
                               ))}
