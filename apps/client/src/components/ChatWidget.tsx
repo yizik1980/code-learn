@@ -113,21 +113,16 @@ export default function ChatWidget() {
     return () => { document.title = ORIGINAL_TITLE }
   }, [unread, open])
 
-  const hasGreetedRef = useRef(false)
-
   const connect = useCallback(() => {
     const ws = new WebSocket(WS_URL)
     wsRef.current = ws
     ws.onopen = () => {
       setConnected(true)
-      if (!hasGreetedRef.current) {
-        hasGreetedRef.current = true
-        const name = getUserData().name || ''
-        const text = name && name !== 'אנונימי'
-          ? `ברוך הבא, ${name} 👋 מה תרצה ללמוד היום?`
-          : 'ברוך הבא 👋 מה תרצה ללמוד היום?'
-        ws.send(JSON.stringify({ type: 'message', text, userId: 'codelearn-bot', name: 'CodeLearn', avatar: '👨‍💻' }))
-      }
+      const name = getUserData().name || ''
+      const text = name && name !== 'אנונימי'
+        ? `ברוך הבא, ${name} 👋 מה תרצה ללמוד היום?`
+        : 'ברוך הבא 👋 מה תרצה ללמוד היום?'
+      ws.send(JSON.stringify({ type: 'message', text, userId: 'codelearn-bot', name: 'CodeLearn', avatar: '👨‍💻' }))
     }
     ws.onmessage = (e: MessageEvent) => {
       try {
