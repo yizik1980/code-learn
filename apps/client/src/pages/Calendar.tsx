@@ -393,8 +393,8 @@ export default function CalendarPage() {
 
       <div className="flex flex-col md:flex-row" style={{ minHeight: 'calc(100vh - 52px)' }}>
 
-        {/* Calendar — ראשון במובייל */}
-        <main className="flex-1 p-3 md:p-5 overflow-auto order-1 md:order-2">
+        {/* Calendar — שני במובייל (מתחת לבחירת הקורסים) */}
+        <main className="flex-1 p-3 md:p-5 overflow-auto order-2 md:order-2">
 
           {/* Month nav */}
           <div className="flex items-center justify-between mb-4">
@@ -665,11 +665,46 @@ export default function CalendarPage() {
               </div>
             </div>
           </div>
+
+          {/* כפתורי ייצוא/ייבוא — מובייל בלבד, מתחת להוראות */}
+          {isMobile && (
+            <div className="mt-4 mb-6">
+              {exportTooltip && (
+                <p className="text-xs font-bold text-center mb-2" style={{ color: '#10b981' }}>{exportTooltip}</p>
+              )}
+              <div className="flex gap-3 justify-center">
+                <button
+                  onClick={() => importRef.current?.click()}
+                  aria-label="ייבוא נתונים מקובץ JSON"
+                  className="flex items-center gap-2 font-black px-4 py-2.5 flex-1"
+                  style={{ background: '#fff', border: '2px solid #1c1c2e', borderRadius: 10, cursor: 'pointer', boxShadow: '3px 3px 0 #1c1c2e', fontSize: 13 }}
+                >
+                  📤 ייבוא
+                </button>
+                <button
+                  onClick={handleExportICS}
+                  aria-label="הורד ICS לייומן"
+                  className="flex items-center gap-2 font-black px-4 py-2.5 flex-1"
+                  style={{ background: '#fff', border: '2px solid #1c1c2e', borderRadius: 10, cursor: 'pointer', boxShadow: '3px 3px 0 #1c1c2e', fontSize: 13 }}
+                >
+                  🗓️ ICS
+                </button>
+                <button
+                  onClick={handleExportJSON}
+                  aria-label="הורד JSON לסנכרון"
+                  className="flex items-center gap-2 font-black px-4 py-2.5 flex-1"
+                  style={{ background: '#1c1c2e', border: '2px solid #1c1c2e', borderRadius: 10, cursor: 'pointer', boxShadow: '3px 3px 0 #10b981', color: '#10b981', fontSize: 13 }}
+                >
+                  📥 הורד
+                </button>
+              </div>
+            </div>
+          )}
         </main>
 
         {/* Sidebar / Panel קורסים */}
         <aside
-          className="order-2 md:order-1 flex-shrink-0"
+          className="order-1 md:order-1 flex-shrink-0"
           style={{
             width: isMobile ? '100%' : 210,
             background: '#fff',
@@ -778,8 +813,8 @@ export default function CalendarPage() {
         </aside>
       </div>
 
-      {/* כפתורי ייצוא/ייבוא — פינה תחתונה ימנית */}
-      <div
+      {/* כפתורי ייצוא/ייבוא — פינה תחתונה ימנית (דסקטופ בלבד) */}
+      {!isMobile && <div
         className="fixed flex flex-col items-end gap-2"
         style={{ bottom: 24, right: 24, zIndex: 50, direction: 'ltr' }}
       >
@@ -834,7 +869,7 @@ export default function CalendarPage() {
             📥
           </button>
         </div>
-      </div>
+      </div>}
 
       {/* input נסתר לייבוא */}
       <input
