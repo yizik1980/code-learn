@@ -7,14 +7,33 @@ import { courses } from '../data/courses'
 import CourseCard from '../components/CourseCard'
 
 interface TodaySession { id: string; courseId: string; duration: 10 | 20 | 30 }
+interface TodayTask { id: string; title: string; done: boolean }
+
+const TODAY_KEY = (() => {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+})()
 
 function getTodaySessions(): TodaySession[] {
   try {
-    const today = new Date()
-    const key = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`
     const schedule = JSON.parse(localStorage.getItem('cl_schedule') ?? '{}') as Record<string, TodaySession[]>
-    return schedule[key] ?? []
+    return schedule[TODAY_KEY] ?? []
   } catch { return [] }
+}
+
+function getTodayTasks(): TodayTask[] {
+  try {
+    const tasks = JSON.parse(localStorage.getItem('cl_tasks') ?? '{}') as Record<string, TodayTask[]>
+    return tasks[TODAY_KEY] ?? []
+  } catch { return [] }
+}
+
+function saveToday(tasks: TodayTask[]) {
+  try {
+    const all = JSON.parse(localStorage.getItem('cl_tasks') ?? '{}') as Record<string, TodayTask[]>
+    all[TODAY_KEY] = tasks
+    localStorage.setItem('cl_tasks', JSON.stringify(all))
+  } catch {}
 }
 
 function getTimeGreeting(name: string): string {
@@ -32,7 +51,14 @@ export default function Home() {
   const stats = globalStatsSignal.value
   const name = userNameSignal.value
   const todaySessions = getTodaySessions()
+  const [tasks, setTasks] = useState<TodayTask[]>(getTodayTasks)
   const [search, setSearch] = useState('')
+
+  function toggleTask(id: string) {
+    const updated = tasks.map(t => t.id === id ? { ...t, done: !t.done } : t)
+    setTasks(updated)
+    saveToday(updated)
+  }
   const filteredCourses = search.trim()
     ? courses.filter(c => c.title.toLowerCase().includes(search.toLowerCase()) || c.description.includes(search))
     : courses
@@ -146,32 +172,74 @@ export default function Home() {
       <div id="main-content" className="relative max-w-5xl mx-auto px-6 py-10">
 
         {/* Today's plan */}
-        {todaySessions.length > 0 && (
+        {(todaySessions.length > 0 || tasks.length > 0) && (
           <div className="mb-8 p-4" style={{ border: '2px solid #1c1c2e', borderRadius: 14, background: '#fff', boxShadow: '4px 4px 0 #1c1c2e' }}>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="text-lg">📅</span>
-              <span className="font-black" style={{ color: '#1c1c2e' }}>תוכנית הלמידה שלך להיום</span>
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-lg">📋</span>
+              <span className="font-black" style={{ color: '#1c1c2e' }}>היום שלי</span>
               <div className="flex-1 h-0.5 mr-2" style={{ background: '#1c1c2e', opacity: 0.1 }} />
               <Link to="/calendar" className="text-xs font-bold" style={{ color: '#6366f1', textDecoration: 'none' }}>
-                לעריכה ←
+                ללוח ←
               </Link>
             </div>
-            <div className="flex flex-wrap gap-2">
-              {todaySessions.map(session => {
-                const course = courses.find(c => c.id === session.courseId)
-                if (!course) return null
-                return (
-                  <Link key={session.id} to={`/learn/${course.id}`} style={{ textDecoration: 'none' }}>
-                    <div className="flex items-center gap-2 px-3 py-2" style={{ border: `2px solid ${course.color}`, borderRadius: 10, background: course.color + '12', boxShadow: `2px 2px 0 ${course.color}` }}>
-                      <span style={{ fontSize: 18 }}>{course.emoji}</span>
-                      <div>
-                        <p className="font-black text-sm leading-none" style={{ color: '#1c1c2e' }}>{course.title}</p>
-                        <p className="text-xs mt-0.5 font-bold" style={{ color: course.color }}>{session.duration} דקות</p>
-                      </div>
-                    </div>
-                  </Link>
-                )
-              })}
+
+            <div className={`grid gap-4 ${todaySessions.length > 0 && tasks.length > 0 ? 'md:grid-cols-2' : ''}`}>
+              {/* קורסים */}
+              {todaySessions.length > 0 && (
+                <div>
+                  <p className="text-xs font-black mb-2" style={{ color: '#5a5a72', letterSpacing: '0.05em' }}>קורסים להיום</p>
+                  <div className="flex flex-col gap-2">
+                    {todaySessions.map(session => {
+                      const course = courses.find(c => c.id === session.courseId)
+                      if (!course) return null
+                      return (
+                        <Link key={session.id} to={`/learn/${course.id}`} style={{ textDecoration: 'none' }}>
+                          <div className="flex items-center gap-2 px-3 py-2" style={{ border: `2px solid ${course.color}`, borderRadius: 10, background: course.color + '12', boxShadow: `2px 2px 0 ${course.color}` }}>
+                            <span style={{ fontSize: 18 }}>{course.emoji}</span>
+                            <div className="flex-1">
+                              <p className="font-black text-sm leading-none" style={{ color: '#1c1c2e' }}>{course.title}</p>
+                              <p className="text-xs mt-0.5 font-bold" style={{ color: course.color }}>{session.duration} דקות</p>
+                            </div>
+                            <span className="text-xs" style={{ color: '#a0998c' }}>←</span>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* משימות */}
+              {tasks.length > 0 && (
+                <div>
+                  <p className="text-xs font-black mb-2" style={{ color: '#5a5a72', letterSpacing: '0.05em' }}>
+                    משימות להיום · {tasks.filter(t => t.done).length}/{tasks.length} הושלמו
+                  </p>
+                  <div className="flex flex-col gap-1.5">
+                    {tasks.map(task => (
+                      <button
+                        key={task.id}
+                        onClick={() => toggleTask(task.id)}
+                        className="flex items-center gap-2 px-3 py-2 w-full text-right"
+                        style={{ border: '2px solid #e8e0d4', borderRadius: 8, background: task.done ? '#f4f0e8' : '#fff', cursor: 'pointer', transition: 'all 0.1s' }}
+                      >
+                        <span
+                          style={{
+                            width: 18, height: 18, borderRadius: 5, flexShrink: 0,
+                            border: `2px solid ${task.done ? '#10b981' : '#c4b8a4'}`,
+                            background: task.done ? '#10b981' : '#fff',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            color: '#fff', fontSize: 11,
+                          }}
+                        >{task.done ? '✓' : ''}</span>
+                        <span className="flex-1 text-sm font-bold text-right" style={{ color: task.done ? '#a0998c' : '#1c1c2e', textDecoration: task.done ? 'line-through' : 'none' }}>
+                          {task.title}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}

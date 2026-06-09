@@ -600,11 +600,71 @@ export default function CalendarPage() {
             ))}
           </div>
 
-          <p className="text-center mt-3 text-xs" style={{ color: '#c4b8a4' }}>
-            {isMobile
-              ? 'בחר קורס למטה, לאחר מכן בחר יום בלוח · לחיצה ארוכה על סשן → × למחיקה'
-              : 'גרור קורס מהסרגל אל יום בלוח · גרור סשן קיים להזזה · ריחוף → × למחיקה'}
-          </p>
+          {/* הוראות שימוש */}
+          <div className="mt-6 mb-4" style={{ border: '2px solid #e8e0d4', borderRadius: 14, background: '#fff', overflow: 'hidden' }}>
+            <div className="px-4 py-3" style={{ background: '#1c1c2e', borderRadius: '12px 12px 0 0' }}>
+              <p className="font-black text-sm" style={{ color: '#10b981' }}>📖 הוראות שימוש</p>
+            </div>
+
+            <div className="p-4 grid gap-4 md:grid-cols-2">
+
+              {/* שימוש בלוח */}
+              <div>
+                <p className="font-black text-xs mb-2" style={{ color: '#1c1c2e' }}>
+                  {isMobile ? '📱 שימוש במובייל' : '🖥️ שימוש בדסקטופ'}
+                </p>
+                <ul className="flex flex-col gap-1.5">
+                  {isMobile ? [
+                    ['🎓', 'בחר משך סשן (10 / 20 / 30 דקות)'],
+                    ['👇', 'לחץ על קורס בתחתית המסך'],
+                    ['📅', 'לחץ על יום בלוח להוספת הקורס'],
+                    ['+ משימה', 'לחץ על יום ← הופיע שדה הוספת משימה'],
+                    ['☐', 'לחץ על צ\'קבוקס לסימון משימה כהושלמה'],
+                    ['×', 'ריחוף / לחיצה ← מחק סשן או משימה'],
+                  ] : [
+                    ['🎓', 'בחר משך סשן בסרגל הצדדי (10 / 20 / 30 דקות)'],
+                    ['🖱️', 'גרור קורס מהסרגל אל יום בלוח'],
+                    ['↔️', 'גרור סשן קיים מיום אחד לאחר'],
+                    ['+ משימה', 'רחף על יום ← לחץ להוספת משימה'],
+                    ['☐', 'לחץ על צ\'קבוקס לסימון משימה כהושלמה'],
+                    ['×', 'רחף על סשן/משימה ← לחץ × למחיקה'],
+                  ].map(([icon, text]) => (
+                    <li key={text} className="flex items-start gap-2 text-xs" style={{ color: '#5a5a72' }}>
+                      <span className="flex-shrink-0 font-black text-xs" style={{ color: '#1c1c2e', minWidth: 44 }}>{icon}</span>
+                      <span>{text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* סנכרון */}
+              <div>
+                <p className="font-black text-xs mb-2" style={{ color: '#1c1c2e' }}>🔄 סנכרון בין מכשירים</p>
+                <ul className="flex flex-col gap-1.5 mb-3">
+                  {[
+                    ['📥', 'לחץ 📥 להורדת קובץ JSON עם כל הנתונים'],
+                    ['📤', 'לחץ 📤 לייבוא JSON ממכשיר אחר — ימוזג ללא מחיקה'],
+                    ['🗓️', 'לחץ 🗓️ להורדת ICS לייבוא ל-Google Calendar / Outlook'],
+                  ].map(([icon, text]) => (
+                    <li key={text} className="flex items-start gap-2 text-xs" style={{ color: '#5a5a72' }}>
+                      <span className="flex-shrink-0 font-black" style={{ color: '#1c1c2e', minWidth: 20 }}>{icon}</span>
+                      <span>{text}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <div className="px-3 py-2.5 text-xs" style={{ background: '#f0fdf9', border: '2px solid #10b981', borderRadius: 10, color: '#065f46', lineHeight: 1.6 }}>
+                  <p className="font-black mb-1">סנכרון מובייל ↔ דסקטופ:</p>
+                  <ol className="flex flex-col gap-0.5" style={{ paddingRight: 14, listStyleType: 'decimal' }}>
+                    <li>הוסף קורסים ומשימות בטלפון</li>
+                    <li>לחץ 📥 — שתף את הקובץ (WhatsApp / Drive)</li>
+                    <li>פתח את הקובץ במחשב</li>
+                    <li>לחץ 📤 בדסקטופ ← בחר את הקובץ</li>
+                  </ol>
+                </div>
+              </div>
+            </div>
+          </div>
         </main>
 
         {/* Sidebar / Panel קורסים */}

@@ -2,7 +2,6 @@ import { Link, useParams, Navigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress, getCourseStats } from '../../signals/progress'
 import { courses } from '../../data/courses'
-import NoteBox from '../../components/NoteBox'
 
 export default function CourseIndex() {
   useSignals()
@@ -138,8 +137,6 @@ export default function CourseIndex() {
           })}
         </div>
 
-        {/* Notes */}
-        <NoteBox color={course.color} />
       </div>
     </div>
   )

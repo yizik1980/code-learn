@@ -4,7 +4,6 @@ import { getLessonProgress } from '../../signals/progress'
 import { courses } from '../../data/courses'
 import LessonContent from '../../components/LessonContent'
 import QuizDialog from '../../components/QuizDialog';
-import NoteBox from '../../components/NoteBox';
 import { LESSON_MESSAGES } from '../../constants/messages'
 import { useLessonEntrance } from '../../hooks/useLessonEntrance'
 
@@ -103,9 +102,6 @@ export default function CourseLesson() {
 
         {/* Content */}
         <LessonContent blocks={lesson.content} />
-
-        {/* Notes */}
-        <NoteBox color={course.color} />
 
         {/* Quiz */}
         <QuizDialog
