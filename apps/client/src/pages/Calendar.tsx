@@ -335,11 +335,36 @@ export default function CalendarPage() {
           triggerTooltip('קובץ לא תקין ✗')
           return
         }
-        setSchedule(parsed.schedule as Schedule)
-        setTaskMap(parsed.tasks as TaskMap)
-        save(parsed.schedule)
-        saveTaskMap(parsed.tasks)
-        triggerTooltip('הנתונים סונכרנו בהצלחה ✓')
+
+        // מיזוג sessions — לפי id, ללא כפילויות
+        const importedSchedule = parsed.schedule as Schedule
+        setSchedule(prev => {
+          const merged: Schedule = { ...prev }
+          for (const [key, sessions] of Object.entries(importedSchedule)) {
+            const existing = merged[key] ?? []
+            const existingIds = new Set(existing.map(s => s.id))
+            const newSessions = (sessions as Session[]).filter(s => !existingIds.has(s.id))
+            merged[key] = [...existing, ...newSessions]
+          }
+          save(merged)
+          return merged
+        })
+
+        // מיזוג tasks — לפי id, ללא כפילויות
+        const importedTasks = parsed.tasks as TaskMap
+        setTaskMap(prev => {
+          const merged: TaskMap = { ...prev }
+          for (const [key, tasks] of Object.entries(importedTasks)) {
+            const existing = merged[key] ?? []
+            const existingIds = new Set(existing.map(t => t.id))
+            const newTasks = (tasks as Task[]).filter(t => !existingIds.has(t.id))
+            merged[key] = [...existing, ...newTasks]
+          }
+          saveTaskMap(merged)
+          return merged
+        })
+
+        triggerTooltip('סונכרן בהצלחה — נתונים חדשים נוספו ✓')
       } catch {
         triggerTooltip('שגיאה בקריאת הקובץ ✗')
       }
