@@ -113,10 +113,22 @@ export default function ChatWidget() {
     return () => { document.title = ORIGINAL_TITLE }
   }, [unread, open])
 
+  const hasGreetedRef = useRef(false)
+
   const connect = useCallback(() => {
     const ws = new WebSocket(WS_URL)
     wsRef.current = ws
-    ws.onopen = () => setConnected(true)
+    ws.onopen = () => {
+      setConnected(true)
+      if (!hasGreetedRef.current) {
+        hasGreetedRef.current = true
+        const name = getUserData().name || ''
+        const text = name && name !== 'אנונימי'
+          ? `ברוך הבא, ${name} 👋 מה תרצה ללמוד היום?`
+          : 'ברוך הבא 👋 מה תרצה ללמוד היום?'
+        ws.send(JSON.stringify({ type: 'message', text, userId: 'codelearn-bot', name: 'CodeLearn', avatar: '👨‍💻' }))
+      }
+    }
     ws.onmessage = (e: MessageEvent) => {
       try {
         const data = JSON.parse(e.data as string)
@@ -297,7 +309,7 @@ export default function ChatWidget() {
 
           {/* Messages */}
           <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3" role="log" aria-live="polite" aria-label="הודעות צ'אט">
-            {messages.length === 0 && (
+              {messages.length === 0 && (
               <p className="text-center text-sm mt-8" style={{ color: '#a0998c' }}>
                 אין הודעות עדיין — שלח משהו!
               </p>
