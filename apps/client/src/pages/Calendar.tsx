@@ -240,6 +240,114 @@ export default function CalendarPage() {
     })
   }
 
+  const importRef = useRef<HTMLInputElement>(null)
+  const [exportTooltip, setExportTooltip] = useState<string | null>(null)
+
+  function triggerTooltip(msg: string) {
+    setExportTooltip(msg)
+    setTimeout(() => setExportTooltip(null), 2500)
+  }
+
+  function handleExportJSON() {
+    const data = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      schedule,
+      tasks: taskMap,
+    }
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `codelearn-${new Date().toISOString().slice(0, 10)}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+    triggerTooltip('JSON הורד בהצלחה ✓')
+  }
+
+  function handleExportICS() {
+    const lines: string[] = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//CodeLearn//CodeLearn//HE',
+      'CALSCALE:GREGORIAN',
+      'X-WR-CALNAME:CodeLearn',
+      'X-WR-TIMEZONE:Asia/Jerusalem',
+    ]
+
+    const toICSDate = (key: string) => key.replace(/-/g, '')
+
+    Object.entries(schedule).forEach(([key, sessions]) => {
+      sessions.forEach(session => {
+        const course = courses.find(c => c.id === session.courseId)
+        if (!course) return
+        const dateStr = toICSDate(key)
+        const nextDay = toICSDate(new Date(new Date(key + 'T00:00:00').getTime() + 86400000).toISOString().slice(0, 10))
+        lines.push(
+          'BEGIN:VEVENT',
+          `UID:session-${session.id}@codelearn`,
+          `DTSTART;VALUE=DATE:${dateStr}`,
+          `DTEND;VALUE=DATE:${nextDay}`,
+          `SUMMARY:${course.emoji} ${course.title} - ${session.duration} דקות`,
+          `DESCRIPTION:סשן למידה: ${course.title}\\, ${session.duration} דקות`,
+          'CATEGORIES:לימוד',
+          'END:VEVENT',
+        )
+      })
+    })
+
+    Object.entries(taskMap).forEach(([key, tasks]) => {
+      tasks.forEach(task => {
+        const dateStr = toICSDate(key)
+        const nextDay = toICSDate(new Date(new Date(key + 'T00:00:00').getTime() + 86400000).toISOString().slice(0, 10))
+        lines.push(
+          'BEGIN:VEVENT',
+          `UID:task-${task.id}@codelearn`,
+          `DTSTART;VALUE=DATE:${dateStr}`,
+          `DTEND;VALUE=DATE:${nextDay}`,
+          `SUMMARY:${task.done ? '✅' : '☐'} ${task.title}`,
+          `DESCRIPTION:משימה: ${task.title}`,
+          'CATEGORIES:משימות',
+          'END:VEVENT',
+        )
+      })
+    })
+
+    lines.push('END:VCALENDAR')
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `codelearn-${new Date().toISOString().slice(0, 10)}.ics`
+    a.click()
+    URL.revokeObjectURL(url)
+    triggerTooltip('ICS הורד — ניתן לייבוא ל-Google Calendar ✓')
+  }
+
+  function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      try {
+        const parsed = JSON.parse(ev.target?.result as string)
+        if (parsed.version !== 1 || !parsed.schedule || !parsed.tasks) {
+          triggerTooltip('קובץ לא תקין ✗')
+          return
+        }
+        setSchedule(parsed.schedule as Schedule)
+        setTaskMap(parsed.tasks as TaskMap)
+        save(parsed.schedule)
+        saveTaskMap(parsed.tasks)
+        triggerTooltip('הנתונים סונכרנו בהצלחה ✓')
+      } catch {
+        triggerTooltip('שגיאה בקריאת הקובץ ✗')
+      }
+      if (importRef.current) importRef.current.value = ''
+    }
+    reader.readAsText(file)
+  }
+
   return (
     <div style={{ minHeight: '100vh', background: '#fef9f0', direction: 'rtl' }}>
 
@@ -584,6 +692,74 @@ export default function CalendarPage() {
           </div>
         </aside>
       </div>
+
+      {/* כפתורי ייצוא/ייבוא — פינה תחתונה ימנית */}
+      <div
+        className="fixed flex flex-col items-end gap-2"
+        style={{ bottom: 24, right: 24, zIndex: 50, direction: 'ltr' }}
+      >
+        {/* Tooltip */}
+        {exportTooltip && (
+          <div
+            className="text-xs font-bold px-3 py-1.5"
+            style={{ background: '#1c1c2e', color: '#10b981', borderRadius: 8, boxShadow: '2px 2px 0 #10b981', whiteSpace: 'nowrap' }}
+          >
+            {exportTooltip}
+          </div>
+        )}
+
+        {/* קבוצת כפתורים */}
+        <div className="flex gap-2">
+          {/* ייבוא JSON */}
+          <button
+            onClick={() => importRef.current?.click()}
+            title="ייבוא / סנכרון מקובץ JSON"
+            aria-label="ייבוא נתונים מקובץ JSON"
+            className="flex items-center justify-center"
+            style={{ width: 44, height: 44, background: '#fff', border: '2px solid #1c1c2e', borderRadius: 12, cursor: 'pointer', boxShadow: '3px 3px 0 #1c1c2e', fontSize: 20, transition: 'box-shadow 0.1s' }}
+            onMouseEnter={e => (e.currentTarget.style.boxShadow = '1px 1px 0 #1c1c2e')}
+            onMouseLeave={e => (e.currentTarget.style.boxShadow = '3px 3px 0 #1c1c2e')}
+          >
+            📤
+          </button>
+
+          {/* ייצוא ICS */}
+          <button
+            onClick={handleExportICS}
+            title="הורדת ICS לייבוא ל-Google Calendar / Outlook"
+            aria-label="הורד ICS לייבוא ליומן"
+            className="flex items-center justify-center"
+            style={{ width: 44, height: 44, background: '#fff', border: '2px solid #1c1c2e', borderRadius: 12, cursor: 'pointer', boxShadow: '3px 3px 0 #1c1c2e', fontSize: 20, transition: 'box-shadow 0.1s' }}
+            onMouseEnter={e => (e.currentTarget.style.boxShadow = '1px 1px 0 #1c1c2e')}
+            onMouseLeave={e => (e.currentTarget.style.boxShadow = '3px 3px 0 #1c1c2e')}
+          >
+            🗓️
+          </button>
+
+          {/* ייצוא JSON */}
+          <button
+            onClick={handleExportJSON}
+            title="הורדת JSON — לסנכרון חזרה"
+            aria-label="הורד JSON לסנכרון"
+            className="flex items-center justify-center"
+            style={{ width: 44, height: 44, background: '#1c1c2e', border: '2px solid #1c1c2e', borderRadius: 12, cursor: 'pointer', boxShadow: '3px 3px 0 #10b981', fontSize: 20, transition: 'box-shadow 0.1s' }}
+            onMouseEnter={e => (e.currentTarget.style.boxShadow = '1px 1px 0 #10b981')}
+            onMouseLeave={e => (e.currentTarget.style.boxShadow = '3px 3px 0 #10b981')}
+          >
+            📥
+          </button>
+        </div>
+      </div>
+
+      {/* input נסתר לייבוא */}
+      <input
+        ref={importRef}
+        type="file"
+        accept=".json,application/json"
+        onChange={handleImport}
+        style={{ display: 'none' }}
+        aria-hidden="true"
+      />
 
       {/* מודל חזרה שבועית */}
       {confirmDrop && (() => {
