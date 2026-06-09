@@ -190,6 +190,9 @@ export default function ChatWidget() {
       {/* Popup */}
       {open && (
         <div
+          role="dialog"
+          aria-label="צ'אט"
+          aria-modal="true"
           className="fixed z-50 flex flex-col"
           style={{
             bottom: 88,
@@ -221,6 +224,8 @@ export default function ChatWidget() {
               <button
                 onClick={() => setAvatarPickerOpen((v) => !v)}
                 title="שנה אווטאר"
+                aria-label="שנה אווטאר"
+                aria-expanded={avatarPickerOpen}
                 className="text-xl leading-none"
                 style={{ background: 'none', border: 'none', cursor: 'pointer' }}
               >
@@ -228,6 +233,7 @@ export default function ChatWidget() {
               </button>
               <button
                 onClick={() => { clearMessages(); setMessages([]) }}
+                aria-label="נקה את כל ההודעות"
                 className="text-xs opacity-60 hover:opacity-100"
                 style={{ color: '#fef9f0' }}
               >
@@ -290,7 +296,7 @@ export default function ChatWidget() {
           </div>
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3">
+          <div className="flex-1 overflow-y-auto px-3 py-3 flex flex-col gap-3" role="log" aria-live="polite" aria-label="הודעות צ'אט">
             {messages.length === 0 && (
               <p className="text-center text-sm mt-8" style={{ color: '#a0998c' }}>
                 אין הודעות עדיין — שלח משהו!
@@ -351,6 +357,7 @@ export default function ChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKey}
               placeholder={connected ? 'כתוב הודעה...' : 'מתחבר...'}
+              aria-label="הקלד הודעה לצ'אט"
               disabled={!connected}
               maxLength={500}
               className="flex-1 px-3 py-2 text-sm font-medium"
@@ -398,7 +405,10 @@ export default function ChatWidget() {
             fontSize: open ? 22 : 26,
             transition: 'box-shadow 0.15s',
           }}
-          title="פתח צ'אט"
+          title={open ? "סגור צ'אט" : "פתח צ'אט"}
+          aria-label={open ? "סגור צ'אט" : "פתח צ'אט"}
+          aria-expanded={open}
+          aria-haspopup="dialog"
         >
           {open ? '✕' : myAvatar}
           {!open && unread > 0 && (

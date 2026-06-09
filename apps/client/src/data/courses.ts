@@ -1,4 +1,5 @@
 import { pythonLessons } from './python/lessons'
+import { nosqlLessons } from './nosql/lessons'
 import { sqlLessons } from './sql/lessons'
 import { jsLessons } from './js/lessons'
 import { tsLessons } from './ts/lessons'
@@ -24,6 +25,15 @@ export const courses: Course[] = [
     color: '#3b82f6',
     gradient: 'from-blue-500 to-indigo-600',
     lessons: pythonLessons,
+  },
+  {
+    id: 'nosql',
+    title: 'NoSQL & MongoDB',
+    description: 'MongoDB מהבסיס — CRUD, Aggregation Pipeline, $lookup, Indexes ו-Mongoose',
+    emoji: '🍃',
+    color: '#16a34a',
+    gradient: 'from-green-600 to-emerald-700',
+    lessons: nosqlLessons,
   },
   {
     id: 'sql',

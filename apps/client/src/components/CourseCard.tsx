@@ -15,6 +15,8 @@ export default function CourseCard({ course }: Props) {
     return (
       <div
         className="p-6 select-none"
+        aria-label={`${course.title} — בקרוב`}
+        aria-disabled="true"
         style={{
           background: '#f5f5f5',
           border: '2px solid #c4c4cc',
@@ -25,7 +27,7 @@ export default function CourseCard({ course }: Props) {
         }}
       >
         <div className="flex items-start justify-between mb-3">
-          <span style={{ fontSize: '2rem' }}>{course.emoji}</span>
+          <span style={{ fontSize: '2rem' }} role="img" aria-label={course.title}>{course.emoji}</span>
           <span
             className="font-bold"
             style={{
@@ -51,10 +53,14 @@ export default function CourseCard({ course }: Props) {
   const pct = stats.percent
 
   return (
-    <Link to={`/learn/${course.id}`} className="block">
-      <div className="brutal-card p-6">
+    <Link
+      to={`/learn/${course.id}`}
+      className="block"
+      aria-label={`${course.title} — ${course.description}. ${stats.completed} מתוך ${course.lessons.length} שיעורים הושלמו`}
+    >
+      <article className="brutal-card p-6">
         <div className="flex items-start justify-between mb-3">
-          <span style={{ fontSize: '2rem' }}>{course.emoji}</span>
+          <span style={{ fontSize: '2rem' }} role="img" aria-label={course.title}>{course.emoji}</span>
           {pct > 0 && (
             <span
               className="font-black"
@@ -94,6 +100,11 @@ export default function CourseCard({ course }: Props) {
         <div
           className="w-full rounded-full overflow-hidden mb-4"
           style={{ height: 8, background: '#e8e4dc', border: '1.5px solid #1c1c2e' }}
+          role="progressbar"
+          aria-valuenow={pct}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`התקדמות בקורס ${course.title}: ${pct}%`}
         >
           <div
             className="h-full rounded-full transition-all duration-500"
@@ -111,7 +122,7 @@ export default function CourseCard({ course }: Props) {
         >
           {stats.completed === 0 ? 'התחל ללמוד ←' : 'המשך ←'}
         </div>
-      </div>
+      </article>
     </Link>
   )
 }

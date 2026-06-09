@@ -48,6 +48,15 @@ export default function Home() {
       />
 
       {/* Sticky header block */}
+      {/* Skip to content — נגישות */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-50 focus:px-4 focus:py-2 focus:font-black focus:rounded-lg"
+        style={{ background: '#10b981', color: '#fff' }}
+      >
+        דלג לתוכן הראשי
+      </a>
+
       <div className="sticky top-0 z-40" style={{ background: '#1c1c2e', boxShadow: '0 2px 0 #10b981' }}>
 
         {/* שורה 1: לוגו + כפתורים */}
@@ -69,11 +78,12 @@ export default function Home() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="חיפוש קורס..."
+                aria-label="חיפוש קורסים"
                 className="text-sm font-bold"
                 style={{ paddingRight: 32, paddingLeft: 10, paddingTop: 5, paddingBottom: 5, background: '#2d2d40', color: '#fef9f0', border: '2px solid #3d3d54', borderRadius: 8, outline: 'none', width: 180 }}
               />
               {search && (
-                <button onClick={() => setSearch('')} style={{ position: 'absolute', left: 8, background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 16, lineHeight: 1 }}>×</button>
+                <button onClick={() => setSearch('')} aria-label="נקה חיפוש" style={{ position: 'absolute', left: 8, background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 16, lineHeight: 1 }}>×</button>
               )}
             </div>
 
@@ -126,14 +136,14 @@ export default function Home() {
               style={{ paddingRight: 32, paddingLeft: search ? 32 : 10, paddingTop: 8, paddingBottom: 8, background: '#2d2d40', color: '#fef9f0', border: '2px solid #3d3d54', borderRadius: 8, outline: 'none' }}
             />
             {search && (
-              <button onClick={() => setSearch('')} style={{ position: 'absolute', left: 10, background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 18, lineHeight: 1 }}>×</button>
+              <button onClick={() => setSearch('')} aria-label="נקה חיפוש" style={{ position: 'absolute', left: 10, background: 'none', border: 'none', cursor: 'pointer', color: '#a0998c', fontSize: 18, lineHeight: 1 }}>×</button>
             )}
           </div>
         </div>
 
       </div>{/* end sticky block */}
 
-      <div className="relative max-w-5xl mx-auto px-6 py-10">
+      <div id="main-content" className="relative max-w-5xl mx-auto px-6 py-10">
 
         {/* Today's plan */}
         {todaySessions.length > 0 && (

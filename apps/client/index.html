@@ -3,35 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CodeLearn - ללמוד לתכנת בעברית | SQL, JavaScript, TypeScript, React, Angular, C#</title>
+    <title>CodeLearn - ללמוד לתכנת בעברית | SQL, JavaScript, Python, React, MongoDB, TypeScript</title>
     <meta
       name="description"
-      content="CodeLearn — פלטפורמת לימוד תכנות בעברית. קורסים ב-SQL, JavaScript, TypeScript, React, Angular, C# .NET, Linux, DevOps, בדיקות אוטומטיות ו-AI. שיעורים עם שאלות ומשוב מיידי. חינמי לחלוטין."
+      content="CodeLearn — פלטפורמת לימוד תכנות בעברית חינמית. קורסים ב-SQL, JavaScript, Python, TypeScript, React, React Native, Angular, C# .NET, MongoDB, NoSQL, Linux, DevOps, בדיקות אוטומטיות, Vibe Coding ו-AI. שיעורים אינטראקטיביים עם שאלות ומשוב מיידי."
     />
     <meta
       name="keywords"
-      content="לימוד תכנות עברית, קורסי תכנות עברית, SQL עברית, JavaScript עברית, TypeScript עברית, React עברית, Angular עברית, C# עברית, NET עברית, לימוד Angular, לימוד React, לימוד TypeScript, קורס SQL חינם, ללמוד SQL, Linux עברית, DevOps עברית, Docker עברית, CI/CD עברית, AWS עברית, בדיקות אוטומטיות עברית, unit tests עברית, Jest עברית, Vitest, xUnit, LLM עברית, MCP, Claude API, AI תכנות, מדריך תכנות עברית, שפות תכנות"
+      content="לימוד תכנות עברית, קורסי תכנות עברית, קורסי תכנות חינם, SQL עברית, JavaScript עברית, Python עברית, TypeScript עברית, React עברית, React Native עברית, Angular עברית, C# עברית, NET עברית, MongoDB עברית, NoSQL עברית, לימוד Angular, לימוד React, לימוד TypeScript, לימוד Python, קורס SQL חינם, ללמוד SQL, ללמוד JavaScript, ללמוד Python, ללמוד MongoDB, Linux עברית, DevOps עברית, Docker עברית, CI/CD עברית, AWS עברית, בדיקות אוטומטיות עברית, unit tests עברית, Jest עברית, Vitest, xUnit, LLM עברית, MCP, Claude API, AI תכנות, Vibe Coding, פיתוח אפליקציות מובייל, מדריך תכנות עברית, שפות תכנות, fullstack עברית, backend עברית, frontend עברית, aggregation pipeline, mongoose, פיתוח ווב, קורס תכנות מתחילים"
     />
-    <meta name="author" content="CodeLearn" />
-    <meta name="robots" content="index, follow" />
-    <meta name="theme-color" content="#08080f" />
+    <meta name="author" content="CodeLearn — yizik" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="theme-color" content="#1c1c2e" />
+    <meta name="color-scheme" content="light" />
 
     <!-- Open Graph / Social -->
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="CodeLearn - ללמוד לתכנת בעברית" />
+    <meta property="og:site_name" content="CodeLearn" />
+    <meta property="og:url" content="https://codelearn.co.il/" />
+    <meta property="og:title" content="CodeLearn - ללמוד לתכנת בעברית | חינמי לחלוטין" />
     <meta
       property="og:description"
-      content="קורסי תכנות בעברית — SQL, JavaScript, TypeScript, React, Angular, C# .NET, Linux, DevOps, בדיקות אוטומטיות ו-AI. שיעורים קלים עם שאלות ומשוב מיידי. חינמי."
+      content="קורסי תכנות בעברית — SQL, JavaScript, Python, TypeScript, React, MongoDB, React Native, Angular, C# .NET, Linux, DevOps, AI ו-Vibe Coding. שיעורים אינטראקטיביים עם שאלות וניקוד. חינמי לחלוטין."
     />
     <meta property="og:locale" content="he_IL" />
+    <meta property="og:image" content="https://codelearn.co.il/icon.svg" />
+    <meta property="og:image:alt" content="CodeLearn - פלטפורמת לימוד תכנות בעברית" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="CodeLearn - ללמוד לתכנת בעברית" />
     <meta
       name="twitter:description"
-      content="קורסי תכנות בעברית — SQL, JavaScript, TypeScript, React, Angular, C# .NET, Linux, DevOps, בדיקות ו-AI. שיעורים קלים עם שאלות וניקוד. חינמי."
+      content="קורסי תכנות בעברית — SQL, Python, JavaScript, MongoDB, React Native ועוד. שיעורים אינטראקטיביים עם שאלות וניקוד. חינמי."
     />
+    <meta name="twitter:image" content="https://codelearn.co.il/icon.svg" />
 
     <!-- PWA -->
     <link rel="icon" type="image/svg+xml" href="/icon.svg" />
@@ -41,8 +47,9 @@
     <meta name="apple-mobile-web-app-title" content="CodeLearn" />
     <meta name="mobile-web-app-capable" content="yes" />
 
-    <!-- Canonical -->
+    <!-- Canonical + hreflang -->
     <link rel="canonical" href="https://codelearn.co.il/" />
+    <link rel="alternate" hreflang="he" href="https://codelearn.co.il/" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -51,25 +58,68 @@
       href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "CodeLearn",
+      "url": "https://codelearn.co.il",
+      "inLanguage": "he",
+      "description": "פלטפורמת לימוד תכנות בעברית חינמית עם קורסים אינטראקטיביים",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://codelearn.co.il/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "CodeLearn",
+      "url": "https://codelearn.co.il",
+      "logo": "https://codelearn.co.il/icon.svg",
+      "description": "פלטפורמת לימוד תכנות בעברית",
+      "inLanguage": "he"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "קורסי תכנות בעברית",
+      "description": "קורסי תכנות אינטראקטיביים בעברית — חינמיים לחלוטין",
+      "itemListElement": [
+        { "@type": "Course", "position": 1, "name": "Python", "description": "שפת הבינה המלאכותית — משתנים, פונקציות, רשימות, קבצים ועוד", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 2, "name": "NoSQL & MongoDB", "description": "MongoDB מהבסיס — CRUD, Aggregation Pipeline, lookup, Indexes ו-Mongoose", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 3, "name": "SQL", "description": "שפת השאילתות הסטנדרטית לניהול מסדי נתונים", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 4, "name": "JavaScript", "description": "שפת האינטרנט — משתנים, פונקציות, DOM ו-Async", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 5, "name": "TypeScript", "description": "JavaScript עם טיפוסים — לקוד בטוח ומקצועי יותר", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 6, "name": "React", "description": "ספריית UI הכי פופולרית — קומפוננטות, hooks ו-state", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 7, "name": "React Native", "description": "בניית אפליקציות מובייל ל-iOS ו-Android עם React", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true },
+        { "@type": "Course", "position": 8, "name": "Vibe Coding", "description": "פיתוח תוכנה עם AI — פרומפטים, workflow ו-best practices", "provider": { "@type": "Organization", "name": "CodeLearn" }, "inLanguage": "he", "isAccessibleForFree": true }
+      ]
+    }
+    </script>
+
     <!-- Google tag (gtag.js) -->
-    <script
-      async
-      src="https://www.googletagmanager.com/gtag/js?id=G-6GENMCGXPH"
-    ></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6GENMCGXPH"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
+      function gtag() { dataLayer.push(arguments); }
       gtag("js", new Date());
-
       gtag("config", "G-6GENMCGXPH");
     </script>
   </head>
   <body>
     <div id="root"></div>
     <script>
-      // Restore path that was encoded by 404.html before React Router boots
       (function () {
         var p = new URLSearchParams(location.search).get('p')
         if (p) history.replaceState(null, '', decodeURIComponent(p))
