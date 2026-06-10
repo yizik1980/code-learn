@@ -14,6 +14,7 @@ import { angularLessons } from './angular/lessons'
 import { patternsLessons } from './patterns/lessons'
 import { architectureLessons } from './architecture/lessons'
 import { vibeCodingLessons } from './vibe_coding/lessons'
+import { notebooklmLessons } from './notebooklm/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -143,6 +144,15 @@ export const courses: Course[] = [
     color: '#0f766e',
     gradient: 'from-teal-600 to-emerald-800',
     lessons: architectureLessons,
+  },
+  {
+    id: 'notebooklm',
+    title: 'NotebookLM',
+    description: 'כלי המחקר של Google — AI שמבין את המסמכים שלך, מייצר פודקאסטים, Study Guides ועוד',
+    emoji: '📓',
+    color: '#1a73e8',
+    gradient: 'from-blue-600 to-indigo-700',
+    lessons: notebooklmLessons,
   },
   {
     id: 'vibe-coding',
