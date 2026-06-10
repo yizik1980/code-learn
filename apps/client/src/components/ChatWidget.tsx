@@ -117,12 +117,7 @@ export default function ChatWidget() {
     const ws = new WebSocket(WS_URL)
     wsRef.current = ws
     ws.onopen = () => {
-      setConnected(true)
-      const name = getUserData().name || ''
-      const text = name && name !== 'אנונימי'
-        ? `ברוך הבא, ${name} 👋 מה תרצה ללמוד היום?`
-        : 'ברוך הבא 👋 מה תרצה ללמוד היום?'
-      ws.send(JSON.stringify({ type: 'message', text, userId: 'codelearn-bot', name: 'CodeLearn', avatar: '👨‍💻' }))
+      setConnected(true);
     }
     ws.onmessage = (e: MessageEvent) => {
       try {
