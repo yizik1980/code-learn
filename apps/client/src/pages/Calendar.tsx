@@ -8,12 +8,21 @@ const TASKS_KEY = 'cl_tasks'
 interface Task { id: string; title: string; done: boolean }
 type TaskMap = Record<string, Task[]>
 
+function prunePast<T>(map: Record<string, T>): Record<string, T> {
+  const today = toKey(new Date())
+  const out: Record<string, T> = {}
+  for (const [key, val] of Object.entries(map)) {
+    if (key >= today) out[key] = val
+  }
+  return out
+}
+
 function loadTaskMap(): TaskMap {
-  try { return JSON.parse(localStorage.getItem(TASKS_KEY) ?? '{}') }
+  try { return prunePast(JSON.parse(localStorage.getItem(TASKS_KEY) ?? '{}') as TaskMap) }
   catch { return {} }
 }
 function saveTaskMap(m: TaskMap) {
-  localStorage.setItem(TASKS_KEY, JSON.stringify(m))
+  localStorage.setItem(TASKS_KEY, JSON.stringify(prunePast(m)))
 }
 
 type Duration = 10 | 20 | 30
@@ -92,12 +101,12 @@ function buildGrid(year: number, month: number): (Date | null)[][] {
 }
 
 function load(): Schedule {
-  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') }
+  try { return prunePast(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}') as Schedule) }
   catch { return {} }
 }
 
 function save(s: Schedule) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(s))
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(prunePast(s)))
 }
 
 export default function CalendarPage() {
