@@ -55,6 +55,10 @@ app.use((err, _req, res, _next) => {
 const httpServer = http.createServer(app)
 createChatServer(httpServer)
 
-initDb()
-  .then(() => httpServer.listen(PORT, () => console.log(`API listening on :${PORT}`)))
-  .catch((err) => { console.error('DB init failed', err); process.exit(1) })
+httpServer.listen(PORT, () => console.log(`API listening on :${PORT}`))
+
+initDb().catch((err) => {
+  console.error('DB init failed', err)
+  // לא קורסים — השרת עולה, /api/health ו-WebSocket עובדים
+  // קריאות ל-/api/notes יחזירו 503 עד שה-DB יתאושש
+})
