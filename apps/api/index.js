@@ -2,12 +2,10 @@ require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const helmet = require('helmet')
-const { initDb } = require('./db')
 const { applyCors } = require('./middleware/cors')
 const { globalLimiter } = require('./middleware/rateLimiter')
 const { createChatServer } = require('./ws/chat')
 const healthRouter = require('./routes/health')
-const notesRouter = require('./routes/notes')
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -35,7 +33,6 @@ app.use('/api', globalLimiter)
 // ─── Routes ───────────────────────────────────────────────────────────────────
 
 app.use('/api', healthRouter)
-app.use('/api/notes', notesRouter)
 
 // ─── 404 ─────────────────────────────────────────────────────────────────────
 
@@ -54,11 +51,4 @@ app.use((err, _req, res, _next) => {
 
 const httpServer = http.createServer(app)
 createChatServer(httpServer)
-
 httpServer.listen(PORT, () => console.log(`API listening on :${PORT}`))
-
-initDb().catch((err) => {
-  console.error('DB init failed', err)
-  // לא קורסים — השרת עולה, /api/health ו-WebSocket עובדים
-  // קריאות ל-/api/notes יחזירו 503 עד שה-DB יתאושש
-})
