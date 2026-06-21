@@ -1198,6 +1198,66 @@ public class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log)
     summary: 'Dependency Injection מתקדם, Keyed Services, IOptions, TimeProvider ו-Generic Host',
     emoji: '🔧',
     content: [
+      { type: 'heading', text: 'מה זה Dependency Injection ולמה הוא חשוב?' },
+      {
+        type: 'text',
+        text: 'Dependency Injection (DI) הוא עיקרון עיצוב שבו אובייקט לא יוצר את התלויות שלו בעצמו — הוא מקבל אותן מבחוץ. במקום ש-NoteService ייצור בעצמו NoteRepository, הוא מקבל אותו דרך ה-constructor. כך הקוד נשאר מנותק, ניתן לבדיקה, וניתן להחלפה.',
+      },
+      {
+        type: 'code',
+        lang: 'csharp',
+        caption: 'הבעיה: ללא DI — תלות קשיחה שקשה לבדוק ולשנות',
+        code: `// ✗ ללא DI — NoteService יוצר את התלויות שלו
+public class NoteService
+{
+    private readonly NoteRepository _repo;
+    private readonly ILogger<NoteService> _log;
+
+    public NoteService()
+    {
+        _repo = new NoteRepository("Server=prod-db;..."); // קשור לDB ספציפי
+        _log  = new ConsoleLogger();                       // קשור למימוש ספציפי
+    }
+
+    public async Task<Note[]> GetAsync(string userId) =>
+        await _repo.FindAsync(userId);
+}
+
+// בעיות:
+// 1. לא ניתן לבדוק — new NoteService() תמיד יוצר חיבור אמיתי לDB
+// 2. לא ניתן להחליף — רוצים Redis cache? צריך לשנות את NoteService
+// 3. לא ניתן לשתף — כל new NoteService() פותח חיבור DB חדש`,
+      },
+      {
+        type: 'code',
+        lang: 'csharp',
+        caption: 'הפתרון: עם DI — מנותק, ניתן לבדיקה, ניתן להחלפה',
+        code: `// ✓ עם DI — NoteService מקבל תלויות מבחוץ
+public class NoteService(INoteRepository repo, ILogger<NoteService> log)
+{
+    public async Task<Note[]> GetAsync(string userId) =>
+        await repo.FindAsync(userId);
+}
+
+// ─── Registration — מגדירים מה יינתן ────────────────────
+builder.Services.AddScoped<INoteRepository, NoteRepository>();
+builder.Services.AddScoped<NoteService>();
+
+// ─── בבדיקות — מחליפים את המימוש ────────────────────────
+var fakeRepo = new FakeNoteRepository([note1, note2]);
+var svc = new NoteService(fakeRepo, NullLogger<NoteService>.Instance);
+// ✓ בדיקה בלי DB אמיתי, בלי network, בלי config
+
+// ─── יתרונות DI ───────────────────────────────────────────
+// 1. Testability  — מחליפים מימושים אמיתיים ב-fakes/mocks
+// 2. Flexibility  — מחליפים NoteRepository ב-CachedNoteRepository ללא שינוי קוד
+// 3. Lifecycle    — ה-container מנהל Singleton/Scoped/Transient
+// 4. Separation   — NoteService לא יודע איך NoteRepository נוצר`,
+      },
+      {
+        type: 'tip',
+        text: 'עיקרון DI נובע מ-Dependency Inversion Principle (ה-D ב-SOLID): מחלקות צריכות להסתמך על abstractions (interfaces) ולא על מימושים קונקרטיים. ASP.NET Core מגיע עם DI container מובנה — ללא צורך בספריות חיצוניות.',
+      },
       { type: 'heading', text: 'Dependency Injection — Lifetimes' },
       {
         type: 'table',
@@ -1365,6 +1425,30 @@ builder.Services.AddHostedService<NotesCleanupService>();`,
       },
     ],
     questionBank: [
+      {
+        id: 'di-q0a',
+        text: 'מה הבעיה העיקרית בקוד שיוצר תלויות בעצמו (ללא DI)?',
+        options: [
+          'הקוד איטי יותר',
+          'הקוד קשה לבדיקה — לא ניתן להחליף מימושים אמיתיים ב-fakes בבדיקות',
+          'הקוד לא קומפיל',
+          'הקוד לא תומך ב-async',
+        ],
+        correct: 1,
+        explanation: 'כשמחלקה יוצרת תלויות בעצמה (new Repository(connStr)), כל בדיקה דורשת DB אמיתי, network, config. עם DI: מחליפים את הrepository ב-fake ובודקים ללא תשתית.',
+      },
+      {
+        id: 'di-q0b',
+        text: 'מה Dependency Inversion Principle אומר?',
+        options: [
+          'מחלקות בכירות לא תלויות בנמוכות — שניהן תלויות ב-interface משותף',
+          'יש להשתמש רק ב-Singleton',
+          'אסור לירשת מחלקות',
+          'כל מחלקה צריכה לנהל את עצמה',
+        ],
+        correct: 0,
+        explanation: 'DIP (ה-D ב-SOLID): NoteService לא תלוי ב-NoteRepository הקונקרטי — שניהם תלויים ב-INoteRepository. כך ניתן להחליף מימוש (SQL → Redis → InMemory) ללא שינוי NoteService.',
+      },
       {
         id: 'di-q1',
         text: 'מה ההבדל בין Singleton ל-Scoped?',

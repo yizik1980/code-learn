@@ -1,3 +1,4 @@
+import { etlLessons } from './etl/lessons'
 import { pythonLessons } from './python/lessons'
 import { nosqlLessons } from './nosql/lessons'
 import { sqlLessons } from './sql/lessons'
@@ -171,5 +172,14 @@ export const courses: Course[] = [
     color: '#8b5cf6',
     gradient: 'from-violet-500 to-purple-700',
     lessons: llmLessons,
+  },
+  {
+    id: 'etl',
+    title: 'ETL & Data Warehouse',
+    description: 'ארכיטקטורת DWH, Star Schema, SCD, ETL מלא, dbt, Airflow, Medallion Architecture ו-Data Quality',
+    emoji: '🏛️',
+    color: '#0891b2',
+    gradient: 'from-cyan-600 to-blue-800',
+    lessons: etlLessons,
   },
 ]
