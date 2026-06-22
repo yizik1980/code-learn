@@ -50,6 +50,10 @@ export const devopsLessons: Lesson[] = [
       },
       { type: 'heading', text: 'פקודות בסיסיות' },
       {
+        type: 'text',
+        text: 'ניווט במערכת הקבצים של Linux הוא מיומנות בסיסית שכל מפתח חייב לדעת. הדוגמה הבאה מציגה את הפקודות הנפוצות ביותר: pwd לאיתור מיקום נוכחי, ls -la להצגת כל הקבצים כולל נסתרים, cd לניווט, ו-mkdir/touch/rm ליצירה ומחיקה. שימו לב לדגל -p ב-mkdir שמאפשר יצירת תיקיות מקוננות בפעולה אחת.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'ניווט וניהול קבצים',
@@ -75,6 +79,10 @@ touch app.log
 
 # מחיקה:
 rm -rf old_folder/`,
+      },
+      {
+        type: 'text',
+        text: 'קריאת תוכן קבצים וחיפוש בהם היא פעולה יומיומית בעבודה עם שרתים. הדוגמה מראה את tail -f לעקיבה חיה אחר לוגים בזמן אמת, את grep לחיפוש טקסט ספציפי בקבצים, ואת find לאיתור קבצים לפי שם או זמן שינוי. שימו לב ש-grep -r מחפש רקורסיבית בכל תיקייה — שימושי מאוד לחיפוש בקוד.',
       },
       {
         type: 'code',
@@ -237,6 +245,10 @@ find . -mtime -1   # שונו ב-24 שעות האחרונות`,
       },
       { type: 'heading', text: 'chmod — שינוי הרשאות' },
       {
+        type: 'text',
+        text: 'chmod משנה את ההרשאות של קובץ או תיקייה. ישנן שתי שיטות: מספרית (octal) שבה כל רמת הרשאה מיוצגת על ידי מספר (4=קריאה, 2=כתיבה, 1=הרצה), וסמלית שמשתמשת באותיות (u/g/o ו-r/w/x). שימו לב ל-chmod 600 לקבצי מפתח פרטי — SSH ידחה חיבור אם המפתח נגיש למשתמשים אחרים.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'chmod — שיטה מספרית וסמלית',
@@ -257,6 +269,10 @@ chmod u+x,g-w script.sh  # owner מקבל x, group מאבד w
 chmod o-rwx secret.txt   # Others — ללא הרשאות`,
       },
       { type: 'heading', text: 'chown — שינוי בעלות' },
+      {
+        type: 'text',
+        text: 'chown מאפשר לשנות את הבעלים והקבוצה של קובץ. הפקודה דורשת לרוב sudo. הדוגמה מראה שינוי בעלים בלבד, שינוי גם בעלים וגם קבוצה, ושימוש ב-R לשינוי רקורסיבי של תיקייה שלמה — פעולה נפוצה בהגדרת שרת אינטרנט שבו www-data צריך לקרוא את הקבצים.',
+      },
       {
         type: 'code',
         lang: 'bash',
@@ -461,6 +477,10 @@ df -h   # שימוש בדיסק`,
       },
       { type: 'heading', text: 'הרגת תהליכים' },
       {
+        type: 'text',
+        text: 'ב-Linux מסיימים תהליכים על ידי שליחת Signals. ה-Signal הברירת מחדל הוא SIGTERM (15) שמבקש מהתהליך לסגור בצורה מסודרת ולשמור מצב. SIGKILL (9) הוא סיום מיידי שלא ניתן לחסום — משתמשים בו רק כמוצא אחרון. שימו לב ל-kill -HUP שמאפשר ל-nginx לטעון קובץ הגדרות מחדש ללא עצירת השירות.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'kill — שליחת Signals לתהליכים',
@@ -507,6 +527,10 @@ journalctl -u nginx -f
 journalctl -u nginx --since "1 hour ago"`,
       },
       { type: 'heading', text: 'הרצה ברקע' },
+      {
+        type: 'text',
+        text: 'לעיתים צריך להריץ תהליך ברקע כך שהטרמינל יישאר פנוי, ולפעמים צריך שהתהליך ימשיך לרוץ גם אחרי ניתוק ה-SSH. הדוגמה מראה את & להרצה ברקע, את jobs לצפייה בתהליכים, ואת nohup שמונע עצירה עם סגירת הטרמינל. screen הוא כלי עוצמתי יותר שמאפשר לנתק מסשן ולחזור אליו מאוחר יותר.',
+      },
       {
         type: 'code',
         lang: 'bash',
@@ -676,6 +700,10 @@ screen -r mysession  # חיבור מחדש`,
       },
       { type: 'heading', text: 'Dockerfile — מתכון לקונטיינר' },
       {
+        type: 'text',
+        text: 'Dockerfile הוא סדרת הוראות לבניית Docker Image שכבה על גבי שכבה. הדוגמה מראה Dockerfile לאפליקציית Node.js עם אופטימיזציית cache חשובה: מעתיקים את package.json ומריצים npm ci לפני העתקת שאר הקוד — כך Docker ישתמש ב-cache של שכבת התלויות כל עוד package.json לא השתנה, ויחסוך זמן בנייה יקר.',
+      },
+      {
         type: 'code',
         lang: 'dockerfile',
         caption: 'Dockerfile לאפליקציית Node.js',
@@ -699,6 +727,10 @@ EXPOSE 3000
 CMD ["node", "server.js"]`,
       },
       { type: 'heading', text: 'פקודות Docker בסיסיות' },
+      {
+        type: 'text',
+        text: 'ניהול קונטיינרים מתבצע דרך ה-CLI של Docker. הדוגמה מכסה את מחזור חיי הקונטיינר: docker build לבניית Image, docker run להרצה עם מיפוי פורטים, docker ps לצפייה בקונטיינרים רצים, docker logs לצפייה בפלט, ו-docker exec לכניסה אינטראקטיבית לתוך קונטיינר רץ. שימו לב לדגל -d (detached) שמריץ את הקונטיינר ברקע.',
+      },
       {
         type: 'code',
         lang: 'bash',
@@ -763,6 +795,10 @@ services:
 
 volumes:
   postgres_data:`,
+      },
+      {
+        type: 'text',
+        text: 'לאחר הגדרת השירותים ב-docker-compose.yml, ניהולם מתבצע עם פקודות פשוטות. docker compose up -d מפעיל את כל השירותים ברקע, down עוצר ומסיר קונטיינרים, ו---build מכריח בנייה מחדש של Image לאחר שינויי קוד. שימו לב שב-Docker Compose המודרני כותבים docker compose (עם רווח) ולא docker-compose (עם מקף).',
       },
       {
         type: 'code',
@@ -985,6 +1021,10 @@ jobs:
         run: npm run build`,
       },
       {
+        type: 'text',
+        text: 'שלב ה-deploy רץ רק לאחר שה-test job עבר בהצלחה, ורק כשה-push הגיע מ-main. הדוגמה מראה בניית Docker Image עם tag של ה-commit SHA (לזיהוי מדויק של הגרסה), ואז deploy לשרת דרך SSH. שימו לב שה-SSH key מוזרק כ-Secret ולא מאוחסן בקוד — זה דפוס אבטחה קריטי.',
+      },
+      {
         type: 'code',
         lang: 'yaml',
         caption: 'שלב deploy לאחר הצלחת tests',
@@ -1204,6 +1244,10 @@ scrape_configs:
   - job_name: 'node-exporter'
     static_configs:
       - targets: ['node-exporter:9100']`,
+      },
+      {
+        type: 'text',
+        text: 'כדי ש-Prometheus יוכל לאסוף מדדים מאפליקציה, האפליקציה עצמה צריכה לחשוף endpoint של /metrics. הדוגמה מראה שני סוגי מדדים: Counter לספירת בקשות (ערך שרק עולה), ו-Histogram למדידת זמן תגובה עם buckets מוגדרים מראש. שימו לב ל-middleware שעוטף כל בקשה ומודד אותה אוטומטית.',
       },
       {
         type: 'code',

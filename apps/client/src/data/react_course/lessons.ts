@@ -27,6 +27,7 @@ export const reactLessons: Lesson[] = [
 // <Welcome />` },
       { type: 'tip', text: 'JSX מתורגם ל-React.createElement() מאחורי הקלעים. הדפדפן לא מבין JSX — Vite/Babel מתרגמים אותו.' },
       { type: 'heading', text: 'כללי JSX חשובים' },
+      { type: 'text', text: 'JSX יש לו כמה כללים שונים מ-HTML רגיל שחובה לזכור. הקוד מציג בבת אחת: שימוש ב-Fragment (<>) במקום div עוטף, ביטויי JavaScript בתוך {}, className במקום class, rendering מותנה עם &&, ורשימות עם map שחייבות key ייחודי לכל אלמנט.' },
       { type: 'code', lang: 'jsx', caption: 'כללי JSX', code: `function MyComponent() {
   const isLoggedIn = true;
   const items = ["תפוח", "בננה", "ענב"];
@@ -56,6 +57,7 @@ export const reactLessons: Lesson[] = [
   );
 }` },
       { type: 'heading', text: 'Props — העברת נתונים' },
+      { type: 'text', text: 'Props הם הדרך להעביר נתונים מקומפוננטת הורה לילד. הקוד מדגים destructuring ישיר של ה-props בחתימת הפונקציה, ערך ברירת מחדל ל-color, ו-prop מסוג פונקציה ל-onClick. שימו לב שה-props מוזנקים ב-{} ישירות בתוך תגית ה-JSX בזמן שימוש.' },
       { type: 'code', lang: 'jsx', caption: 'Props', code: `function Button({ text, color = "blue", onClick }) {
   return (
     <button
@@ -211,6 +213,7 @@ function Counter() {
   );
 }` },
       { type: 'heading', text: 'useState עם אובייקטים' },
+      { type: 'text', text: 'כשה-state הוא אובייקט, עדכון שדה אחד חייב לשמר את שאר השדות. הקוד מדגים את השגיאה הנפוצה: setUser({ name: ... }) ימחק את email! הדרך הנכונה היא spread ({ ...user, name: ... }) שמעתיק את כל השדות הקיימים ואז מחליף רק את הרצוי.' },
       { type: 'code', lang: 'jsx', caption: 'State מורכב', code: `function UserForm() {
   const [user, setUser] = useState({
     name: "",
@@ -235,6 +238,7 @@ function Counter() {
 }` },
       { type: 'tip', text: 'לעולם אל תשנה state ישירות! state.count++ לא יגרום לרנדור. תמיד השתמש ב-setter: setCount(count + 1).' },
       { type: 'heading', text: 'Functional Updates' },
+      { type: 'text', text: 'כשמעדכנים state בהתבסס על הערך הקודם, עדיף להשתמש בצורה הפונקציונלית setCount(prev => prev + 1). הסיבה: React עשויה לאגד כמה עדכונים ביחד (batching) — הצורה הפונקציונלית מבטיחה שתמיד יתבסס על הערך העדכני ביותר ולא על ערך ישן.' },
       { type: 'code', lang: 'jsx', caption: 'עדכון על בסיס הערך הקודם', code: `// כשה-update תלוי בערך הקודם — עדיף:
 setCount(prev => prev + 1);
 
@@ -242,6 +246,7 @@ setCount(prev => prev + 1);
 setCount(count + 1);
 // (כשיש כמה updates מהירים זה אחר זה)` },
       { type: 'heading', text: 'דוגמה — Toggle' },
+      { type: 'text', text: 'Toggle הוא דפוס נפוץ מאוד ב-React — החלפה בין שני מצבים. הקוד מדגים dark mode toggle: הסגנון משתנה לפי ה-state, וגם תוכן הכפתור עצמו משתנה בהתאם. שימו לב לשימוש ב-prev => !prev במקום !isDark — זה בטוח יותר.' },
       { type: 'code', lang: 'jsx', caption: 'toggle state', code: `function DarkModeToggle() {
   const [isDark, setIsDark] = useState(false);
 
@@ -400,6 +405,7 @@ function UserProfile({ userId }) {
   return <h1>{user?.name}</h1>;
 }` },
       { type: 'heading', text: 'Dependency Array' },
+      { type: 'text', text: 'ה-dependency array הוא הבקרה הכי חשובה של useEffect — הוא קובע מתי ה-effect ירוץ מחדש. הקוד מסכם את ארבע הצורות: ללא array (כל רנדור), array ריק (רק mount), array עם ערך אחד (כשמשתנה), ו-array עם כמה ערכים.' },
       { type: 'code', lang: 'jsx', caption: 'מתי useEffect רץ', code: `// רץ אחרי כל רנדור:
 useEffect(() => { ... });
 
@@ -412,6 +418,7 @@ useEffect(() => { ... }, [count]);
 // רץ כש-a או b משתנים:
 useEffect(() => { ... }, [a, b]);` },
       { type: 'heading', text: 'Cleanup — ניקוי' },
+      { type: 'text', text: 'פונקציית ה-cleanup שמוחזרת מ-useEffect רצה לפני שה-effect יופעל שוב, ולפני שהקומפוננטה יוצאת מה-DOM. הקוד מדגים cleanup של setInterval — בלעדיו ה-interval ימשיך לרוץ גם אחרי שהקומפוננטה כבר לא קיימת, וזו דליפת זיכרון קלאסית.' },
       { type: 'code', lang: 'jsx', caption: 'return cleanup function', code: `useEffect(() => {
   const timer = setInterval(() => {
     setCount(c => c + 1);
@@ -422,6 +429,7 @@ useEffect(() => { ... }, [a, b]);` },
   return () => clearInterval(timer);
 }, []);` },
       { type: 'heading', text: 'document.title' },
+      { type: 'text', text: 'עדכון כותרת הדף הוא דוגמה קלאסית לתופעת לוואי — פעולה שמשפיעה מחוץ לרנדור עצמו. הקוד מציג כיצד useEffect עם [count] בdependencies גורם לכותרת להתעדכן בכל פעם שcount משתנה, וה-UI גם הוא מציג את הספירה בזמן אמת.' },
       { type: 'code', lang: 'jsx', caption: 'עדכון כותרת הדף', code: `function App() {
   const [count, setCount] = useState(0);
 
@@ -588,6 +596,7 @@ useEffect(() => { ... }, [a, b]);` },
   );
 }` },
       { type: 'heading', text: 'Validation' },
+      { type: 'text', text: 'ולידציה היא בדיקת תקינות הקלט לפני שליחה. הקוד מציג דפוס נפוץ: פונקציית validate() נפרדת שמחזירה boolean ומעדכנת state של שגיאה, שמוצגת מתחת ל-input עם rendering מותנה. שימו לב ל-trim() שמונע אישור שדה של רווחים בלבד.' },
       { type: 'code', lang: 'jsx', caption: 'ולידציה פשוטה', code: `function SignupForm() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
@@ -621,6 +630,7 @@ useEffect(() => { ... }, [a, b]);` },
   );
 }` },
       { type: 'heading', text: 'Select ו-Checkbox' },
+      { type: 'text', text: 'select ו-checkbox נשלטים בצורה שונה מ-input רגיל. select מקבל value ו-onChange כמו input. checkbox לעומת זאת משתמש ב-checked (לא value) ו-e.target.checked (boolean) — לא e.target.value. שני ה-inputs מקושרים ל-state נפרד.' },
       { type: 'code', lang: 'jsx', caption: 'סוגי inputs', code: `function Preferences() {
   const [lang, setLang] = useState("he");
   const [agree, setAgree] = useState(false);
@@ -767,6 +777,7 @@ useEffect(() => { ... }, [a, b]);` },
     emoji: '🪝',
     content: [
       { type: 'heading', text: 'useRef — גישה ל-DOM וערכים עקשניים' },
+      { type: 'text', text: 'useRef משמש לשני מטרות שונות: גישה ישירה לאלמנט DOM (כמו focus()) ושמירת ערכים שנשמרים בין רנדורים אבל לא גורמים לרנדור בשינוי. הקוד מדגים את שניהם — ref לאלמנט input, ו-ref לשמירת ה-timer ID כדי שנוכל לעצור אותו מאוחר יותר.' },
       { type: 'code', lang: 'jsx', caption: 'useRef', code: `import { useRef, useEffect } from 'react';
 
 function AutoFocusInput() {
@@ -803,6 +814,7 @@ function Timer() {
   );
 }` },
       { type: 'heading', text: 'Custom Hooks — שימוש חוזר בלוגיקה' },
+      { type: 'text', text: 'Custom hook הוא פונקציה שמתחילה ב-use ומארזת לוגיקה עם hooks לשימוש חוזר. הקוד מציג useFetch — hook שמנהל שליפת נתונים כולל loading ו-error state. כל קומפוננטה שקוראת ל-useFetch מקבלת לוגיקה זהה בלי לשכתב אותה.' },
       { type: 'code', lang: 'jsx', caption: 'custom hook', code: `// Hook מותאם לשליפת נתונים:
 function useFetch(url) {
   const [data, setData] = useState(null);
@@ -829,6 +841,7 @@ function Users() {
   return <ul>{data.map(u => <li key={u.id}>{u.name}</li>)}</ul>;
 }` },
       { type: 'heading', text: 'useMemo ו-useCallback' },
+      { type: 'text', text: 'useMemo ו-useCallback הם כלים לאופטימיזציה שמונעים חישובים או יצירת פונקציות מחדש בכל רנדור. useMemo מזכיר ערך מחושב ומחשב מחדש רק כשהתלויות משתנות. useCallback מזכיר reference של פונקציה — שימושי במיוחד כשמעבירים callback לקומפוננטה עטופה ב-memo.' },
       { type: 'code', lang: 'jsx', caption: 'אופטימיזציה', code: `// useMemo — מחשב ערך רק כשהתלויות משתנות:
 const expensiveResult = useMemo(() => {
   return items.filter(i => i.active).length;

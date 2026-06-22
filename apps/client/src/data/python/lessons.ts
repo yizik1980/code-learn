@@ -108,6 +108,7 @@ print(type(y))        # <class 'str'>
 z = 3.14
 print(type(z))        # <class 'float'>` },
       { type: 'heading', text: 'המרת טיפוסים' },
+      { type: 'text', text: 'casting היא המרה ידנית מטיפוס לטיפוס. הקוד מדגים שמחרוזת "42" אינה מספר — צריך int() כדי להפוך אותה לכזו. שימו לב שניסיון להמיר מחרוזת שאינה מספר יגרום לשגיאה בזמן ריצה.' },
       { type: 'code', lang: 'python', caption: 'casting — המרה בין טיפוסים', code: `n = "42"
 print(type(n))        # str
 
@@ -157,6 +158,7 @@ s = str(100)          # int → str` },
     emoji: '✂️',
     content: [
       { type: 'heading', text: 'פעולות מתמטיות' },
+      { type: 'text', text: 'Python תומכת בכל פעולות החשבון הבסיסיות ובכמה נוספות. שני האופרטורים הייחודיים שכדאי לזכור: // לחילוק שלם (ללא שארית) ו-** לחזקה. שימו לב ש-% מחזיר את השארית של החילוק, שימושי למאוד לבדיקת זוגיות.' },
       { type: 'code', lang: 'python', caption: 'אריתמטיקה בסיסית', code: `print(5 + 3)   # 8   חיבור
 print(10 - 4)  # 6   חיסור
 print(3 * 4)   # 12  כפל
@@ -165,6 +167,7 @@ print(10 // 3) # 3   חילוק שלם
 print(10 % 3)  # 1   שארית
 print(2 ** 8)  # 256 חזקה` },
       { type: 'heading', text: 'עבודה עם מחרוזות' },
+      { type: 'text', text: 'מחרוזות ב-Python ניתנות לשרשור (חיבור) עם + ולמדידה עם len(). שימו לב ש-len() סופר תווים ולא מילים, כולל רווחים — לכן "שלום עולם" בת 9 תווים (5 + רווח + 4 = 10 במקרה זה).' },
       { type: 'code', lang: 'python', caption: 'שרשור ואורך', code: `first = "שלום"
 second = " עולם"
 full = first + second
@@ -182,6 +185,7 @@ price = 9.99
 print(f"המחיר הוא {price:.2f} ₪")
 # המחיר הוא 9.99 ₪` },
       { type: 'heading', text: 'מתודות על מחרוזות' },
+      { type: 'text', text: 'מחרוזות ב-Python מגיעות עם מגוון מתודות מובנות. שימו לב שכל מתודה מחזירה מחרוזת חדשה ולא משנה את המקורית, כי מחרוזות הן immutable. replace() ו-split() שימושיות במיוחד לעיבוד טקסט.' },
       { type: 'code', lang: 'python', caption: 'מתודות נפוצות', code: `s = "  Python  "
 print(s.strip())        # "Python" — מחיקת רווחים
 print(s.upper())        # "  PYTHON  "
@@ -257,6 +261,7 @@ else:
         ],
       },
       { type: 'heading', text: 'אופרטורים לוגיים' },
+      { type: 'text', text: 'ב-Python משתמשים במילים and, or, not במקום הסמלים && ו-|| שמוכרים משפות אחרות. הקוד מדגים שילוב של תנאי מספרי עם תנאי בוליאני — שני התנאים יחד (and) מחזירים True רק אם שניהם מתקיימים.' },
       { type: 'code', lang: 'python', caption: 'and, or, not', code: `score = 85
 vip = True
 
@@ -266,6 +271,7 @@ if score >= 80 and vip:
 if score < 50 or not vip:
     print("גישה מוגבלת")` },
       { type: 'heading', text: 'תנאי בשורה אחת (Ternary)' },
+      { type: 'text', text: 'ב-Python ניתן לכתוב תנאי פשוט בשורה אחת בתחביר: ערך_אם_אמת if תנאי else ערך_אם_שקר. זה שימושי להשמות קצרות, אך לתנאים מורכבים עדיף להשתמש ב-if רגיל לשמירה על קריאות.' },
       { type: 'code', lang: 'python', caption: 'ternary expression', code: `age = 20
 status = "מבוגר" if age >= 18 else "קטין"
 print(status)  # מבוגר` },
@@ -317,6 +323,7 @@ for fruit in fruits:
 # בננה
 # תפוז` },
       { type: 'heading', text: 'range() — טווח מספרים' },
+      { type: 'text', text: 'range() מייצרת טווח מספרים ומשמשת לולאות for כמעט בכל תוכנית Python. שימו לב לשלושת הצורות: range(n) מ-0 עד n-1, range(start, stop) עם ערך התחלה, ו-range(start, stop, step) עם קפיצות — למשל כל מספר זוגי.' },
       { type: 'code', lang: 'python', caption: 'range', code: `for i in range(5):
     print(i)         # 0, 1, 2, 3, 4
 
@@ -326,12 +333,14 @@ for i in range(1, 6):
 for i in range(0, 10, 2):
     print(i)         # 0, 2, 4, 6, 8` },
       { type: 'heading', text: 'לולאת while' },
+      { type: 'text', text: 'לולאת while רצה כל עוד תנאי מסוים מתקיים. הקוד מציג דפוס קלאסי: אתחול משתנה, בדיקת תנאי, ועדכון המשתנה בתוך הלולאה. חשוב לוודא שהמשתנה מתקדם — אחרת הלולאה תרוץ לנצח (infinite loop).' },
       { type: 'code', lang: 'python', caption: 'while', code: `count = 0
 while count < 5:
     print(count)
     count += 1
 # 0, 1, 2, 3, 4` },
       { type: 'heading', text: 'break ו-continue' },
+      { type: 'text', text: 'break ו-continue נותנים שליטה עדינה בזרימת הלולאה. break עוצר את הלולאה לגמרי מיד, בעוד continue מדלג לאיטרציה הבאה מבלי לסיים את הנוכחית. שימו לב בדוגמה: break מסיים בדיוק כשמגיעים ל-5, ו-continue מדלג על כל מספרים זוגיים.' },
       { type: 'code', lang: 'python', caption: 'שליטה בלולאה', code: `for i in range(10):
     if i == 5:
         break        # עוצר את הלולאה לגמרי
@@ -390,6 +399,7 @@ for i in range(10):
 greet()   # שלום!
 greet()   # שלום!` },
       { type: 'heading', text: 'ארגומנטים ו-return' },
+      { type: 'text', text: 'פונקציה יכולה לקבל פרמטרים ולהחזיר ערך באמצעות return. הקוד מציג שתי פונקציות: add שמחשבת סכום ומחזירה מספר, ו-greet שמחזירה מחרוזת בשיטת f-string. שימו לב שהפונקציה נקראת עם ארגומנטים בסדר שבו הפרמטרים הוגדרו.' },
       { type: 'code', lang: 'python', caption: 'פרמטרים והחזרת ערך', code: `def add(a, b):
     return a + b
 
@@ -401,12 +411,14 @@ def greet(name):
 
 print(greet("משה"))  # שלום, משה!` },
       { type: 'heading', text: 'ברירות מחדל (Default Values)' },
+      { type: 'text', text: 'פרמטר עם ערך ברירת מחדל הופך לאופציונלי — אפשר לקרוא לפונקציה עם או בלי הארגומנט הזה. הקוד מדגים שאם לא מעבירים greeting, תשמש ברירת המחדל "שלום". פרמטרים עם ברירות מחדל חייבים להופיע אחרי פרמטרים ללא ברירת מחדל.' },
       { type: 'code', lang: 'python', caption: 'ערכי ברירת מחדל', code: `def greet(name, greeting="שלום"):
     return f"{greeting}, {name}!"
 
 print(greet("דנה"))             # שלום, דנה!
 print(greet("דנה", "היי"))      # היי, דנה!` },
       { type: 'heading', text: 'args ו-kwargs' },
+      { type: 'text', text: '*args מאפשר לפונקציה לקבל כמות בלתי מוגדרת של ארגומנטים שמגיעים כ-tuple. **kwargs מקבל ארגומנטים מתויגים (keyword) כ-dictionary. שימו לב ש-sum() היא פונקציה מובנית ב-Python שמסכמת כל iterable, כולל tuple.' },
       { type: 'code', lang: 'python', caption: 'מספר משתנה של ארגומנטים', code: `def total(*args):
     return sum(args)
 
@@ -484,6 +496,7 @@ print(person.get("phone", "לא קיים"))  # לא קיים
 for key, value in person.items():
     print(f"{key}: {value}")` },
       { type: 'heading', text: 'Tuple ו-Set' },
+      { type: 'text', text: 'Tuple הוא כמו רשימה אך בלתי ניתנת לשינוי — מתאים לנתונים קבועים כמו קואורדינטות. Set הוא אוסף ללא כפילויות וללא סדר קבוע. שימו לב: כשמוסיפים "python" פעם שנייה ל-set הוא פשוט לא מתווסף — זו ההתנהגות המכוונת.' },
       { type: 'code', lang: 'python', caption: 'tuple וset', code: `# Tuple — כמו list אבל לא ניתן לשינוי
 coords = (32.08, 34.78)
 print(coords[0])   # 32.08
@@ -531,6 +544,7 @@ print(tags)  # {'python', 'code'} — ללא כפילות` },
     emoji: '🛡️',
     content: [
       { type: 'heading', text: 'קריאה וכתיבה של קבצים' },
+      { type: 'text', text: 'הקוד מציג שלוש פעולות נפוצות עם קבצים: כתיבה, קריאה של כל התוכן, וקריאה שורה-שורה. שימו לב לשימוש ב-with open() — הוא מבטיח שהקובץ ייסגר אוטומטית גם אם תתרחש שגיאה, וחובה לציין encoding="utf-8" לתמיכה בעברית.' },
       { type: 'code', lang: 'python', caption: 'פתיחת קובץ', code: `# כתיבה לקובץ
 with open("output.txt", "w", encoding="utf-8") as f:
     f.write("שורה ראשונה\\n")
@@ -557,6 +571,7 @@ with open("output.txt", "r", encoding="utf-8") as f:
         ],
       },
       { type: 'heading', text: 'try / except — טיפול בשגיאות' },
+      { type: 'text', text: 'try/except מאפשר לתוכנית להמשיך לרוץ גם כשמתרחשת שגיאה. הקוד מדגים תפיסה של סוגי שגיאות ספציפיים: ValueError לקלט לא מספרי ו-ZeroDivisionError לחלוקה באפס. בלוק finally תמיד יופעל — שמיד לניקוי משאבים.' },
       { type: 'code', lang: 'python', caption: 'טיפול בשגיאות', code: `try:
     num = int(input("הכנס מספר: "))
     result = 10 / num
@@ -570,6 +585,7 @@ except Exception as e:
 finally:
     print("תמיד מתבצע — סיום")` },
       { type: 'heading', text: 'raise — זריקת שגיאה' },
+      { type: 'text', text: 'לפעמים רוצים לזרוק שגיאה מכוון — למשל כשהקלט לא תקין. הקוד מדגים פונקציה שבודקת תנאי ומשתמשת ב-raise כדי להודיע על קלט בעייתי. ה-caller לוכד את השגיאה ב-except ומציג הודעה ידידותית.' },
       { type: 'code', lang: 'python', caption: 'זריקת שגיאה ידנית', code: `def divide(a, b):
     if b == 0:
         raise ValueError("המחלק לא יכול להיות אפס")

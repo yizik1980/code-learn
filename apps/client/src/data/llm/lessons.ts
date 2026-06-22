@@ -47,6 +47,10 @@ export const llmLessons: Lesson[] = [
       },
       { type: 'heading', text: 'ארכיטקטורת MCP' },
       {
+        type: 'text',
+        text: 'ארכיטקטורת MCP מורכבת משלוש שכבות: Host (האפליקציה שמכילה את ה-LLM), Client (רכיב מתווך), ו-Server (הקוד שלך שמספק כלים). הדיאגרמה מציגה את זרימת ה-JSON-RPC מהרגע שהמשתמש שואל שאלה ועד שהמודל מחזיר תשובה. שימו לב שה-Server הוא תמיד ה-subprocess שאתם כותבים, ואת ה-DB או ה-API אתם חושפים דרכו.',
+      },
+      {
         type: 'code',
         lang: 'text',
         caption: 'זרימת MCP — Host → Client → Server',
@@ -179,6 +183,10 @@ export const llmLessons: Lesson[] = [
     content: [
       { type: 'heading', text: 'התקנה וסביבה' },
       {
+        type: 'text',
+        text: 'כדי לבנות MCP Server צריך להתקין את ה-SDK הרשמי של Anthropic יחד עם Zod לוולידציה של פרמטרים. TypeScript מומלץ מאחר שהוא מספק טיפוסים חזקים שעוזרים לתאר את הכלים שה-LLM יקרא להם. שימו לב שה-SDK מחייב שימוש ב-ES Modules.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'יצירת פרויקט MCP Server',
@@ -192,6 +200,10 @@ npm install @modelcontextprotocol/sdk zod
 npm install -D typescript @types/node tsx`,
       },
       { type: 'heading', text: 'MCP Server בסיסי' },
+      {
+        type: 'text',
+        text: 'דוגמה זו מציגה MCP Server מינימלי עם tool אחד בשם get_lesson_notes. שימו לב לשלושה חלקים: יצירת ה-server עם שם וגרסה, הגדרת ה-tool עם schema של Zod, ולבסוף חיבור ל-StdioServerTransport שמאפשר ל-Claude Desktop לתקשר עם ה-server. התיאור שמועבר ל-tool חשוב מאוד — ה-LLM קורא אותו כדי להחליט מתי להשתמש בכלי.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -290,6 +302,10 @@ await server.connect(transport)`,
 }`,
       },
       {
+        type: 'text',
+        text: 'כדי לחשוף MCP Server דרך HTTP (במקום stdio), משתמשים ב-SSEServerTransport עם Express. שימו לב לשתי נקודות קצה: GET /sse שאליה מתחבר ה-Host ו-POST /messages דרכה הוא שולח בקשות JSON-RPC. גישה זו מתאימה כשרוצים שרת MCP מרוחק נגיש מהאינטרנט ולא רק מהמחשב המקומי.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'SSE Transport — חשיפת MCP Server דרך HTTP',
@@ -321,6 +337,10 @@ app.listen(3002, () => console.log('MCP SSE server on :3002'))`,
         text: 'stdio = מושלם לפיתוח מקומי עם Claude Desktop. SSE = לחשיפת MCP Server כ-API מרוחק שניתן לגשת אליו מהאינטרנט. בשניהם פורמט ה-JSON-RPC זהה לחלוטין.',
       },
       { type: 'heading', text: 'הגדרת מספר Tools' },
+      {
+        type: 'text',
+        text: 'ניתן להגדיר כמה tools על אותו server — כל tool מטפל בפעולה שונה. בדוגמה זו מוגדרים שני tools: שמירת הערה וסיכום קורס. שימו לב שאפשר להשתמש במשתנה סביבה API_URL עם ברירת מחדל, כך ש-server עובד הן בפיתוח מקומי והן בפרודקשן ללא שינוי קוד.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -401,6 +421,10 @@ await server.connect(transport)`,
     ],
   }),
 )`,
+      },
+      {
+        type: 'text',
+        text: 'קובץ ההגדרות של Claude Desktop מציין אילו MCP Servers להפעיל ואיך. כאן מגדירים את הפקודה להרצת ה-server (node), את הנתיב לקובץ המקומפל, ומשתני סביבה כמו API_URL. Claude יפעיל את ה-server אוטומטית בהפעלה ויתקשר איתו דרך stdio.',
       },
       {
         type: 'code',
@@ -531,6 +555,10 @@ await server.connect(transport)`,
     content: [
       { type: 'heading', text: 'התקנה' },
       {
+        type: 'text',
+        text: 'כדי לעבוד עם Claude API ב-Node.js, מתקינים את חבילת @anthropic-ai/sdk ומגדירים את מפתח ה-API כמשתנה סביבה. לעולם אל תכניסו מפתח API ישירות בקוד — תמיד השתמשו במשתני סביבה כדי למנוע חשיפה בלתי מכוונת ב-version control.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'התקנת Anthropic SDK',
@@ -540,6 +568,10 @@ await server.connect(transport)`,
 # ANTHROPIC_API_KEY=sk-ant-...`,
       },
       { type: 'heading', text: 'Messages API — שיחה בסיסית' },
+      {
+        type: 'text',
+        text: 'קריאה בסיסית ל-Claude API מחייבת ציון שלושה דברים: המודל, max_tokens (אורך תשובה מקסימלי) ומערך messages. ה-system prompt מגדיר את אופי המודל לכל השיחה. שימו לב שהתשובה מגיעה ב-message.content[0].text — מערך של content blocks.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -566,6 +598,10 @@ console.log(message.content[0].text)
 // → "LEFT JOIN מחזיר את כל השורות מהטבלה השמאלית..."`,
       },
       { type: 'heading', text: 'שיחה רב-סיבובית (Multi-turn)' },
+      {
+        type: 'text',
+        text: 'ה-API הוא stateless — אין שמירת זיכרון בין קריאות. כדי לשמור על הקשר שיחה, שומרים את כל ההודעות (user ו-assistant) במערך ומעבירים אותו בכל קריאה. שימו לב שלאחר כל תשובה של Claude, מוסיפים אותה ל-history עם role: assistant כדי שה-LLM יזכור מה אמר בסיבוב הקודם.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -682,6 +718,10 @@ const answer = await askWithTools('מה ההערות שלי על שיעור JOIN
 console.log(answer)`,
       },
       { type: 'heading', text: 'Streaming — תשובה בזמן אמת' },
+      {
+        type: 'text',
+        text: 'Streaming מאפשר למשתמש לראות את התשובה מתחילה להיכתב מיד, במקום לחכות לתשובה המלאה. הדוגמה מציגה Express endpoint שמשתמש ב-SSE (Server-Sent Events): עובר על כל event בstream, ושולח רק את ה-text_delta events לקליינט. שימו לב להגדרת Content-Type: text/event-stream ולפורמט data: ...\n\n.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -832,6 +872,10 @@ app.get('/api/ai/explain', async (req, res) => {
     content: [
       { type: 'heading', text: 'התקנה — NuGet Packages' },
       {
+        type: 'text',
+        text: 'כדי להשתמש ב-Claude API מ-C#, מתקינים את Anthropic.SDK דרך NuGet. ה-SDK מספק typed models ו-API נוח לעבודה. חלופה היא שימוש ב-HttpClient ישיר שאינו דורש תלויות נוספות — מתאים כשרוצים שליטה מלאה על הבקשות.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'התקנת Anthropic.SDK דרך NuGet',
@@ -845,6 +889,10 @@ dotnet add package Anthropic.SDK
 # dotnet add package System.Net.Http.Json`,
       },
       { type: 'heading', text: 'Messages API — שיחה בסיסית' },
+      {
+        type: 'text',
+        text: 'הדוגמה מציגה שימוש ב-Anthropic.SDK ב-C# לשאלה פשוטה. יוצרים AnthropicClient עם ה-API Key, מגדירים MessageParameters עם המודל, max_tokens ורשימת messages, ולבסוף קוראים ל-GetClaudeMessageAsync. שימו לב שמפתח ה-API נשלף ממשתנה סביבה ולא כתוב ישירות בקוד.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -872,6 +920,10 @@ var response = await client.Messages.GetClaudeMessageAsync(request);
 Console.WriteLine(response.Content[0].Text);`,
       },
       { type: 'heading', text: 'HttpClient ישיר — ללא SDK' },
+      {
+        type: 'text',
+        text: 'גישה זו משתמשת ב-HttpClient של .NET ישירות, ללא תלות ב-Anthropic.SDK. שימו לב להגדרת headers החובה: x-api-key עם המפתח ו-anthropic-version עם גרסת ה-API. הגוף נשלח כ-JSON אנונימי ונקרא בחזרה כ-JsonElement — גמיש יותר אך פחות typed.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -916,6 +968,10 @@ public class AnthropicService
 }`,
       },
       { type: 'heading', text: 'Tool Use ב-C#' },
+      {
+        type: 'text',
+        text: 'Tool Use ב-C# עובד בשני סיבובים: ראשית שולחים לClaude את ה-tools ומחכים שהוא יבחר להפעיל אחד (StopReason.ToolUse), אחר כך מריצים את ה-tool בעצמנו ומחזירים את התוצאה. שימו לב לשימוש ב-OfType<ToolUseContent>() לחילוץ ה-tool call מתוך הtypesafe content array.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -989,6 +1045,10 @@ if (response.StopReason == StopReason.ToolUse)
       },
       { type: 'heading', text: 'Dependency Injection ב-ASP.NET Core' },
       {
+        type: 'text',
+        text: 'ב-ASP.NET Core רושמים את AnthropicService כ-Singleton כדי שכל הcontrollers ישתמשו באותו מופע — זה חוסך יצירת HttpClient בכל בקשה. הגדרות כמו API Key נשלפות מ-IConfiguration (appsettings.json או משתני סביבה) ולא נכתבות ישירות בקוד.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'Program.cs — רישום שירות Claude ב-DI',
@@ -1006,6 +1066,10 @@ builder.Services.AddControllers();
 var app = builder.Build();
 app.MapControllers();
 app.Run();`,
+      },
+      {
+        type: 'text',
+        text: 'הדוגמה מציגה Controller ב-ASP.NET Core שמקבל בקשת POST עם topic ומחזיר תשובה מ-Claude. שימו לב ל-record ExplainRequest(string Topic) — תחביר C# 9 קצר לhttps body mapping. AnthropicService מוזרק דרך constructor injection על ידי ה-DI container.',
       },
       {
         type: 'code',
@@ -1156,6 +1220,10 @@ public record ExplainRequest(string Topic);`,
       },
       { type: 'heading', text: 'MCP Server שעוטף את CodeLearn API' },
       {
+        type: 'text',
+        text: 'הדוגמה המלאה מציגה MCP Server שעוטף את CodeLearn API. שימו לב לפונקציית העזר api() שמרכזת את לוגיקת ה-HTTP ומטפלת בשגיאות. כל tool מגדיר schema עם Zod, קורא לAPI הקיים ומחזיר תוצאה כ-text. המבנה הזה מאפשר לשמור על הAPI המקורי ללא שינוי.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'codelearn-mcp/server.ts — Adapter מלא',
@@ -1259,6 +1327,10 @@ await server.connect(transport)`,
       },
       { type: 'heading', text: 'שימוש: Agent שמנהל הערות אוטומטית' },
       {
+        type: 'text',
+        text: 'דוגמה זו מראה כיצד לבנות AI assistant שטוען הערות מה-API ומשתמש בהן כהקשר לתשובות. ההבדל מ-MCP Server: כאן קוראים ל-Claude API ישירות מהקוד (Tool Use), לא דרך Claude Desktop. שימו לב שהערות נטענות מראש ומוכנסות ל-system prompt — גישה יעילה כשיודעים מראש מה המידע הרלוונטי.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'agent.ts — Claude משתמש ב-MCP לניהול הערות',
@@ -1323,6 +1395,10 @@ console.log(answer)`,
         text: 'הפרד בין MCP Server (לחיבור Claude Desktop/IDE) לבין Tool Use ישיר (לAPI calls מתוך הקוד שלך). MCP = לחיבור כלי AI חיצוניים. Tool Use = לכתיבת agents בקוד.',
       },
       { type: 'heading', text: 'package.json של ה-MCP Server' },
+      {
+        type: 'text',
+        text: 'קובץ ה-package.json של MCP Server דורש הגדרה חשובה: "type": "module" כדי לאפשר שימוש ב-ES Modules (import/export). ה-SDK של MCP דורש ESM ולא יעבוד עם CommonJS. שימו לב לשלושת הסקריפטים: dev לפיתוח עם tsx, build לקומפילציה, ו-start להרצת הקוד המקומפל.',
+      },
       {
         type: 'code',
         lang: 'json',
@@ -1528,6 +1604,10 @@ public record NoteDto(int Id, string Content, DateTime CreatedAt);`,
       },
       { type: 'heading', text: 'Records — Immutability ו-Value Semantics' },
       {
+        type: 'text',
+        text: 'Records ב-C# הם data classes immutable עם value semantics — שני records עם אותם ערכים נחשבים שווים (==). הדוגמה מציגה: record class לreference type, record struct לvalue type, ו-with expression ליצירת עותק עם שינויים. שימו לב ש-Deconstruction מאפשר לפרק record לחלקים בשורה אחת.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'record, record struct, with expression',
@@ -1560,6 +1640,10 @@ public record ClaudeRequest(
 );`,
       },
       { type: 'heading', text: 'Pattern Matching — C# 8-12' },
+      {
+        type: 'text',
+        text: 'Pattern Matching ב-C# מאפשר לכתוב לוגיקת תנאים מורכבת בצורה קריאה ובטוחה. הדוגמה כוללת: switch expression (C# 8) עם when guards, property pattern לבדיקת מאפיינים, positional pattern לבדיקת tuple, ו-list pattern (C# 11) לבדיקת מבנה רשימות. שימו לב שהקומפיילר בודק exhaustiveness ומזהיר על מקרים שלא מטופלים.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1603,6 +1687,10 @@ object ProcessResponse(object response) => response switch
       },
       { type: 'heading', text: 'Collection Expressions — C# 12' },
       {
+        type: 'text',
+        text: 'Collection Expressions (C# 12) מביאים תחביר [..] אחיד לכל סוגי האוספים — List, Array, Span, ImmutableArray ועוד. ה-spread operator (..) מאפשר שרשור אוספים בצורה קריאה. שימו לב בדוגמה לשימוש מעשי: בניית messages array לClaude API על ידי שרשור היסטוריה קיימת עם הודעה חדשה.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'תחביר [ ] אחיד לכל סוגי האוספים',
@@ -1633,6 +1721,10 @@ Message[] history =
 Message[] withAnswer = [..history, new("assistant", "JOIN מחבר טבלאות...")];`,
       },
       { type: 'heading', text: 'Required Members & Init-Only — C# 11' },
+      {
+        type: 'text',
+        text: 'המילה השמורה required (C# 11) אוכפת שה-property חייב להיות מאותחל בזמן יצירת האובייקט — שגיאת קומפילציה אם לא. init מאפשר לאתחל property רק בזמן יצירה ולא אחר כך. שימו לב בדוגמה ל-NoteCreateRequest: כל שדה חיוני מוגדר כ-required, מה שמונע יצירת בקשה חסרת שדות בrun time.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1667,6 +1759,10 @@ var bad = new NoteCreateRequest
 req.Content = "שינוי"; // ✗ CS8852: Init-only property`,
       },
       { type: 'heading', text: 'Nullable Reference Types — C# 8' },
+      {
+        type: 'text',
+        text: 'Nullable Reference Types (מופעל ב-csproj עם <Nullable>enable</Nullable>) מוסיף null safety לזמן קומפילציה. סימן ? אחרי הטיפוס (string?) מציין שהערך יכול להיות null, בלי ? — מובטח שלא null. שימו לב לאופרטורים ?? ל-null coalescing ו-?. לגישה בטוחה לשדות, ולPattern matching עם is null לצמצום הטיפוס.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1706,6 +1802,10 @@ public record ClaudeResponse(
 );`,
       },
       { type: 'heading', text: 'Async/Await מתקדם — IAsyncEnumerable ו-ValueTask' },
+      {
+        type: 'text',
+        text: 'IAsyncEnumerable<T> עם await foreach מאפשר streaming נתונים אסינכרוני — כל chunk מגיע ומטופל מיד. הדוגמה מציגה streaming של תשובות מClaude: פורסים SSE events ומחזירים כל text_delta עם yield. שימו לב ל-ValueTask שמתאים לפעולות שלרוב מסתיימות סינכרונית (cache hit) — חוסך allocation של Task.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1766,6 +1866,10 @@ public ValueTask<string?> GetCachedNoteAsync(int id)
 }`,
       },
       { type: 'heading', text: 'LINQ מודרני — C# 9-12' },
+      {
+        type: 'text',
+        text: '.NET 6-9 הוסיפו מתודות LINQ שימושיות: Chunk() לחלוקה לקבוצות (שימושי לbatch processing עם LLM), DistinctBy/MinBy/MaxBy לפעולות עם lambda selector, ו-Index() לאיטרציה עם מספר שורה. שימו לב בשורה האחרונה לשילוב LINQ עם Property Pattern: .Where(n => n is { Content.Length: > 200 }).',
+      },
       {
         type: 'code',
         lang: 'csharp',

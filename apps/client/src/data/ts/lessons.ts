@@ -11,6 +11,7 @@ export const tsLessons: Lesson[] = [
       { type: 'text', text: 'TypeScript היא JavaScript עם טיפוסים. היא מאפשרת לך להגדיר מה סוג הנתונים שכל משתנה, פרמטר ופונקציה מצפים לקבל — ומגלה שגיאות לפני שהקוד רץ.' },
       { type: 'tip', text: 'TypeScript מתורגם (compiled) ל-JavaScript רגיל לפני הרצה. הדפדפן לא מבין TS ישירות.' },
       { type: 'heading', text: 'הגדרת טיפוסים בסיסיים' },
+      { type: 'text', text: 'הוספת type annotation נעשית עם נקודותיים אחרי שם המשתנה: name: string. TypeScript יגלה מיד אם מנסים להשים ערך מטיפוס אחר ויסמן שגיאה עוד לפני ריצת הקוד. שימו לב שלעיתים TS מסיק את הטיפוס אוטומטית (Type Inference) — לכן לא תמיד חובה לכתוב אותו במפורש.' },
       { type: 'code', lang: 'typescript', caption: 'type annotations', code: `let name: string = "דן";
 let age: number = 25;
 let isActive: boolean = true;
@@ -22,6 +23,7 @@ let isActive: boolean = true;
 let city = "תל אביב";  // TS יודע שזה string
 // city = 100;          // שגיאה!` },
       { type: 'heading', text: 'טיפוסי מערכים ו-tuples' },
+      { type: 'text', text: 'מערך מוגדר עם סוג האלמנטים ואחריו סוגריים מרובעות: number[]. Tuple הוא מערך עם מספר קבוע של אלמנטים שלכל אחד מהם טיפוס ספציפי לפי מיקומו. שימו לב להבדל: number[] מאפשר כל מספר אלמנטים, אך [number, number] מאכיף בדיוק שני מספרים — לא יותר ולא פחות.' },
       { type: 'code', lang: 'typescript', caption: 'Arrays ו-Tuples', code: `// מערך של מספרים:
 const scores: number[] = [90, 85, 78];
 
@@ -32,6 +34,7 @@ const names: string[] = ["אלי", "שרה"];
 const point: [number, number] = [10, 20];
 const person: [string, number] = ["דן", 28];` },
       { type: 'heading', text: 'פונקציות עם טיפוסים' },
+      { type: 'text', text: 'בפונקציות TypeScript מוסיפים טיפוסים לפרמטרים ולערך המוחזר. הטיפוס void מציין שהפונקציה לא מחזירה ערך. שימו לב לסימן ? שהופך פרמטר לאופציונלי — TS ידאג שנטפל בכך שהפרמטר יכול להיות undefined, כמו בשימוש ב-??.' },
       { type: 'code', lang: 'typescript', caption: 'typed functions', code: `function add(a: number, b: number): number {
   return a + b;
 }
@@ -51,6 +54,7 @@ function createUser(name: string, age?: number) {
   return { name, age: age ?? 0 };
 }` },
       { type: 'heading', text: 'Union Types' },
+      { type: 'text', text: 'Union Type מאפשר למשתנה להכיל ערכים ממספר טיפוסים שונים, מופרדים בסימן |. כדי להשתמש בתכונות ייחודיות של טיפוס ספציפי, צריך קודם לבדוק את הטיפוס עם typeof — תהליך שנקרא Type Narrowing. שימו לב שבתוך כל ענף if, TypeScript כבר יודע בוודאות מה הטיפוס ומאפשר גישה למתודות המתאימות.' },
       { type: 'code', lang: 'typescript', caption: 'Union — כמה טיפוסים אפשריים', code: `let id: string | number;
 id = "abc-123";  // עובד
 id = 456;        // עובד
@@ -203,6 +207,7 @@ const user: User = {
 
 // user.createdAt = new Date(); // שגיאה! readonly` },
       { type: 'heading', text: 'Type Alias' },
+      { type: 'text', text: 'Type Alias יוצר שם חדש לטיפוס קיים או מורכב. הוא גמיש יותר מ-interface כי יכול לתאר union types, literal types וטיפוסים פרימיטיביים. שימו לב שה-Status בדוגמה מאפשר בדיוק שלושה ערכים אפשריים — ניסיון להשים "unknown" יגרום לשגיאת TypeScript מיידית.' },
       { type: 'code', lang: 'typescript', caption: 'type', code: `type Point = {
   x: number;
   y: number;
@@ -218,6 +223,7 @@ const status: Status = "active";
       { type: 'heading', text: 'Interface vs Type — מתי להשתמש?' },
       { type: 'tip', text: 'Interface: עדיף לאובייקטים ו-classes — ניתן להרחבה (extend). Type: עדיף ל-union types, tuples ו-types מורכבים.' },
       { type: 'heading', text: 'הרחבת Interface' },
+      { type: 'text', text: 'extends מאפשר ל-interface אחד לרשת את כל השדות של interface אחר ולהוסיף שדות חדשים. כך ניתן לבנות היררכיות של טיפוסים מבלי לחזור על קוד. שימו לב שהאובייקט dog חייב לכלול גם את שדות Animal (name ו-sound) וגם את ה-breed הייחודי ל-Dog.' },
       { type: 'code', lang: 'typescript', caption: 'extends', code: `interface Animal {
   name: string;
   sound(): string;
@@ -233,6 +239,7 @@ const dog: Dog = {
   sound: () => "הב הב",
 };` },
       { type: 'heading', text: 'Intersection Types' },
+      { type: 'text', text: 'Intersection Type עם & יוצר טיפוס חדש שמכיל את כל השדות מכל הטיפוסים שמשולבים. בניגוד ל-Union (|) שאומר "אחד מהם", Intersection אומר "כולם ביחד". שימו לב שהאובייקט person חייב לקיים גם name וגם age — חסר אחד מהם יגרום לשגיאה.' },
       { type: 'code', lang: 'typescript', caption: 'שילוב עם &', code: `type Named = { name: string };
 type Aged = { age: number };
 
@@ -382,6 +389,7 @@ const str = identity<string>("שלום"); // str: string
 // TS יכול להסיק אוטומטית:
 const bool = identity(true);          // bool: boolean` },
       { type: 'heading', text: 'Generic בפונקציות מערך' },
+      { type: 'text', text: 'פונקציות גנריות שעובדות עם מערכים שומרות על הקשר בין טיפוס האלמנטים לבין הפלט. כאשר מועבר מערך של numbers, TypeScript יודע שהפלט יהיה number | undefined ולא any. שימו לב ש-T | undefined מציין שהפונקציה עלולה לא להצליח — כמו במקרה שהמערך ריק.' },
       { type: 'code', lang: 'typescript', caption: 'Generic עם מערכים', code: `function first<T>(arr: T[]): T | undefined {
   return arr[0];
 }
@@ -393,6 +401,7 @@ function wrap<T>(value: T): T[] {
   return [value];
 }` },
       { type: 'heading', text: 'Generic Interfaces' },
+      { type: 'text', text: 'Interface גנרי מאפשר להגדיר מבנה נתונים שעובד עם כל סוג תוכן. ApiResponse<T> הוא דפוס נפוץ בעבודה עם APIs — המבנה (status, message) תמיד זהה, אבל סוג ה-data משתנה לפי הבקשה. שימו לב שאפשר להעביר ל-T גם טיפוסים מורכבים כמו User[] ולקבל הגנה מלאה על כל שדות המערך.' },
       { type: 'code', lang: 'typescript', caption: 'Generic interface', code: `interface ApiResponse<T> {
   data: T;
   status: number;
@@ -417,6 +426,7 @@ const usersResponse: ApiResponse<User[]> = {
   message: "success",
 };` },
       { type: 'heading', text: 'Constraints — הגבלת Generics' },
+      { type: 'text', text: 'לעיתים פונקציה גנרית צריכה להניח שיש לה גישה לתכונה מסוימת של הטיפוס — extends constraint מגביל את T לטיפוסים שמכילים את אותה תכונה. בדוגמה, T חייב להכיל length, לכן strings ומערכים עוברים אבל מספרים לא. שימו לב שהפונקציה לא יודעת בדיוק מה T — רק שיש לו length.' },
       { type: 'code', lang: 'typescript', caption: 'extends constraint', code: `// T חייב להיות עם תכונה length:
 function printLength<T extends { length: number }>(item: T): void {
   console.log(item.length);
@@ -551,6 +561,7 @@ printLength([1, 2, 3]); // 3
       { type: 'heading', text: 'מה זה Utility Types?' },
       { type: 'text', text: 'TypeScript מגיעה עם utility types מובנים שמאפשרים לשנות ולהרכיב טיפוסים קיימים בקלות.' },
       { type: 'heading', text: 'Partial — כל השדות אופציונליים' },
+      { type: 'text', text: 'Partial<T> לוקח interface קיים ומוסיף ? לכל שדה — הופך הכל לאופציונלי. זה שימושי במיוחד בפונקציות שמקבלות רק חלק מנתוני האובייקט, כמו פונקציית עדכון שמשנה רק שדות מסוימים. שימו לב שה-Partial רק מוסיף ? — הטיפוסים עצמם נשמרים, אז name עדיין חייב להיות string אם הוא מועבר.' },
       { type: 'code', lang: 'typescript', caption: 'Partial<T>', code: `interface User {
   id: number;
   name: string;
@@ -567,6 +578,7 @@ function updateUser(id: number, data: Partial<User>) {
 
 updateUser(1, { name: "שם חדש" }); // עובד!` },
       { type: 'heading', text: 'Pick ו-Omit — בחירה/הסרה של שדות' },
+      { type: 'text', text: 'Pick ו-Omit מאפשרים ליצור גרסה מצומצמת של interface קיים — Pick בוחר רק שדות ספציפיים, ו-Omit כולל הכל חוץ מהשדות שצוינו. דפוס נפוץ הוא יצירת PublicUser שמסיר שדות רגישים כמו password לפני שליחה ל-client. שימו לב שבשניהם השדות הנותרים שומרים על הטיפוסים המקוריים שלהם.' },
       { type: 'code', lang: 'typescript', caption: 'Pick & Omit', code: `interface User {
   id: number;
   name: string;
@@ -586,6 +598,7 @@ const safeUser: PublicUser = {
   email: "sarah@example.com",
 };` },
       { type: 'heading', text: 'Required — כל השדות חובה' },
+      { type: 'text', text: 'Required<T> הוא ההפך המדויק של Partial — הוא מסיר את ה-? מכל השדות ומגדיר אותם כחובה. זה שימושי כשמקבלים config אופציונלי מהמשתמש ורוצים לעבוד עם גרסה מלאה שבה כל שדה מוגדר. שימו לב שמעשית TS לא נותן ערכי ברירת מחדל — הקוד שלך צריך לדאוג לכך לפני שמשתמשים ב-StrictConfig.' },
       { type: 'code', lang: 'typescript', caption: 'Required<T>', code: `interface Config {
   host?: string;
   port?: number;
@@ -596,6 +609,7 @@ const safeUser: PublicUser = {
 type StrictConfig = Required<Config>;
 // { host: string; port: number; debug: boolean }` },
       { type: 'heading', text: 'Record — מפה עם טיפוסים' },
+      { type: 'text', text: 'Record<K, V> מגדיר אובייקט שפועל כמילון — כל מפתח מטיפוס K וכל ערך מטיפוס V. כשמשתמשים ב-literal union כ-K, TypeScript מחייב שיהיו בדיוק המפתחות האלו ואף לא פחות. שימו לב שב-Record<Role, string[]> חסרת אחד מהתפקידים תגרום לשגיאה — זה עוזר לא לשכוח לטפל בכל מקרה.' },
       { type: 'code', lang: 'typescript', caption: 'Record<K, V>', code: `type Role = "admin" | "user" | "guest";
 
 const permissions: Record<Role, string[]> = {
@@ -756,6 +770,7 @@ const p = new Person("דן", 25, 1);
 console.log(p.name);     // עובד
 // console.log(p.age);   // שגיאה! private` },
       { type: 'heading', text: 'קיצור: Parameter Properties' },
+      { type: 'text', text: 'TypeScript מאפשר קיצור נוח: הוספת public, private או readonly לפרמטר ב-constructor יוצרת אוטומטית תכונה ומשימה אותה — ללא צורך בהצהרה נפרדת ובשורת this.x = x. שימו לב שזה חוסך הרבה boilerplate ומייצר קוד קומפקטי יותר, אבל הפונקציונליות זהה לחלוטין לגרסה המפורשת.' },
       { type: 'code', lang: 'typescript', caption: 'קיצור constructor', code: `// במקום להגדיר ולהשים ידנית:
 class User {
   constructor(
@@ -766,6 +781,7 @@ class User {
   // name, email ו-id נוצרים אוטומטית!
 }` },
       { type: 'heading', text: 'Implements — מימוש Interface' },
+      { type: 'text', text: 'implements מחייב class לממש את כל המתודות והשדות שמוגדרים ב-interface. אם חסרה מתודה או שהחתימה שלה לא תואמת, TypeScript ייצור שגיאה ברורה. שימו לב שאם Document לא ימש את getTitle(), הקוד לא יתקמפל — זה מבטיח שכל מחלקה שמבטיחה Printable אכן יכולה לעמוד בהתחייבות.' },
       { type: 'code', lang: 'typescript', caption: 'implements', code: `interface Printable {
   print(): void;
   getTitle(): string;
@@ -783,6 +799,7 @@ class Document implements Printable {
   }
 }` },
       { type: 'heading', text: 'ירושה (Inheritance)' },
+      { type: 'text', text: 'ירושה עם extends מאפשרת ל-class ילד לקבל את כל המתודות והתכונות של ה-class האב וגם לדרוס (override) אותן. super(name) בתוך constructor קורא ל-constructor של האב ומאתחל את name. שימו לב ש-protected מאפשר ל-Dog לגשת ל-this.name של Animal ישירות, בניגוד ל-private שחוסם גישה מחוץ למחלקה.' },
       { type: 'code', lang: 'typescript', caption: 'extends', code: `class Animal {
   constructor(protected name: string) {}
   speak(): string {

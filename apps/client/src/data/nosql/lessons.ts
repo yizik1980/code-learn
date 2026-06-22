@@ -37,6 +37,7 @@ export const nosqlLessons: Lesson[] = [
   "createdAt": ISODate("2024-01-15T10:30:00Z")
 }` },
       { type: 'heading', text: 'מתי לבחור MongoDB?' },
+      { type: 'text', text: 'MongoDB מתאים לתרחישים שבהם המבנה גמיש, הנתונים שונים בין רשומות, או שצריך scaling אופקי. הוא פחות מתאים למקרים עם קשרים מורכבים בין ישויות או עסקאות ACID מסובכות. שימו לב שהבחירה בין SQL ל-NoSQL תלויה בדרישות הפרויקט הספציפי.' },
       { type: 'code', lang: 'text', caption: 'שימושים אידיאלים', code: `✅ מתאים:
 - נתונים בעלי מבנה משתנה (e-commerce, CMS)
 - קטלוגים עם מאפיינים שונים לכל מוצר
@@ -87,6 +88,7 @@ export const nosqlLessons: Lesson[] = [
     emoji: '✏️',
     content: [
       { type: 'heading', text: 'INSERT — הוספת מסמכים' },
+      { type: 'text', text: 'insertOne מוסיף מסמך יחיד ו-insertMany מוסיף מספר מסמכים בבת אחת. MongoDB מוסיפה אוטומטית שדה _id לכל מסמך אם לא ציינו אחד. שימו לב שמסמכים שונים יכולים להכיל שדות שונים — אין צורך בסכמה אחידה.' },
       { type: 'code', lang: 'javascript', caption: 'הוספת מסמכים', code: `// הוספת מסמך יחיד
 db.users.insertOne({
   name: "שרה לוי",
@@ -102,6 +104,7 @@ db.users.insertMany([
   { name: "אמיר", age: 41 }
 ])` },
       { type: 'heading', text: 'FIND — שאילתות קריאה' },
+      { type: 'text', text: 'find מחזיר cursor למסמכים התואמים לפילטר, ו-findOne מחזיר מסמך בודד. הארגומנט השני הוא projection שמגדיר אילו שדות להחזיר (1=כלול, 0=הסתר). שימו לב שניתן לשרשר sort, skip ו-limit על cursor — בדיוק כמו ORDER BY, OFFSET ו-LIMIT ב-SQL.' },
       { type: 'code', lang: 'javascript', caption: 'קריאת מסמכים', code: `// כל המסמכים
 db.users.find()
 
@@ -123,6 +126,7 @@ db.users.find()
   .skip(10)
   .limit(5)` },
       { type: 'heading', text: 'UPDATE — עדכון מסמכים' },
+      { type: 'text', text: '$set מעדכן שדות ספציפיים מבלי לפגוע בשאר המסמך — בלי $set MongoDB תחליף את המסמך כולו! $inc מגדיל ערך מספרי, ו-upsert יוצר מסמך חדש אם לא נמצאה התאמה. שימו לב שהארגומנט הראשון הוא filter ולא המסמך עצמו.' },
       { type: 'code', lang: 'javascript', caption: 'עדכון מסמכים', code: `// עדכון שדה בודד
 db.users.updateOne(
   { email: "sara@example.com" },       // filter
@@ -148,6 +152,7 @@ db.users.updateOne(
   { upsert: true }
 )` },
       { type: 'heading', text: 'DELETE — מחיקת מסמכים' },
+      { type: 'text', text: 'deleteOne מוחק את המסמך הראשון שתואם לפילטר, ו-deleteMany מוחק את כולם. מחיקה עם {} (פילטר ריק) מוחקת את כל האוסף. שימו לב לעצה החשובה: תמיד בצעו find עם אותו פילטר לפני deleteMany כדי לאמת מה עומד להימחק.' },
       { type: 'code', lang: 'javascript', caption: 'מחיקה', code: `// מחיקת מסמך אחד
 db.users.deleteOne({ email: "sara@example.com" })
 
@@ -196,6 +201,7 @@ db.users.deleteMany({})` },
     emoji: '🔍',
     content: [
       { type: 'heading', text: 'אופרטורי השוואה' },
+      { type: 'text', text: 'אופרטורי השוואה ב-MongoDB מתחילים ב-$ ומשמשים בתוך אובייקט שאילתה. $gt (greater than), $lt (less than), $gte/$lte (or equal), $ne (not equal), $in (בתוך רשימה), $nin (מחוץ לרשימה). ניתן לשלב כמה אופרטורים על אותו שדה באובייקט אחד — כמו price: { $gt: 100, $lte: 500 }.' },
       { type: 'code', lang: 'javascript', caption: 'Comparison Operators', code: `// גדול מ / קטן מ
 db.products.find({ price: { $gt: 100, $lte: 500 } })
 
@@ -208,6 +214,7 @@ db.orders.find({ status: { $in: ["pending", "processing"] } })
 // מחוץ לרשימה
 db.orders.find({ status: { $nin: ["cancelled", "refunded"] } })` },
       { type: 'heading', text: 'אופרטורים לוגיים' },
+      { type: 'text', text: '$and ו-$or מקבלים מערך של תנאים — $and דורש שכולם יתקיימו, $or מספיק לו אחד. שימו לב שכשמציינים כמה שדות באובייקט אחד, MongoDB מתייחסת לזה כ-$and מרומז. $or חובה לכתוב אותו מפורשות עם המפתח $or.' },
       { type: 'code', lang: 'javascript', caption: 'Logical Operators', code: `// AND — כל התנאים
 db.users.find({
   $and: [
@@ -229,6 +236,7 @@ db.products.find({
 // NOT
 db.users.find({ age: { $not: { $lt: 18 } } })` },
       { type: 'heading', text: 'חיפוש טקסט ומערכים' },
+      { type: 'text', text: 'MongoDB מאפשר חיפוש regex ישירות על שדות מחרוזת. כשמחפשים ערך בשדה שהוא מערך, MongoDB בודקת אוטומטית אם הערך כלול — אין צורך ב-operator מיוחד. $elemMatch נדרש רק כשצריך לבדוק כמה תנאים על אותו אלמנט מערך.' },
       { type: 'code', lang: 'javascript', caption: 'Text & Array', code: `// Regex — חיפוש חלקי
 db.products.find({ name: { $regex: "phone", $options: "i" } })
 
@@ -299,6 +307,7 @@ db.data.find({ value: { $type: "string" } })` },
   { $limit: 10 }      // stage 5 — הגבלה
 ])` },
       { type: 'heading', text: '$match — סינון' },
+      { type: 'text', text: '$match פועל בדיוק כמו find — מסנן מסמכים לפי תנאים. ההבדל הוא שהוא חלק מ-pipeline ומשמש לסינון לפני שלבים כבדים כמו $group. שימוש ב-$match בתחילת ה-pipeline חיוני לביצועים: הוא מפחית את כמות הנתונים שעוברים לשלבים הבאים ויכול להשתמש באינדקסים.' },
       { type: 'code', lang: 'javascript', caption: '$match', code: `// כמו find() — מסנן מסמכים
 db.orders.aggregate([
   { $match: {
@@ -308,6 +317,7 @@ db.orders.aggregate([
 ])
 // 💡 תמיד שים $match ראשון — מפחית את כמות הנתונים לשלבים הבאים` },
       { type: 'heading', text: '$group — קיבוץ וסיכום' },
+      { type: 'text', text: '$group קובץ מסמכים לפי שדה _id ומחשב צבירות על כל קבוצה. שדה _id הוא המפתח שלפיו מקובצים — כמו GROUP BY ב-SQL. $sum, $count, $avg, $max, $min הם פונקציות הצבירה. שימו לב ש-{ _id: null } פירושו "ללא קיבוץ — חשב על כולם יחד".' },
       { type: 'code', lang: 'javascript', caption: '$group', code: `// סך הזמנות לפי לקוח
 db.orders.aggregate([
   { $group: {
@@ -328,6 +338,7 @@ db.orders.aggregate([
 // ללא קיבוץ — סיכום כולל
 { $group: { _id: null, grandTotal: { $sum: "$amount" } } }` },
       { type: 'heading', text: '$project — עיצוב הפלט' },
+      { type: 'text', text: '$project מאפשר לבחור אילו שדות לכלול, להסתיר שדות, ולחשב שדות חדשים עם ביטויים. 1 = כלול, 0 = הסתר. ניתן ליצור שדות חדשים לגמרי עם ביטויים כמו $concat לחיבור מחרוזות או $cond לתנאים. שימו לב שאי אפשר לשלב כלול והסתר (1 ו-0) על שדות שונים — אלא על _id.' },
       { type: 'code', lang: 'javascript', caption: '$project', code: `db.users.aggregate([
   { $project: {
     name: 1,                              // כלול
@@ -344,6 +355,7 @@ db.orders.aggregate([
   }}
 ])` },
       { type: 'heading', text: '$unwind — פריסת מערכים' },
+      { type: 'text', text: '$unwind הופך מסמך עם מערך לכמה מסמכים — אחד לכל אלמנט. מסמך עם tags: ["a","b","c"] יהפוך לשלושה מסמכים נפרדים. זה שימושי לניתוח ספירה של אלמנטים בתוך מערכים — כמו ספירת תגיות פופולריות בדוגמה.' },
       { type: 'code', lang: 'javascript', caption: '$unwind', code: `// מסמך עם מערך:
 // { _id: 1, tags: ["a", "b", "c"] }
 
@@ -434,6 +446,7 @@ db.posts.aggregate([
     }
   }
 ])` },
+      { type: 'text', text: 'הנה מה שמוחזר אחרי $lookup — שימו לב שהשדה customerData הוא מערך ולא אובייקט, גם כשיש רק התאמה אחת. זה כי $lookup תמיד מחזיר מערך (יכולים להיות כמה התאמות). כדי לגשת ל-customerData.name, נצטרך קודם לשטח עם $unwind.' },
       { type: 'code', lang: 'javascript', caption: 'תוצאה אחרי $lookup', code: `// MongoDB מחזיר כל הזמנה + customerData כ-מערך:
 
 { _id: 1, customerId: ObjectId("AAA"), amount: 250,
@@ -466,6 +479,7 @@ db.posts.aggregate([
     // preserveNullAndEmptyArrays: true — שומר הזמנות גם אם לא מצאנו לקוח
   }
 ])` },
+      { type: 'text', text: 'לאחר $unwind, customerData הוא עכשיו אובייקט ישיר ולא מערך. ניתן כעת לגשת לשדות שלו עם customerData.name ו-customerData.city. שימו לב לאפשרות preserveNullAndEmptyArrays: true שחשובה כשלא לכל מסמך בטוח יש התאמה.' },
       { type: 'code', lang: 'javascript', caption: 'תוצאה אחרי $unwind', code: `// עכשיו customerData הוא אובייקט — לא מערך:
 
 { _id: 1, customerId: ObjectId("AAA"), amount: 250,
@@ -513,6 +527,7 @@ db.posts.aggregate([
 // { _id: 1, customerId: "AAA", amount: 250, createdAt: 2024-03-01 }
 // { _id: 2, customerId: "BBB", amount: 180, createdAt: 2024-03-05 }
 // { _id: 3, customerId: "AAA", amount: 420, createdAt: 2024-04-01 }` },
+      { type: 'text', text: 'שלב ב׳ מצרף את פרטי הלקוח לכל הזמנה: $lookup מביא את המסמך מ-customers, ו-$unwind הופך את המערך לאובייקט. אחרי שני השלבים כל הזמנה כוללת customerData עם שם העיר ושם הלקוח.' },
       { type: 'code', lang: 'javascript', caption: 'שלב ב׳ — $lookup + $unwind: הוסף פרטי לקוח', code: `// ממשיכים את ה-pipeline:
   {
     $lookup: {
@@ -528,6 +543,7 @@ db.posts.aggregate([
 // { _id: 1, amount: 250, customerData: { name: "דוד", city: "תל אביב" }, ... }
 // { _id: 2, amount: 180, customerData: { name: "שרה", city: "ירושלים"  }, ... }
 // { _id: 3, amount: 420, customerData: { name: "דוד", city: "תל אביב" }, ... }` },
+      { type: 'text', text: 'שלב ג׳ מקבץ את ההזמנות לפי לקוח ומחשב סטטיסטיקות. $first משמש לשם הלקוח כי הוא זהה בכל הזמנות של אותו לקוח. $count סופר הזמנות ו-$sum מסכם סכומים. שימו לב שה-_id של הקבוצה הוא מזהה הלקוח.' },
       { type: 'code', lang: 'javascript', caption: 'שלב ג׳ — $group: קבץ לפי לקוח וחשב סטטיסטיקות', code: `  {
     $group: {
       _id: "$customerData._id",              // מפתח הקיבוץ: מזהה הלקוח
@@ -540,12 +556,14 @@ db.posts.aggregate([
 // אחרי $group — שורה אחת לכל לקוח:
 // { _id: "AAA", customerName: "דוד", totalOrders: 2, totalAmount: 670 }
 // { _id: "BBB", customerName: "שרה", totalOrders: 1, totalAmount: 180 }` },
+      { type: 'text', text: 'השלבים האחרונים ממיינים את התוצאות מהלקוח עם הסכום הגבוה ביותר ומגבילים ל-10 תוצאות. -1 ב-$sort פירושו סדר יורד (מהגדול לקטן). $limit עצמאי פועל על הנתונים שנותרו אחרי כל השלבים הקודמים.' },
       { type: 'code', lang: 'javascript', caption: 'שלבים ד׳-ה׳ — $sort + $limit: מיין והגבל', code: `  { $sort:  { totalAmount: -1 } },  // מהגדול לקטן
   { $limit: 10 }                    // top 10 בלבד
 
 // תוצאה סופית — מדורגת:
 // { customerName: "דוד", totalOrders: 2, totalAmount: 670 }
 // { customerName: "שרה", totalOrders: 1, totalAmount: 180 }` },
+      { type: 'text', text: 'כאן כל השלבים מחוברים לפעולה אחת מלאה. שימו לב לסדר ולהיגיון: קודם מסננים ($match), אז מצרפים נתונים ($lookup + $unwind), אז מקבצים ומחשבים ($group), ולבסוף ממיינים ומגבילים. כל שלב מקבל את פלט הקודם ומייצר פלט חדש.' },
       { type: 'code', lang: 'javascript', caption: 'ה-Pipeline המלא — הכל ביחד', code: `db.orders.aggregate([
   // א. רק הזמנות מ-2024
   { $match: { createdAt: { $gte: new Date("2024-01-01") } } },
@@ -682,6 +700,7 @@ db.users.getIndexes()
 // מחיקת אינדקס
 db.users.dropIndex({ email: 1 })` },
       { type: 'heading', text: 'explain() — ניתוח שאילתה' },
+      { type: 'text', text: 'explain("executionStats") מריץ את השאילתה ומחזיר מידע על איך MongoDB ביצעה אותה. המפתח הוא לחפש ב-winningPlan.stage: "IXSCAN" אומר שהשתמשנו באינדקס (מהיר), "COLLSCAN" אומר שסרקנו הכל (איטי). אם totalDocsExamined גדול בהרבה מ-nReturned, צריך אינדקס.' },
       { type: 'code', lang: 'javascript', caption: 'explain לניתוח ביצועים', code: `// בדוק אם שאילתה משתמשת באינדקס
 db.users.find({ email: "test@test.com" }).explain("executionStats")
 
@@ -748,6 +767,7 @@ db.users.find({ email: "test@test.com" }).explain("executionStats")
       { type: 'heading', text: 'שתי גישות עיקריות' },
       { type: 'text', text: 'ב-MongoDB יש שתי דרכים לייצג קשרים בין ישויות: Embedding (קינון נתונים בתוך מסמך) ו-Referencing (שמירת מזהה ו-$lookup בזמן שאילתה). הבחירה ביניהם משפיעה דרמטית על הביצועים.' },
       { type: 'heading', text: 'Embedding — קינון' },
+      { type: 'text', text: 'Embedding שומר נתונים קשורים בתוך המסמך עצמו — כתובת ורשימת טלפונים ישירות אצל המשתמש. היתרון הוא שקריאת המסמך מחזירה הכל בפעולה אחת ללא JOIN. החיסרון הוא כפילות נתונים אם אותה ישות שייכת לכמה מסמכים, ומגבלת 16MB למסמך.' },
       { type: 'code', lang: 'javascript', caption: 'Embedded Document', code: `// כל הנתונים במסמך אחד
 {
   _id: ObjectId("..."),
@@ -768,6 +788,7 @@ db.users.find({ email: "test@test.com" }).explain("executionStats")
 // ❌ כפילות נתונים אם ישות משותפת לרבים
 // ❌ מסמך גדול אם יש הרבה תת-ישויות` },
       { type: 'heading', text: 'Referencing — הפניה' },
+      { type: 'text', text: 'Referencing שומר רק את המזהה של ישות אחרת, ומשתמש ב-$lookup בזמן שאילתה. זה שימושי כשנתונים משותפים לכמה מסמכים — עדכון במקום אחד משתקף בכל מקום. החיסרון הוא עלות $lookup בכל קריאה שדורשת את הנתונים המקושרים.' },
       { type: 'code', lang: 'javascript', caption: 'Referenced Document', code: `// orders collection
 {
   _id: ObjectId("order1"),
@@ -802,6 +823,7 @@ db.users.find({ email: "test@test.com" }).explain("executionStats")
           ['גישה יחד תמיד?', 'כן — embed!', 'לפעמים — reference'],
         ],
       },
+      { type: 'text', text: 'ה-Hybrid Pattern משלב הפניה (לשמירת קשר) עם snapshot (לשמירת ערכים בזמן האירוע). בהזמנה שומרים גם את productId (הפניה) וגם את המחיר בזמן הקנייה (snapshot). כך גם אם המחיר ישתנה בעתיד, ההזמנה הישנה תשמור את המחיר המקורי.' },
       { type: 'code', lang: 'javascript', caption: 'Pattern מעשי — Hybrid', code: `// הזמנה עם פרטי מוצר מקוננים (snapshot)
 // + הפניה ל-product המקורי
 {
@@ -857,6 +879,7 @@ db.users.find({ email: "test@test.com" }).explain("executionStats")
       { type: 'heading', text: 'מה זה Mongoose?' },
       { type: 'text', text: 'Mongoose הוא ODM (Object Document Mapper) ל-Node.js. הוא מוסיף schema validation, middleware hooks, ו-model-based queries על גבי ה-MongoDB driver הרגיל.' },
       { type: 'code', lang: 'bash', caption: 'התקנה', code: `npm install mongoose` },
+      { type: 'text', text: 'בקוד זה אנו מגדירים Schema עם כל סוגי validation: required, unique, min/max לגיל, enum לתפקידים ו-default לתאריך יצירה. Schema עם Mongoose נותן מבנה קבוע למסמכים ומבטיח שנתונים שגויים לא יישמרו. שימו לב לפונקציה mongoose.model שיוצרת את Model.' },
       { type: 'code', lang: 'javascript', caption: 'חיבור ו-Schema', code: `import mongoose from 'mongoose'
 
 // חיבור
@@ -879,6 +902,7 @@ const userSchema = new mongoose.Schema({
 // Model
 const User = mongoose.model('User', userSchema)` },
       { type: 'heading', text: 'CRUD עם Mongoose' },
+      { type: 'text', text: 'Mongoose מספקת API נוח לפעולות CRUD: create, find, findById, findOne לקריאה, findByIdAndUpdate לעדכון ו-findByIdAndDelete למחיקה. שימו לב ל-lean() שמחזיר plain JS object במקום Mongoose Document — מהיר יותר כשלא צריך validation או hooks.' },
       { type: 'code', lang: 'javascript', caption: 'פעולות CRUD', code: `// יצירה
 const user = await User.create({
   name: 'דוד כהן',
@@ -902,6 +926,7 @@ const stats = await User.aggregate([
   { $group: { _id: '$role', count: { $count: {} } } }
 ])` },
       { type: 'heading', text: 'Middleware (Hooks)' },
+      { type: 'text', text: 'Hooks ב-Mongoose הם פונקציות שרצות לפני (pre) או אחרי (post) אירועים כמו save, findOneAndDelete. הדוגמה מראה הצפנת סיסמה אוטומטית לפני כל שמירה — isModified מוודא שמצפינים רק כשהסיסמה שונתה. כך לוגיקת אבטחה מרוכזת במודל ולא מפוזרת בקוד.' },
       { type: 'code', lang: 'javascript', caption: 'Pre/Post Hooks', code: `import bcrypt from 'bcrypt'
 
 // הצפן סיסמה לפני שמירה
@@ -917,6 +942,7 @@ userSchema.post('findOneAndDelete', function(doc) {
   if (doc) console.log('User ' + doc.email + ' was deleted')
 })` },
       { type: 'heading', text: 'MongoDB Atlas' },
+      { type: 'text', text: 'MongoDB Atlas הוא שירות ענן מנוהל של MongoDB שמאפשר להקים cluster תוך דקות. ה-Free Tier (M0) מספיק ללמידה ופרויקטים קטנים עם 512MB. שימו לב שה-connection string שמתקבל מ-Atlas כולל את שם המשתמש, הסיסמה ושם ה-cluster — שמרו אותו ב-.env ולא ב-קוד.' },
       { type: 'code', lang: 'text', caption: 'הקמת Atlas בחינם', code: `1. cloud.mongodb.com → Create Free Account
 2. Create Cluster → M0 (Free Tier, 512MB)
 3. Database Access → Add User (username + password)

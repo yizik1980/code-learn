@@ -26,6 +26,10 @@ export const patternsLessons: Lesson[] = [
       },
       { type: 'heading', text: 'S — Single Responsibility Principle' },
       {
+        type: 'text',
+        text: 'הדוגמה מציגה את ההבדל בין class שמפר SRP לבין עיצוב נכון. שימו לב כיצד UserService הראשון מכיל validation, DB access, שליחת email ולוגינג — ארבע אחריות שונות. גרסת ה-SRP מפצלת כל אחריות ל-class נפרד ומחברת אותם דרך constructor injection.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'SRP — class עם אחריות אחת בלבד',
@@ -69,6 +73,10 @@ class UserService {
       },
       { type: 'heading', text: 'O — Open/Closed Principle' },
       {
+        type: 'text',
+        text: 'OCP אומר שהוספת פונקציונליות חדשה לא אמורה לדרוש שינוי בקוד קיים ובדוק. הדוגמה מציגה חישוב הנחות: הגישה השגויה מחייבת לפתוח את calcDiscount ולהוסיף if בכל פעם; הגישה הנכונה מגדירה interface DiscountStrategy שכל סוג הנחה חדש מממש — קוד קיים נשאר ללא שינוי.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'OCP — הוספת דיסקאונט חדש בלי לשנות קוד קיים',
@@ -106,6 +114,10 @@ class OrderService {
       },
       { type: 'heading', text: 'L — Liskov Substitution Principle' },
       {
+        type: 'text',
+        text: 'LSP אומר שתת-מחלקה חייבת להחליף את הבסיס שלה בלי להפתיע. הדוגמה הקלאסית: Square שיורש מ-Rectangle שובר את הנחות ה-caller כי שינוי width משנה גם את height. הפתרון הנכון: שני classes נפרדים שמממשים את אותו interface Shape, בלי ירושה מיותרת.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'LSP — תת-מחלקה חייבת לעבוד היכן שהבסיס עובד',
@@ -142,6 +154,10 @@ class Square implements Shape {
 }`,
       },
       { type: 'heading', text: 'I — Interface Segregation & D — Dependency Inversion' },
+      {
+        type: 'text',
+        text: 'הדוגמה מציגה שני עקרונות יחד. ISP: interface Worker שמכיל eat() מאלץ את RobotWorker לממש מתודה לא רלוונטית — הפתרון הוא interfaces ממוקדים Workable ו-Eatable בנפרד. DIP: OrderService שיוצר ישירות MySqlOrderRepository הוא coupled; הפתרון הוא injection של interface OrderRepository שמאפשר החלפת implementation.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -265,6 +281,10 @@ class OrderService {
       },
       { type: 'heading', text: 'Factory Method' },
       {
+        type: 'text',
+        text: 'Factory Method מסתיר את לוגיקת יצירת ה-object מהקוד שמשתמש בו. הדוגמה מציגה מערכת התראות: הקוד שמפעיל notify לא יודע האם ייווצר Email, SMS או Push — NotificationFactory מחליטה לפי נתוני המשתמש. שימו לב שכל implementation מממש את אותו Notification interface, מה שמאפשר למבצע ה-notify לקרוא ל-send() בלי לדעת את הסוג.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Factory Method — הפקידי ל-subclass מה ליצור',
@@ -308,6 +328,10 @@ async function notify(user: User, message: string) {
 }`,
       },
       { type: 'heading', text: 'Builder — בניית אובייקטים מורכבים' },
+      {
+        type: 'text',
+        text: 'Builder Pattern פותר את בעיית ה-constructor עם פרמטרים רבים שקשה לקרוא. הדוגמה מציגה QueryBuilder שבונה SQL query שלב אחר שלב. שימו לב שכל method מחזירה this — זה מה שמאפשר את ה-method chaining הקריא. רק ב-build() ה-object הסופי נוצר.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -376,6 +400,10 @@ const query = new QueryBuilder()
 // SELECT id, name, email FROM users WHERE active = true AND age > 18 ORDER BY name ASC LIMIT 20 OFFSET 40`,
       },
       { type: 'heading', text: 'Singleton — instance אחד בלבד' },
+      {
+        type: 'text',
+        text: 'Singleton מבטיח שייווצר רק instance אחד מסוים של class לאורך חיי האפליקציה. הדוגמה מציגה ConfigManager עם constructor פרטי שמונע יצירה ישירה, ו-getInstance() שיוצר אותו רק בפעם הראשונה. שימו לב לאזהרה — Singleton הוא לעיתים anti-pattern כי הוא global state שמקשה על בדיקות.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -487,6 +515,10 @@ console.log(cfg.get('apiUrl'))
     content: [
       { type: 'heading', text: 'Adapter — גשר בין interfaces לא תואמים' },
       {
+        type: 'text',
+        text: 'Adapter מתרגם בין interface של ספרייה חיצונית לbין interface פנימי שהמערכת מצפה לו. הדוגמה מציגה PinoAdapter שעוטף את ספריית Pino ומספק את Logger interface הפנימי. שימו לב שה-API של Pino שונה — הסדר של הפרמטרים הפוך — ה-Adapter מטפל בהמרה השקופה לצרכן.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Adapter — עוטף ספרייה חיצונית ב-interface פנימי',
@@ -520,6 +552,10 @@ logger.info('User created', { userId: '123' })
 // מחר נחליף ל-Winston? כותבים WinstonAdapter — אפס שינוי בשאר הקוד`,
       },
       { type: 'heading', text: 'Decorator — הוספת התנהגות ללא ירושה' },
+      {
+        type: 'text',
+        text: 'Decorator Pattern מוסיף התנהגות ל-object קיים בזמן ריצה, ללא ירושה. הדוגמה מציגה FileDataSource שאפשר לעטוף ב-EncryptionDecorator וב-CompressionDecorator — ניתן לשכב אותם בכל סדר. שימו לב שכל Decorator מממש את אותו DataSource interface — ה-caller לא יודע בכמה שכבות עטוף ה-object.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -574,6 +610,10 @@ source.write('Hello')  // → compress → encrypt → write to file`,
       },
       { type: 'heading', text: 'Facade — interface פשוט למערכת מורכבת' },
       {
+        type: 'text',
+        text: 'Facade מספק API פשוט אחד למערכת מורכבת שמורכבת מחלקים רבים. הדוגמה מציגה OrderFacade שמאחד inventory, payment, shipping ו-notification לפעולה אחת. שימו לב שה-caller צריך רק שורה אחת — facade.placeOrder() — ולא צריך לדעת כלל על הסדר הנכון לקרוא לכל שירות.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Facade — מסתיר מורכבות מאחורי API פשוט',
@@ -613,6 +653,10 @@ const facade = new OrderFacade()
 const result = await facade.placeOrder(orderRequest)`,
       },
       { type: 'heading', text: 'Proxy — שליטה על גישה ל-object' },
+      {
+        type: 'text',
+        text: 'Proxy מוסיף שכבת ביניים שמשלטת על גישה ל-object אמיתי. הדוגמה מציגה CachingUserRepository שיורט קריאות ל-findById — בודק cache לפני שפונה ל-DB. שימו לב שה-Proxy מממש את אותו UserRepository interface כמו ה-DatabaseUserRepository, כך שהצרכן לא יודע שיש caching layer.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -726,6 +770,10 @@ await repo.findById('u1')  // Cache hit — ללא DB`,
     content: [
       { type: 'heading', text: 'Observer — event system' },
       {
+        type: 'text',
+        text: 'Observer Pattern מאפשר ל-producers לפרסם events מבלי לדעת מי מאזין. הדוגמה מציגה EventEmitter גנרי עם type safety מלא — שימו לב לטיפוס OrderEvents שמגדיר אילו events קיימים ואיזה payload לכל אחד. פונקציית ה-unsubscribe שמוחזרת מ-on() חשובה למניעת memory leaks.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Observer Pattern — publish/subscribe בסיסי',
@@ -771,6 +819,10 @@ orderBus.emit('order.created', { id: 'o-1', total: 250 })
 unsubEmail()  // הסר מנוי ה-email`,
       },
       { type: 'heading', text: 'Strategy — החלפת אלגוריתם בזמן ריצה' },
+      {
+        type: 'text',
+        text: 'Strategy Pattern מפריד אלגוריתמים למחלקות נפרדות שניתן להחליף בזמן ריצה. הדוגמה מציגה מערכת תשלומים עם שלוש strategies: CreditCard, PayPal ו-Crypto. שימו לב ש-Checkout לא מכיל שום if/else לגבי שיטת תשלום — הוא פשוט קורא ל-strategy.pay() ומשאיר את הלוגיקה לכל strategy.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -820,6 +872,10 @@ checkout.setStrategy(user.prefersCrypto ? new CryptoStrategy() : new CreditCardS
 await checkout.pay(200, paymentDetails)`,
       },
       { type: 'heading', text: 'Command — encapsulate פעולה כאובייקט' },
+      {
+        type: 'text',
+        text: 'Command Pattern הופך פעולות לאובייקטים שניתן לשמור, לבצע ולבטל. הדוגמה מציגה TextEditor עם undo/redo — כל InsertTextCommand שומר את ה-content הקודם ב-previousContent. שימו לב שה-editor לא יודע מה בדיוק הפקודה עושה — הוא רק שומר ב-history ויודע להפעיל execute() ו-undo().',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -878,6 +934,10 @@ editor.undoLast()
 console.log(editor.getText())  // "Hello"`,
       },
       { type: 'heading', text: 'Chain of Responsibility — שרשרת מטפלים' },
+      {
+        type: 'text',
+        text: 'Chain of Responsibility מעביר בקשה דרך שרשרת של handlers — כל handler מחליט אם לטפל בה או להעביר הלאה. הדוגמה מציגה pipeline של Auth, RateLimit ו-Logging שמזכיר מאוד Express middleware. שימו לב ל-setNext() שמאפשר לבנות את השרשרת בגמישות ו-passToNext() שמעביר הלאה.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -1024,6 +1084,10 @@ logging.setNext(auth).setNext(rateLimit)
       },
       { type: 'heading', text: 'Domain Events — events עסקיים' },
       {
+        type: 'text',
+        text: 'Domain Events מייצגים דברים שקרו בעסק — עובדות שלא ניתן לשנות. הדוגמה מציגה OrderCreatedEvent ו-OrderShippedEvent עם כל השדות הדרושים. שימו לב ש-readonly על כל שדה מדגיש את ה-immutability, ושמות בלשון עבר (Created, Shipped) הם קונוונציה חשובה שמבטאת שהאירוע כבר קרה.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Domain Events — events שמייצגים דברים שקרו',
@@ -1081,6 +1145,10 @@ class UpdateInventoryHandler implements EventHandler<OrderCreatedEvent> {
       },
       { type: 'heading', text: 'Event Bus — ציר התקשורת' },
       {
+        type: 'text',
+        text: 'EventBus הוא הגורם המתווך שמחבר בין publishers לconsumers. הדוגמה מציגה in-process EventBus שמאפשר לרשום handlers לפי eventType ולפרסם events. שימו לב ש-OrderService מפרסם event ולא יודע מי מאזין — ה-coupling הוא רק ל-EventBus ולא לשירותים ספציפיים.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'In-Process Event Bus — pub/sub פשוט',
@@ -1132,6 +1200,10 @@ class OrderService {
 }`,
       },
       { type: 'heading', text: 'Async Events עם Message Queue' },
+      {
+        type: 'text',
+        text: 'Outbox Pattern פותר את בעיית dual-write: אם שמרנו הזמנה ב-DB אבל ה-publish נכשל, נקבל inconsistency. הפתרון: שומרים גם את ה-event ב-outbox_events table באותה טרנזקציה — אם ה-transaction נכשל הכל מתבטל. Worker נפרד מפרסם events שעוד לא פורסמו.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -1405,6 +1477,10 @@ class EventStore {
 }`,
       },
       { type: 'heading', text: 'Projections — Read Models מ-Events' },
+      {
+        type: 'text',
+        text: 'Projection מאזינה ל-event stream ובונה view מותאם לצרכי קריאה. הדוגמה מציגה שתי projections שונות מאותו event stream: AccountBalanceProjection ליתרה נוכחית, ו-AccountActivityProjection לפעילות. שימו לב שניתן לבנות כמה projections שונות מאותם events — ואפילו לבנות מחדש מה-event history אם נדרש.',
+      },
       {
         type: 'code',
         lang: 'typescript',

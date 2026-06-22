@@ -450,6 +450,10 @@ az resource list --resource-group MyResourceGroup -o table`,
       },
       { type: 'heading', text: 'Azure Functions — Serverless' },
       {
+        type: 'text',
+        text: 'Azure Functions הוא שירות Serverless של Azure שמאפשר להריץ קוד בתגובה לאירועים כגון בקשות HTTP, הודעות בתור, או טיימרים. הדוגמה הבאה מראה פונקציה שמגיבה לבקשת GET/POST ומחזירה JSON — שימו לב לאופן ההגדרה החדש עם app.http() שהוצג ב-v4 של ה-SDK.',
+      },
+      {
         type: 'code',
         lang: 'javascript',
         caption: 'Azure Function בסיסית (HTTP Trigger)',
@@ -622,6 +626,10 @@ ORDER BY total_revenue DESC
 LIMIT 10;`,
       },
       { type: 'heading', text: 'Cloud Functions — Serverless' },
+      {
+        type: 'text',
+        text: 'Google Cloud Functions היא מקבילת GCP ל-Lambda ו-Azure Functions. הדוגמה מראה את הסינטקס הפשוט של Node.js עם functions-framework — מגדירים handler לבקשת HTTP ו-GCP מטפל בכל השאר. שימו לב שאין צורך לנהל שרת או פורט.',
+      },
       {
         type: 'code',
         lang: 'javascript',
@@ -806,6 +814,10 @@ kubectl apply -f deployment.yaml`,
       {
         type: 'tip',
         text: 'Terraform מאפשר לנהל תשתית ב-AWS, Azure ו-GCP עם קוד אחיד (Infrastructure as Code). כך Multi-Cloud הופך לניהיל הרבה יותר.',
+      },
+      {
+        type: 'text',
+        text: 'Terraform משתמש בשפת HCL (HashiCorp Configuration Language) להגדרת משאבי ענן. הדוגמה הבאה מראה כיצד מגדירים שלושה משאבים בשלושה ספקים שונים — S3 ב-AWS, Resource Group ב-Azure, ו-Cloud Storage ב-GCP — כולם בקובץ אחד. שימו לב שהסינטקס דומה אך שמות המשאבים (resource type) שונים לכל ספק.',
       },
       {
         type: 'code',

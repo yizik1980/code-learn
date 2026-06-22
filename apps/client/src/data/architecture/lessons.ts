@@ -486,6 +486,10 @@ class InMemoryUserRepository implements UserRepository {
       },
       { type: 'heading', text: 'Building Blocks' },
       {
+        type: 'text',
+        text: 'DDD מגדיר שלושה building blocks מרכזיים. Value Object כמו Money הוא immutable וזהותו לפי ערכיו — שני Money(100, "ILS") הם שווים. Entity כמו OrderItem מזוהה לפי ID ויכולה להשתנות. Aggregate Root כמו Order הוא "שומר השער" — כל שינוי ב-items חייב לעבור דרכו, מה שמאפשר לו לאכוף invariants כמו "לא ניתן לשנות הזמנה שאושרה".',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Entity, Value Object ו-Aggregate',
@@ -650,6 +654,10 @@ class Order {
           ['PATCH', 'עדכון חלקי', '✅ כן', 'PATCH /users/42'],
           ['DELETE', 'מחיקה', '✅ כן', 'DELETE /users/42'],
         ],
+      },
+      {
+        type: 'text',
+        text: 'קונוונציות ה-URL ב-REST הן חלק קריטי מהתקשורת. ה-resources תמיד ברבים (/users לא /user), היררכיה מבוטאת בנתיב (/users/42/orders), ואין פעלים ב-URL — הפעולה מוגדרת על ידי ה-HTTP method. שימו לב להבדלים בין ✓ ו-✗ בדוגמאות.',
       },
       {
         type: 'code',
@@ -1122,6 +1130,10 @@ const result = await withRetry(() => paymentService.charge(order))`,
       },
       { type: 'heading', text: 'JWT — JSON Web Token' },
       {
+        type: 'text',
+        text: 'JWT הוא token נחתם דיגיטלית שמכיל מידע על המשתמש. הוא מורכב משלושה חלקים מופרדים בנקודה: header, payload ו-signature. הנקודה החשובה ביותר: ה-payload מקודד ב-base64 בלבד — לא מוצפן — כל אחד יכול לקרוא אותו. רק ה-signature מאמת שהttoken לא זויף.',
+      },
+      {
         type: 'code',
         lang: 'text',
         caption: 'מבנה JWT',
@@ -1153,6 +1165,10 @@ Signature: HMACSHA256(base64(header) + "." + base64(payload), secret)
         ],
       },
       { type: 'heading', text: 'Defense in Depth' },
+      {
+        type: 'text',
+        text: 'Defense in Depth מבוסס על עיקרון שאף שכבת הגנה בודדת אינה מספיקה. הדוגמה מציגה שש שכבות הגנה שכל אחת עצמאית. שימו לב שהשכבות מתחילות מהרשת (Network/WAF) ומתרחבות לתוך האפליקציה (validation), הנתונים (הצפנה) וה-identity — כך פריצה בשכבה אחת לא מעניקה גישה מלאה.',
+      },
       {
         type: 'code',
         lang: 'text',
@@ -1266,6 +1282,10 @@ Layer 6: Monitoring   — SIEM, anomaly detection, alerts`,
       },
       { type: 'heading', text: 'SLA, SLO, SLI' },
       {
+        type: 'text',
+        text: 'SLI, SLO ו-SLA הם שלוש רמות של הגדרת זמינות שירות. הדוגמה מציגה את ההיררכיה: SLI הוא המדד הנמדד בפועל, SLO הוא היעד הפנימי, ו-SLA הוא ההתחייבות החוזית ללקוח. שימו לב ל-Error Budget — הוא מחשב כמה downtime נותר לשימוש בחודש הנוכחי לפני שמפרים את ה-SLO.',
+      },
+      {
         type: 'code',
         lang: 'text',
         caption: 'ההיררכיה',
@@ -1285,6 +1305,10 @@ Error Budget = SLO - מה שנמדד בפועל
   "נותרו לנו 0.4% downtime לחודש הנוכחי"`,
       },
       { type: 'heading', text: 'Structured Logging' },
+      {
+        type: 'text',
+        text: 'Structured logging שומר logs כ-JSON במקום טקסט חופשי, מה שמאפשר לחפש ולסנן לפי שדות ספציפיים. הדוגמה מציגה את ההבדל בין log טקסטואלי לlog מובנה. שימו לב ל-traceId שמקשר את ה-log לTrace ברחבי שירותים, ול-Correlation ID middleware שמעביר את ה-traceId לאורך כל בקשה.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -1311,6 +1335,10 @@ app.use((req, res, next) => {
 })`,
       },
       { type: 'heading', text: 'System Design Interview — מסגרת עבודה' },
+      {
+        type: 'text',
+        text: 'מסגרת עבודה לתכנון מערכת ב-interview מאפשרת להציג חשיבה מסודרת ומקיפה. הדוגמה מציגה 5 שלבים: קודם מבהירים דרישות וכמויות, אחר כך מעריכים קיבולת, מתכננים ברמה גבוהה, מתעמקים ב-bottlenecks, ולבסוף מסבירים trade-offs. שימו לב שה-Interviewer רוצה לשמוע את הנימוקים לכל החלטה — לא רק את התוצאה.',
+      },
       {
         type: 'code',
         lang: 'text',

@@ -10,6 +10,10 @@ export const csharpLessons: Lesson[] = [
     content: [
       { type: 'heading', text: 'Top-Level Statements, Global Usings, File-Scoped Namespace' },
       {
+        type: 'text',
+        text: 'C# 10 הכניס שלושה שינויים שמצמצמים את ה-boilerplate בפרויקטים מודרניים. global using מגדיר ייבוא אחד שחל על כל קבצי הפרויקט, File-scoped namespace מסיר רמת הזחה שלמה, ו-Top-level statements מאפשרים לכתוב Program.cs ללא מחלקה וללא Main. שימו לב שכל שלושת הטכניקות מופיעות יחד בדוגמה.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'C# 10 — ביטול boilerplate',
@@ -29,6 +33,10 @@ app.MapGet("/", () => "CodeLearn API");
 app.Run();`,
       },
       { type: 'heading', text: 'Primary Constructors — C# 12' },
+      {
+        type: 'text',
+        text: 'Primary Constructors מאפשרים להגדיר פרמטרי constructor ישירות על שורת הגדרת המחלקה. הפרמטרים הופכים לנגישים בכל גוף המחלקה ללא צורך להגדיר שדות פרטיים ולבצע השמה ב-constructor. שימו לב לדוגמת ה-"לפני ואחרי" — ההבדל בכמות הקוד ניכר, במיוחד עבור מחלקות שמקבלות כמה תלויות.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -60,6 +68,10 @@ public readonly struct Point(double X, double Y)
       },
       { type: 'heading', text: 'Records — Value Semantics ו-Immutability' },
       {
+        type: 'text',
+        text: 'Records הם סוג מיוחד ב-C# שמספק equality לפי ערכים (לא reference), deconstruction אוטומטי, ו-with expression ליצירת עותק עם שינויים. בניגוד לclass, שני records עם אותם ערכים ייחשבו שווים. שימו לב לאופרטור with שיוצר עותק חדש בלי לשנות את המקור — דפוס חשוב לאי-שינוי נתונים.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'record, record struct, with, deconstruct',
@@ -87,6 +99,10 @@ public record Note(int Id, DateTimeOffset CreatedAt, string Content)
     : Entity(Id, CreatedAt);`,
       },
       { type: 'heading', text: 'Pattern Matching — C# 8-13' },
+      {
+        type: 'text',
+        text: 'Pattern Matching ב-C# מאפשר לבדוק מבנה נתונים ולחלץ ערכים בתחביר בהיר ותמציתי. switch expression (C# 8) מחזיר ערך ישירות, Property Pattern בודק תכונות של אובייקט, וList Pattern (C# 11) מאפשר להתאים לפי מבנה רשימה. שימו לב שכל ענף בדוגמה בודק תנאי שונה — מסוג, למאפיין, ועד לאורך.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -129,6 +145,10 @@ decimal Discount(object customer) => customer switch
       },
       { type: 'heading', text: 'Collection Expressions & Spread — C# 12' },
       {
+        type: 'text',
+        text: 'Collection Expressions מציגות תחביר [ ] אחיד ליצירת כל סוגי האוספים — מערכים, List, Span ואפילו ImmutableArray — ללא new() ו-{} שונים. אופרטור Spread (..) מאפשר לשרשר אוספים קיימים לאוסף חדש בשורה אחת. שימו לב שאותו תחביר עובד על סוגים שונים לחלוטין.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'תחביר [ ] אחיד + spread operator',
@@ -151,6 +171,10 @@ Dictionary<string, int> scores = new()
 };`,
       },
       { type: 'heading', text: 'Required, Init-Only & Raw String Literals' },
+      {
+        type: 'text',
+        text: 'required (C# 11) מאכף שדות חובה בזמן קומפילציה — שגיאה תתרחש אם תשכחו לאתחל שדה נדרש. init accessor מאפשר כתיבה רק בזמן object initialization, ולאחר מכן השדה הופך לקריאה בלבד. Raw String Literals (""") פותרים את בעיית ה-escape בכתיבת SQL, JSON ו-HTML — שימו לב שניתן לכתוב גם interpolation בתוכם.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -304,6 +328,10 @@ string json = $"""
     content: [
       { type: 'heading', text: 'async/await — כללי זהב' },
       {
+        type: 'text',
+        text: 'קוד async ב-C# מתנהל לפי כמה כללי זהב שמונעים deadlocks ובאגים קשים לאיתור. ConfigureAwait(false) בספריות מונע capture של SynchronizationContext, async void אסור כמעט תמיד כי exceptions נאבדות, ו-Task.WhenAll מאפשר מקביליות אמיתית. שימו לב להבדל בין WhenAll לWhenAny — האחד מחכה לכולם, האחר מחכה לראשון.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'Async Best Practices',
@@ -342,6 +370,10 @@ return await fastest;`,
       },
       { type: 'heading', text: 'CancellationToken — ביטול מדויק' },
       {
+        type: 'text',
+        text: 'CancellationToken הוא המנגנון המובנה ב-.NET לביטול פעולות אסינכרוניות. ASP.NET Core מזריק אותו אוטומטית לכל action כשהלקוח מנתק, ויש להעביר אותו הלאה בכל שכבה. שימו לב לאפשרות לשרשר מספר tokens ב-CreateLinkedTokenSource — מאפשר ביטול גם מהמשתמש וגם ממנגנון timeout.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'CancellationToken בכל שכבה',
@@ -372,6 +404,10 @@ using var linked = CancellationTokenSource.CreateLinkedTokenSource(
 await DoWorkAsync(linked.Token);`,
       },
       { type: 'heading', text: 'ValueTask — חיסכון ב-Allocation' },
+      {
+        type: 'text',
+        text: 'ValueTask הוא חלופה ל-Task שמונעת הקצאת heap כאשר הפעולה מסתיימת סינכרונית — למשל כשהתשובה נמצאת בcache. הדוגמה מראה בדיוק מתי Task מקצה מיותר ואיך ValueTask.FromResult מחזיר ערך ללא allocation. שימו לב לאזהרה החשובה — ValueTask מותר לאחד רק פעם אחת.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -405,6 +441,10 @@ var r1 = await vt; // ✓
 var r2 = await vt; // ✗ undefined behavior`,
       },
       { type: 'heading', text: 'IAsyncEnumerable — Streaming נתונים' },
+      {
+        type: 'text',
+        text: 'IAsyncEnumerable<T> מאפשר להחזיר נתונים אחד-אחד ברגע שמוכנים, ללא טעינת כולם לזיכרון. שימושי במיוחד לstreaming תשובות מLLM כמו Claude, שבהן כל chunk מגיע בנפרד. שימו לב לשימוש ב-[EnumeratorCancellation] — זה הדרך הנכונה להעביר CancellationToken לתוך IAsyncEnumerable.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -447,6 +487,10 @@ public async IAsyncEnumerable<string> Stream(string prompt,
       },
       { type: 'heading', text: 'LINQ חידושים — .NET 6-9' },
       {
+        type: 'text',
+        text: 'גרסאות .NET 6 עד 9 הוסיפו מספר מתודות LINQ שימושיות שחוסכות קוד verbose. Chunk מחלק רשימה לקבוצות, DistinctBy ו-MinBy/MaxBy עובדות על key selector, ו-CountBy/AggregateBy (.NET 9) מאפשרות ספירה וצבירה לפי מפתח ביעילות. שימו לב ל-Index() שמוסיף אינדקס לכל איבר בלי לעשות Select עם counter ידני.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'Chunk, DistinctBy, CountBy, Index, AggregateBy',
@@ -486,6 +530,10 @@ var sorted = notes.Order(); // Comparable
 var desc   = notes.OrderDescending();`,
       },
       { type: 'heading', text: 'Functional Patterns — Pipeline ו-Option' },
+      {
+        type: 'text',
+        text: 'Result<T> הוא דפוס מתכנות פונקציונלי שמייצג הצלחה או כשלון כערך רגיל במקום exception. הפונקציה מחזירה Result ומי שקורא לה חייב לטפל בשני המקרים — ההידור כופה את זה. שימו לב כיצד switch expression על Result מפרק את הערך בצורה קריאה ובטוחה.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -663,6 +711,10 @@ if (int.TryParse(numStr, out int value))
       },
       { type: 'heading', text: 'Memory<T> — Async-safe Span' },
       {
+        type: 'text',
+        text: 'Memory<T> הוא המקבילה של Span<T> שניתן להעביר דרך await — בניגוד ל-Span שחי רק על ה-stack. הדוגמה מציגה גם ArrayPool שמאפשר לשאול ולהחזיר מערכים במקום להקצות בכל פעם. שימו לב לדפוס try/finally — ה-buffer חייב לחזור לpool גם במקרה של exception.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'Memory<T> לעבודה async',
@@ -698,6 +750,10 @@ public async Task<string> ReadResponseAsync(HttpResponseMessage res)
       },
       { type: 'heading', text: 'Source Generators — קוד שנוצר בזמן קומפילציה' },
       {
+        type: 'text',
+        text: 'Source Generators מייצרים קוד C# בזמן קומפילציה, מה שמאפשר serialization ו-logging ללא reflection. JsonSourceGeneration מייצר קוד JSON מותאם ספציפית לטיפוסים שמוגדרים, ו-LoggerMessage מייצר קוד logging יעיל. שימו לב שהדפוס הזה הוא תנאי הכרחי לשימוש ב-Native AOT שמגיע בהמשך.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'JsonSerializerContext, LoggerMessage',
@@ -728,6 +784,10 @@ public partial class NoteService(ILogger<NoteService> logger)
 }`,
       },
       { type: 'heading', text: 'Native AOT — .NET 8' },
+      {
+        type: 'text',
+        text: 'Native AOT מקמפל את הקוד לbinary עצמאי שלא זקוק ל-.NET runtime — startup מהיר ב-<10ms ו-memory נמוך, מתאים ל-containers ו-Lambda. המחיר הוא הגבלות על reflection ו-dynamic code. שימו לב לרשימת מה עובד ומה לא — Source Generators ו-Minimal API נתמכים, אבל reflection לא.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -762,6 +822,10 @@ app.MapGet("/notes/{id}", (int id, NoteService svc) => svc.GetAsync(id));
 app.Run();`,
       },
       { type: 'heading', text: 'Frozen Collections — .NET 8' },
+      {
+        type: 'text',
+        text: 'FrozenDictionary ו-FrozenSet (.NET 8) מיועדים לנתונים שנוצרים פעם אחת ולאחר מכן רק נקראים. הם עוברים אופטימיזציה פנימית ב-ToFrozenDictionary() שמאפשרת lookup מהיר יותר מDictionary רגיל. שימו לב ל-SearchValues בסוף הדוגמה — כלי מהיר לחיפוש תווים שמשתמש בהוראות SIMD.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -902,6 +966,10 @@ bool hasDangerous = content.AsSpan().IndexOfAny(dangerous) >= 0;`,
     content: [
       { type: 'heading', text: 'Minimal API — ASP.NET Core 6+' },
       {
+        type: 'text',
+        text: 'Minimal API ב-ASP.NET Core 6+ מאפשר לבנות API מלא ב-Program.cs ללא Controllers ו-Startup class. הדוגמה מציגה את כל שלבי ההגדרה — Services, Middleware ו-Routes — בקוד קצר וקריא. שימו לב לסדר Middleware: ExceptionHandler, RateLimiter ו-OutputCache — הסדר קריטי לפונקציונליות תקינה.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'Program.cs — API מלא ב-~30 שורות',
@@ -944,6 +1012,10 @@ app.MapHealthChecks("/health");
 app.Run();`,
       },
       { type: 'heading', text: 'Route Groups ו-TypedResults' },
+      {
+        type: 'text',
+        text: 'TypedResults מחזיר Generic type שמכיל מידע על כל סוגי התשובות האפשריות, מה שמאפשר ל-OpenAPI לייצר documentation מדויק אוטומטית. בניגוד ל-Results הפשוט, Results<Ok<T>, BadRequest<string>> מגדיר בדיוק אילו תגובות endpoint יכול להחזיר. שימו לב לפונקציית Validate הפרטית שמפרידה לוגיקת validation מהhandler.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -992,6 +1064,10 @@ app.Run();`,
       },
       { type: 'heading', text: 'Rate Limiting — .NET 7' },
       {
+        type: 'text',
+        text: 'Rate Limiting מובנה ב-.NET 7 מספק שלושה אסטרטגיות עיקריות לניהול עומסים. Fixed Window מגביל מספר בקשות בחלון זמן קבוע, Sliding Window מחיל הגבלה מדויקת יותר שמונעת burst בגבול החלון, ו-Concurrency Limiter מגביל מספר בקשות מקביליות. שימו לב להגדרת OnRejected שמאפשרת להחזיר תשובה מותאמת עם status 429.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'Fixed Window, Sliding Window ו-Concurrency Limiter',
@@ -1034,6 +1110,10 @@ app.MapPost("/api/notes", NoteEndpoints.Create)
     .RequireRateLimiting("writes");`,
       },
       { type: 'heading', text: 'Output Cache, Health Checks ו-IExceptionHandler' },
+      {
+        type: 'text',
+        text: 'הדוגמה משלבת שלושה מנגנונים חשובים לAPI production-ready. Output Cache שומר תשובות לפי query parameters ומאפשר invalidation ממוקד בtag. Health Checks חושפים endpoint שLoad Balancers ו-Kubernetes קוראים לו. IExceptionHandler (.NET 8) מטפל ב-exceptions לא מטופלות ומחזיר status code מתאים לפי סוג השגיאה.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1229,6 +1309,10 @@ public class NoteService
 // 3. לא ניתן לשתף — כל new NoteService() פותח חיבור DB חדש`,
       },
       {
+        type: 'text',
+        text: 'הפתרון עם DI הוא פשוט — NoteService מקבל את INoteRepository דרך ה-constructor ולא יוצר אותו. ה-container האוטומטי של ASP.NET Core מזריק את המימוש הנכון לפי הregistration. שימו לב לחלק "בבדיקות" — כך בדיוק מחליפים את ה-NoteRepository האמיתי ב-FakeNoteRepository ללא שינוי כלשהו ב-NoteService עצמו.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'הפתרון: עם DI — מנותק, ניתן לבדיקה, ניתן להחלפה',
@@ -1270,6 +1354,10 @@ var svc = new NoteService(fakeRepo, NullLogger<NoteService>.Instance);
         ],
       },
       {
+        type: 'text',
+        text: 'הדוגמה מציגה את כל שיטות הregistration העיקריות — רישום בסיסי לפי interface, factory function ליצירה מורכבת, ו-Keyed Services (.NET 8) לרישום מימושים מרובים של אותו interface. שימו לב ל-Open Generics בסוף — רישום אחד מטפל בכל IRepository<T> ללא צורך לרשום כל טיפוס בנפרד.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'DI Registration — כל השיטות',
@@ -1301,6 +1389,10 @@ public class NoteService([FromKeyedServices("cloud")] IStorage storage) { }
 services.AddSingleton(typeof(IRepository<>), typeof(Repository<>));`,
       },
       { type: 'heading', text: 'Options Pattern — Configuration מוקטינת' },
+      {
+        type: 'text',
+        text: 'Options Pattern מספק דרך מובנית ל-strongly-typed configuration עם validation. הדוגמה מציגה הגדרת class עם data annotations, binding לקטע בappsettings.json, וvalidation אוטומטי בהפעלה. שימו לב להבדל בין IOptions (ערך קבוע), IOptionsSnapshot (מתעדכן לכל request) ו-IOptionsMonitor (מתעדכן בzמן אמת עם hot reload).',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1347,6 +1439,10 @@ public class AiService(IOptions<AnthropicOptions> options)
       },
       { type: 'heading', text: 'TimeProvider — .NET 8' },
       {
+        type: 'text',
+        text: 'TimeProvider (.NET 8) פותר בעיה קלאסית בבדיקות — DateTime.UtcNow קשיח ולא ניתן לשליטה. על ידי inject של TimeProvider, ניתן להחליף אותו ב-FakeTimeProvider בבדיקות ולקבוע זמן מדויק. שימו לב ל-fakeTime.Advance() — מאפשר לדמות מעבר זמן ולבדוק לוגיקת expiration ו-timers.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'TimeProvider — testable time abstraction',
@@ -1379,6 +1475,10 @@ fakeTime.Advance(TimeSpan.FromDays(1)); // זזים קדימה בזמן
 // גם Timers ו-CancellationToken timeouts עובדים עם FakeTimeProvider`,
       },
       { type: 'heading', text: 'Generic Host — Background Services' },
+      {
+        type: 'text',
+        text: 'BackgroundService הוא base class לשירותים שרצים ברקע לאורך כל חיי האפליקציה. הדוגמה מציגה cleanup service שרץ כל 24 שעות ומוחק הערות ישנות. שימו לב לשימוש ב-IServiceScopeFactory — כיוון ש-BackgroundService הוא Singleton, הוא לא יכול להשתמש ישירות ב-DbContext שהוא Scoped, ולכן חייב ליצור scope חדש.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1557,6 +1657,10 @@ builder.Services.AddHostedService<NotesCleanupService>();`,
     content: [
       { type: 'heading', text: 'DbContext & Configuration מודרני' },
       {
+        type: 'text',
+        text: 'AppDbContext מודרני משתמש ב-Primary Constructor ומפריד את הגדרות ה-mapping לקלאסים נפרדים המממשים IEntityTypeConfiguration<T>. ApplyConfigurationsFromAssembly טוען את כל ה-configurations אוטומטית. שימו לב לאינדקס המורכב על UserId+CourseId+LessonId — זהו האינדקס שמייעל את query הנפוץ ביותר באפליקציה.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'AppDbContext.cs — EF Core 8+',
@@ -1596,6 +1700,10 @@ public class NoteConfiguration : IEntityTypeConfiguration<Note>
       },
       { type: 'heading', text: 'Bulk Operations — EF Core 7-8' },
       {
+        type: 'text',
+        text: 'לפני EF Core 7, מחיקה ועדכון המוני דרשו טעינת כל הרשומות לזיכרון ואז לולאת SaveChanges — N+1 queries. ExecuteDeleteAsync ו-ExecuteUpdateAsync (EF Core 7) שולחים שאילתה אחת ישירה ל-DB ומעקפים את ה-ChangeTracker לחלוטין. שימו לב שהגישה החדשה גם מהירה יותר וגם לא מחזירה את הנתונים לזיכרון.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'ExecuteUpdateAsync ו-ExecuteDeleteAsync',
@@ -1628,6 +1736,10 @@ await db.Notes
       },
       { type: 'heading', text: 'Compiled Queries — ביצועים ב-Hot Path' },
       {
+        type: 'text',
+        text: 'בכל קריאה ל-EF Core query רגיל, EF Core מתרגם את ה-LINQ ל-SQL מחדש — עלות CPU שמצטברת בעומס גבוה. Compiled Query מבצע את התרגום פעם אחת ב-startup ושומר את התוצאה. שימו לב שה-query מוגדר כשדה static readonly — הוא נוצר פעם אחת לכל חיי האפליקציה ומשותף לכל הקריאות.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'EF.CompileAsyncQuery — קומפילציה חד-פעמית',
@@ -1657,6 +1769,10 @@ var notes = await NoteQueries
     .ToArrayAsync(ct);`,
       },
       { type: 'heading', text: 'JSON Columns & Interceptors — EF Core 8' },
+      {
+        type: 'text',
+        text: 'JSON Columns (EF Core 8) מאפשרים לשמור owned type כעמודת JSON בDB ולשאול עליה ישירות בLINQ. Interceptors מאפשרים לתפוס פעולות DB ולהוסיף behavior כמו slow query detection ללא שינוי בקוד הרגיל. שימו לב ל-SlowQueryInterceptor שמדפיס אוטומטית כל query שלוקח מעל 200ms.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1709,6 +1825,10 @@ builder.Services.AddDbContext<AppDbContext>((sp, opts) =>
 builder.Services.AddSingleton<SlowQueryInterceptor>();`,
       },
       { type: 'heading', text: 'Raw SQL & Split Queries' },
+      {
+        type: 'text',
+        text: 'כשLINQ לא מספיק, EF Core מספק FromSql לכתיבת SQL ישיר עם מיפוי לentities, ו-SqlQuery לתוצאות שאינן entities. חשוב — string interpolation בFromSql בטוח ומתורגם ל-parameterized query אוטומטית. AsSplitQuery פותר את בעיית Cartesian Explosion שנוצרת כשInclude מרובים יוצרים JOIN גדול עם שורות כפולות רבות.',
+      },
       {
         type: 'code',
         lang: 'csharp',

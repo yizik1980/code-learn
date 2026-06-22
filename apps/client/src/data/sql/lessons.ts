@@ -551,6 +551,10 @@ SELECT * FROM employees WHERE age != 30;
         text: 'AND, OR, NOT — שילוב תנאים',
       },
       {
+        type: 'text',
+        text: 'AND מחזיר שורה רק כשכל התנאים מתקיימים יחד, OR מספיק לו תנאי אחד, ו-NOT הופך תנאי לנגדו. שימו לב שסדר הקדימויות הוא AND לפני OR — בדיוק כמו כפל לפני חיבור — ולכן מומלץ להשתמש בסוגריים לבהירות.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'שילוב תנאים',
@@ -568,6 +572,10 @@ SELECT * FROM products WHERE NOT category = 'ריהוט';`,
       {
         type: 'heading',
         text: 'BETWEEN, IN, LIKE',
+      },
+      {
+        type: 'text',
+        text: 'BETWEEN בודק טווח ערכים (כולל קצוות), IN מחליף שרשרת OR על אותה עמודה, ו-LIKE מאפשר חיפוש לפי תבנית עם wildcards. שימו לב ש-% מייצג כל רצף תווים בעוד שקו תחתי _ מייצג תו בודד בלבד.',
       },
       {
         type: 'code',
@@ -589,6 +597,10 @@ SELECT * FROM products WHERE name LIKE '%כיסא%';  -- מכיל "כיסא"`,
       {
         type: 'heading',
         text: 'IS NULL — ערכים חסרים',
+      },
+      {
+        type: 'text',
+        text: 'NULL הוא ערך מיוחד שמשמעותו "נתון לא ידוע" — הוא לא אפס ולא מחרוזת ריקה. בגלל כך, השוואה רגילה עם = לא עובדת עם NULL ויש להשתמש תמיד ב-IS NULL או IS NOT NULL. זהו בלבול נפוץ בקרב מפתחים מתחילים.',
       },
       {
         type: 'code',
@@ -837,6 +849,10 @@ SELECT * FROM customers ORDER BY city, name;`,
         text: 'LIMIT — הגבלת כמות תוצאות',
       },
       {
+        type: 'text',
+        text: 'LIMIT מגביל את מספר השורות שיוחזרו מהשאילתה. הוא שימושי להצגת תצוגה מקדימה, מניעת עומס נתונים, ומציאת top-N תוצאות. אם הטבלה קטנה מה-LIMIT שהגדרנו, פשוט מוחזרות כל השורות ללא שגיאה.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'LIMIT',
@@ -873,6 +889,10 @@ SELECT * FROM products ORDER BY id LIMIT 10 OFFSET 20;`,
       {
         type: 'heading',
         text: 'הסדר הנכון של הפסוקיות',
+      },
+      {
+        type: 'text',
+        text: 'לשאילתת SELECT יש סדר כתיבה קבוע שחייבים לשמור עליו: SELECT → FROM → WHERE → ORDER BY → LIMIT → OFFSET. כל שינוי בסדר יגרום לשגיאת syntax. שימו לב שהסדר הלוגי של ביצוע שונה מסדר הכתיבה.',
       },
       {
         type: 'code',
@@ -1111,6 +1131,10 @@ LIMIT 5;
         text: 'INNER JOIN — שורות תואמות בלבד',
       },
       {
+        type: 'text',
+        text: 'INNER JOIN מחבר שתי טבלאות לפי תנאי ה-ON ומחזיר רק שורות שיש להן התאמה בשתיהן. לקוח ללא הזמנות לא יופיע בתוצאה, וגם הזמנה ללא לקוח תואם תיעלם. שימו לב לשימוש ב-alias (o, c) לקיצור שמות הטבלאות — זה מקצר ומבהיר את הקוד.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'INNER JOIN',
@@ -1137,6 +1161,10 @@ INNER JOIN customers c ON o.customer_id = c.id;`,
         text: 'LEFT JOIN — כל השורות מהשמאל',
       },
       {
+        type: 'text',
+        text: 'LEFT JOIN מחזיר את כל השורות מהטבלה השמאלית (customers), גם אלו שאין להן התאמה בטבלה הימנית (orders). שורות ללא התאמה יקבלו NULL בעמודות הטבלה הימנית. זה שימושי כשרוצים לראות גם לקוחות שלא ביצעו הזמנות.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'LEFT JOIN',
@@ -1151,6 +1179,10 @@ LEFT JOIN orders o ON c.id = o.customer_id;
       {
         type: 'heading',
         text: 'RIGHT JOIN — כל השורות מהימין',
+      },
+      {
+        type: 'text',
+        text: 'RIGHT JOIN הוא כמו LEFT JOIN אבל הכיוון הפוך — כל שורות הטבלה הימנית נשמרות. בפועל, RIGHT JOIN נדיר בשימוש כי תמיד ניתן להחליפו ב-LEFT JOIN עם שינוי סדר הטבלאות. שימו לב שההבדל הוא רק לגבי שמירת שורות ללא התאמה.',
       },
       {
         type: 'code',
@@ -1451,6 +1483,10 @@ HAVING AVG(salary) > 15000
 ORDER BY avg_sal DESC;`,
       },
       {
+        type: 'text',
+        text: 'ההבדל בין WHERE ל-HAVING הוא בשלב הסינון: WHERE פועל על שורות בודדות לפני הקיבוץ, ו-HAVING פועל על הקבוצות שנוצרו אחרי GROUP BY. לכן לא ניתן לכתוב WHERE COUNT(*) > 5 — פונקציות צבירה ב-WHERE הן שגיאה.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'WHERE לעומת HAVING',
@@ -1697,6 +1733,10 @@ INSERT INTO customers (name) VALUES ('אורן לוי');`,
         text: 'UPDATE — עדכון נתונים',
       },
       {
+        type: 'text',
+        text: 'UPDATE משנה ערכים בשורות קיימות. חייבים לציין SET עם העמודות שרוצים לשנות, ומומלץ מאוד להוסיף WHERE כדי לא לעדכן את כל הטבלה בשוגג. ניתן לעדכן כמה עמודות בבת אחת, ואפילו לחשב ערכים חדשים על בסיס הערך הקיים (כמו salary * 1.1).',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'UPDATE',
@@ -1718,6 +1758,10 @@ WHERE department = 'פיתוח' AND years_exp > 5;`,
       {
         type: 'heading',
         text: 'DELETE — מחיקת נתונים',
+      },
+      {
+        type: 'text',
+        text: 'DELETE מוחק שורות מהטבלה לצמיתות — אין undo אוטומטי. תמיד יש לציין WHERE כדי לא למחוק את כל הנתונים. שיטה בטוחה: כתבו קודם SELECT עם אותו WHERE כדי לראות בדיוק מה יימחק, ורק אז החליפו ל-DELETE.',
       },
       {
         type: 'code',
@@ -1953,6 +1997,10 @@ DELETE FROM customers WHERE city = 'חיפה';
         text: 'Subquery ב-WHERE',
       },
       {
+        type: 'text',
+        text: 'Subquery ב-WHERE מאפשר להשתמש בתוצאת שאילתה אחרת כתנאי סינון. התת-שאילתה מבוצעת קודם, ותוצאתה משמשת את השאילתה החיצונית. שימו לב שעם = אפשר להחזיר רק ערך בודד, בעוד שעם IN ניתן להחזיר רשימה שלמה.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'Subquery ב-WHERE',
@@ -1974,6 +2022,10 @@ WHERE id IN (SELECT customer_id FROM orders);
         text: 'EXISTS — בדיקת קיום',
       },
       {
+        type: 'text',
+        text: 'EXISTS בודק אם תת-שאילתה מחזירה לפחות שורה אחת — הוא לא מסתכל על התוכן אלא רק על הקיום. EXISTS יעיל במיוחד כשהתת-שאילתה גדולה, כי הוא מפסיק לחפש ברגע שמוצאת שורה ראשונה. שימו לב שכותבים SELECT 1 ולא SELECT * — התוכן לא חשוב.',
+      },
+      {
         type: 'code',
         lang: 'sql',
         caption: 'EXISTS',
@@ -1991,6 +2043,10 @@ WHERE EXISTS (
       {
         type: 'heading',
         text: 'Subquery ב-FROM — טבלה נגזרת',
+      },
+      {
+        type: 'text',
+        text: 'כשמשתמשים בתת-שאילתה ב-FROM, היא נקראת "Derived Table" — טבלה נגזרת. זה מאפשר לבצע חישוב מורכב (כמו GROUP BY עם AVG) ואז לסנן על תוצאתו. חובה לתת alias לטבלה הנגזרת — בלי alias SQL יזרוק שגיאה.',
       },
       {
         type: 'code',
@@ -2480,6 +2536,7 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 5;
       { type: 'text', text: 'View היא שאילתת SELECT שמורה בשם. היא מתנהגת כמו טבלה — אפשר לבצע עליה SELECT, לסנן אותה ולחבר אותה עם טבלאות אחרות. אבל היא לא מאחסנת נתונים בעצמה — בכל פעם שניגשים אליה, השאילתה שמאחוריה מתבצעת מחדש.' },
       { type: 'tip', text: 'View מאפשר להסתיר מורכבות: במקום לכתוב JOIN ארוך כל פעם — שומרים אותו כ-View ומשתמשים בשמו.' },
       { type: 'heading', text: 'יצירת View' },
+      { type: 'text', text: 'CREATE VIEW שומר שאילתה בשם כך שניתן לקרוא לה מאוחר יותר כאילו היא טבלה. כאן אנו שומרים JOIN מורכב של orders עם customers בשם order_details, ואז מרשים לשאול עליו עם WHERE ו-ORDER BY בדיוק כמו טבלה אמיתית.' },
       { type: 'code', lang: 'sql', caption: 'CREATE VIEW', code: `-- יצירת view של הזמנות עם שם הלקוח
 CREATE VIEW order_details AS
 SELECT
@@ -2507,6 +2564,7 @@ FROM users;
 -- המשתמש רואה רק זאת:
 SELECT * FROM public_users;` },
       { type: 'heading', text: 'עדכון ומחיקת View' },
+      { type: 'text', text: 'CREATE OR REPLACE VIEW מאפשר לשנות הגדרת View קיים בלי למחוק ולייצר מחדש. DROP VIEW מוחק רק את ההגדרה — הנתונים בטבלאות המקוריות לא נפגעים. שימו לב שהשינוי ב-View משפיע על כל מי שמשתמש בו.' },
       { type: 'code', lang: 'sql', caption: 'ניהול Views', code: `-- עדכון view קיים:
 CREATE OR REPLACE VIEW order_details AS
 SELECT
@@ -2524,6 +2582,7 @@ DROP VIEW order_details;
 -- רשימת כל ה-views:
 SHOW FULL TABLES WHERE Table_type = 'VIEW';` },
       { type: 'heading', text: 'View מוחמר עם WITH CHECK OPTION' },
+      { type: 'text', text: 'WITH CHECK OPTION מוסיף הגנה לView שמאפשר כתיבה: כל INSERT או UPDATE שיתבצע דרך ה-View חייב לעמוד בתנאי ה-WHERE שלו. ניסיון להכניס שורה שתצא מ-View (למשל status=cancelled לתוך active_orders) יגרום לשגיאה.' },
       { type: 'code', lang: 'sql', caption: 'WITH CHECK OPTION', code: `-- View שמאפשר לראות ולשנות רק הזמנות פעילות:
 CREATE VIEW active_orders AS
 SELECT * FROM orders
@@ -2647,6 +2706,7 @@ VALUES (1, 300, 'active');  -- עובד
       { type: 'text', text: 'טרנזקציה היא קבוצת פעולות שמתבצעות כיחידה אחת. או שכולן מצליחות — או שאף אחת לא מתבצעת. הדוגמה הקלאסית: העברת כסף בין חשבונות — חובה ששתי הפעולות (חיוב + זיכוי) יצליחו יחד.' },
       { type: 'tip', text: 'בלי טרנזקציות, קריסת השרת באמצע פעולה יכולה להשאיר את הנתונים במצב שבור — לחייב חשבון אחד בלי לזכות את השני.' },
       { type: 'heading', text: 'BEGIN, COMMIT, ROLLBACK' },
+      { type: 'text', text: 'BEGIN מתחיל טרנזקציה, COMMIT שומר את כל השינויים לצמיתות, ו-ROLLBACK מבטל הכל. הדוגמה מדגימה העברת כסף: שתי פעולות UPDATE חייבות להצליח ביחד — אם אחת נכשלת, ROLLBACK מחזיר למצב המקורי. שימו לב שמקובל לכתוב קוד טיפול בשגיאות שקורא ל-ROLLBACK אוטומטית.' },
       { type: 'code', lang: 'sql', caption: 'טרנזקציה בסיסית', code: `-- תחילת טרנזקציה:
 BEGIN;
 
@@ -2666,6 +2726,8 @@ COMMIT;
 -- אם הייתה שגיאה — ביטול הכל:
 -- ROLLBACK;` },
       { type: 'heading', text: 'ROLLBACK — ביטול טרנזקציה' },
+      { type: 'text', text: 'ROLLBACK מבטל את כל השינויים שנעשו מאז ה-BEGIN ומחזיר את הנתונים למצבם המקורי. הדוגמה מראה תרחיש של בדיקת תקינות אחרי UPDATE — אם התוצאה לא הגיונית (כמות מלאי שלילית), מבטלים את כל הפעולה.',
+      },
       { type: 'code', lang: 'sql', caption: 'טיפול בשגיאות', code: `BEGIN;
 
 UPDATE inventory SET quantity = quantity - 10
@@ -2678,6 +2740,7 @@ ROLLBACK;
 -- אם הכל תקין — נשמור:
 -- COMMIT;` },
       { type: 'heading', text: 'SAVEPOINT — נקודות שמירה' },
+      { type: 'text', text: 'SAVEPOINT מאפשר לקבוע נקודות ביניים בתוך טרנזקציה. אם שלב מסוים נכשל, ניתן לחזור לנקודת השמירה האחרונה ולא להתחיל מהתחלה. שימושי בטרנזקציות מורכבות עם מספר שלבים, כשחלק מהעבודה כבר בוצעה ורוצים לשמר אותה.' },
       { type: 'code', lang: 'sql', caption: 'SAVEPOINT', code: `BEGIN;
 
 INSERT INTO orders (customer_id, amount) VALUES (1, 200);
@@ -2707,6 +2770,7 @@ COMMIT;` },
         ],
       },
       { type: 'heading', text: 'רמות בידוד (Isolation Levels)' },
+      { type: 'text', text: 'רמת הבידוד קובעת עד כמה טרנזקציה אחת "רואה" שינויים של טרנזקציות אחרות שרצות במקביל. READ UNCOMMITTED הכי מהיר אבל גם הכי מסוכן, SERIALIZABLE הכי בטוח אבל אט. ברירת המחדל שונה בין PostgreSQL (READ COMMITTED) לMySQL (REPEATABLE READ).' },
       { type: 'code', lang: 'sql', caption: 'הגדרת isolation level', code: `-- READ UNCOMMITTED — קורא נתונים לא מחויבים (מסוכן)
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 
@@ -2829,6 +2893,7 @@ SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;` },
       { type: 'text', text: 'Stored Procedure (פרוצדורה מאוחסנת) היא בלוק קוד SQL שמור במסד הנתונים בשם. ניתן להפעיל אותה בפקודה אחת, להעביר פרמטרים, ולכלול לוגיקה מורכבת: לולאות, תנאים, טיפול בשגיאות.' },
       { type: 'tip', text: 'Stored Procedures מקטינות תנועת רשת (לוגיקה רצה בצד השרת), שימושיות לפעולות חוזרות וניתנות לשיתוף בין אפליקציות שונות.' },
       { type: 'heading', text: 'יצירת Procedure' },
+      { type: 'text', text: 'CREATE PROCEDURE מגדיר בלוק קוד עם שם ופרמטרים. פרמטרי IN מקבלים ערך מהקורא, ופרמטרי OUT מחזירים ערך חזרה. DELIMITER שינוי נחוץ ב-MySQL כדי להגיד לפרסר שה-; בתוך גוף הפרוצדורה הוא לא סוף ה-statement החיצוני.' },
       { type: 'code', lang: 'sql', caption: 'CREATE PROCEDURE', code: `DELIMITER //
 
 CREATE PROCEDURE get_customer_orders(
@@ -2854,6 +2919,7 @@ DELIMITER ;
 CALL get_customer_orders(1, 100, @count);
 SELECT @count;` },
       { type: 'heading', text: 'לוגיקה בתוך Procedure' },
+      { type: 'text', text: 'בגוף Procedure ניתן להשתמש ב-DECLARE להגדרת משתנים מקומיים, ב-IF/THEN/ELSE לתנאים, וב-SELECT INTO לשמירת תוצאה במשתנה. הדוגמה מראה Procedure שמחיל הנחה על הזמנה רק אם הסכום מעל סף מסוים — לוגיקה עסקית שמוגנת ומרוכזת בצד מסד הנתונים.' },
       { type: 'code', lang: 'sql', caption: 'תנאים ולולאות', code: `DELIMITER //
 
 CREATE PROCEDURE apply_discount(
@@ -2900,7 +2966,7 @@ SELECT
   get_vat_price(price) AS price_with_vat
 FROM products;` },
       { type: 'heading', text: 'Triggers — טריגרים' },
-      { type: 'text', text: 'Trigger הוא קוד שמופעל אוטומטית בעקבות אירוע בטבלה: INSERT, UPDATE או DELETE. לא קוראים לו ישירות — הוא מופעל מאליו.' },
+      { type: 'text', text: 'Trigger הוא קוד שמופעל אוטומטית בעקבות אירוע בטבלה: INSERT, UPDATE או DELETE. לא קוראים לו ישירות — הוא מופעל מאליו. שני הטריגרים בדוגמה מראים שימושים נפוצים: עדכון שדה updated_at בכל שינוי, ורישום audit log בכל מחיקה — שניהם דורשים אפס קוד באפליקציה.' },
       { type: 'code', lang: 'sql', caption: 'CREATE TRIGGER', code: `-- Trigger שמעדכן updated_at אוטומטית:
 CREATE TRIGGER before_order_update
 BEFORE UPDATE ON orders
@@ -2923,6 +2989,7 @@ BEGIN
 END;` },
       { type: 'tip', text: 'ב-Trigger: NEW מייצג את השורה החדשה (אחרי שינוי), OLD מייצג את השורה הישנה (לפני שינוי). ב-DELETE אין NEW, ב-INSERT אין OLD.' },
       { type: 'heading', text: 'ניהול Procedures' },
+      { type: 'text', text: 'SHOW PROCEDURE STATUS מציג את כל ה-Procedures הקיימות בבסיס הנתונים, ו-SHOW CREATE PROCEDURE מציג את הקוד המלא שלהן. DROP PROCEDURE מוחק Procedure ו-DROP TRIGGER מוחק טריגר. שימוש ב-IF EXISTS מונע שגיאה אם הפרוצדורה לא קיימת.' },
       { type: 'code', lang: 'sql', caption: 'רשימה, הצגה ומחיקה', code: `-- רשימת כל ה-procedures:
 SHOW PROCEDURE STATUS WHERE Db = 'my_database';
 
@@ -3044,6 +3111,7 @@ DROP TRIGGER IF EXISTS before_order_update;` },
       { type: 'text', text: 'Window Function מבצעת חישוב על קבוצת שורות הקשורות לשורה הנוכחית — בדומה ל-GROUP BY, אבל בלי לקמץ (collapse) את השורות לתוצאה אחת. כל שורה נשמרת, ומקבלת ערך מחושב.' },
       { type: 'tip', text: 'Window Functions נכתבות עם OVER() — זה מה שמגדיר את "החלון" של השורות שיחושבו עבור כל שורה.' },
       { type: 'heading', text: 'ROW_NUMBER, RANK, DENSE_RANK' },
+      { type: 'text', text: 'שלוש פונקציות האמיקום מחזירות מספר סידורי לכל שורה לפי סדר מסוים. ההבדל ביניהן מתגלה כשיש שוויון: ROW_NUMBER תמיד ייחודי (אקראי בשוויון), RANK מדלג על המספר הבא, ו-DENSE_RANK לא מדלג. שימו לב שכולן משתמשות ב-OVER(ORDER BY ...) לקביעת הסדר.' },
       { type: 'code', lang: 'sql', caption: 'מיקום שורות', code: `SELECT
   name,
   department,
@@ -3077,6 +3145,7 @@ FROM employees;
 -- דן        | מכירות | 15000| 1
 -- מירה     | מכירות | 12000| 2` },
       { type: 'heading', text: 'SUM ו-AVG עם OVER' },
+      { type: 'text', text: 'פונקציות צבירה רגילות (SUM, AVG) הופכות ל-Window Functions כשמוסיפים להן OVER(). כל שורה מקבלת את הסכום הכולל של הקבוצה שלה — בלי לאבד את השורה. הדוגמה מחשבת לכל עובד את סכום שכר המחלקה שלו ואת אחוזו מהמחלקה, הכל בשאילתה אחת.' },
       { type: 'code', lang: 'sql', caption: 'צבירה ב-Window', code: `SELECT
   name,
   department,
@@ -3090,6 +3159,7 @@ FROM employees;
   AVG(salary) OVER () AS company_avg
 FROM employees;` },
       { type: 'heading', text: 'LAG ו-LEAD — השוואה לשורה קודמת/הבאה' },
+      { type: 'text', text: 'LAG מחזיר ערך מהשורה הקודמת לפי הסדר ב-OVER, ו-LEAD מחזיר ערך מהשורה הבאה. הם שימושיים מאוד לניתוח מגמות ושינויים לאורך זמן — כמו השוואת מכירות חודש לחודש. הפרמטר השלישי (0 בדוגמה) הוא ערך ברירת מחדל כשאין שורה קודמת.' },
       { type: 'code', lang: 'sql', caption: 'LAG / LEAD', code: `SELECT
   order_date,
   amount,
@@ -3101,6 +3171,7 @@ FROM employees;` },
   amount - LAG(amount, 1, 0) OVER (ORDER BY order_date) AS change
 FROM monthly_sales;` },
       { type: 'heading', text: 'NTILE — חלוקה לאחוזונים' },
+      { type: 'text', text: 'NTILE(n) מחלק את השורות ל-n קבוצות שוות בגודלן ומחזיר לכל שורה מספר הקבוצה. NTILE(4) יוצר רבעונים (quartiles) — שימושי לניתוח לקוחות לפי ביצועים. שימו לב שה-ORDER BY בתוך OVER קובע לפי מה מדרגים את הקבוצות.' },
       { type: 'code', lang: 'sql', caption: 'NTILE', code: `-- חלוקת לקוחות ל-4 רבעונים לפי רכישות:
 SELECT
   customer_name,

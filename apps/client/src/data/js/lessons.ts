@@ -42,6 +42,7 @@ alert("הי!");
 </html>` },
       { type: 'tip', text: 'מוסיפים את תג script לפני סגירת body כדי שה-HTML ייטען קודם.' },
       { type: 'heading', text: 'תגובות (Comments)' },
+      { type: 'text', text: 'תגובות הן שורות קוד שה-JavaScript מתעלם מהן לחלוטין — הן קיימות רק בשביל הקורא האנושי. כתיב // מגיב שורה אחת, ו-/* */ מאפשר תגובה שמשתרעת על מספר שורות. שימו לב שניתן להוסיף תגובה גם בסוף שורת קוד פעילה.' },
       { type: 'code', lang: 'javascript', caption: 'סוגי תגובות', code: `// תגובה בשורה אחת
 
 /* תגובה
@@ -179,6 +180,7 @@ age = 26;           // עובד!
 // name = "רון";   // שגיאה! const לא משתנה` },
       { type: 'tip', text: 'ברירת המחדל: השתמש תמיד ב-const. עבור ל-let רק כשאתה יודע שהערך ישתנה.' },
       { type: 'heading', text: 'טיפוסי נתונים' },
+      { type: 'text', text: 'JavaScript מכיר שישה טיפוסים פרימיטיביים עיקריים: מספר, מחרוזת, בוליאן, null, undefined וסימבול. שימו לב שאין הפרדה בין מספרים שלמים לעשרוניים — הכול number. כדאי להבחין בין null (ריק בכוונה) לבין undefined (לא אותחל).' },
       { type: 'code', lang: 'javascript', caption: 'הטיפוסים הבסיסיים', code: `// מספר (Number)
 let price = 49.99;
 let count = 10;
@@ -208,6 +210,7 @@ const msg2 = \`שלום \${user}! הציון שלך: \${score}\`;
 console.log(msg2);
 // שלום מיכל! הציון שלך: 95` },
       { type: 'heading', text: 'typeof — בדיקת טיפוס' },
+      { type: 'text', text: 'האופרטור typeof מחזיר מחרוזת שמתארת את הטיפוס של הערך. הוא שימושי לבדיקת טיפוסים בזמן ריצה לפני ביצוע פעולות. שימו לב לבאג ההיסטורי המפורסם: typeof null מחזיר "object" ולא "null" — זה שגיאה בשפה שנשמרה לצורך תאימות לאחור.' },
       { type: 'code', lang: 'javascript', caption: 'typeof', code: `console.log(typeof 42);          // "number"
 console.log(typeof "שלום");      // "string"
 console.log(typeof true);        // "boolean"
@@ -345,6 +348,7 @@ console.log(typeof null);        // "object" — באג היסטורי ב-JS!` }
 console.log(greet("יוסי"));   // שלום, יוסי!
 console.log(greet("מירה"));   // שלום, מירה!` },
       { type: 'heading', text: 'ביטוי פונקציה (Function Expression)' },
+      { type: 'text', text: 'ביטוי פונקציה (Function Expression) הוא דרך לאחסן פונקציה בתוך משתנה, בדיוק כמו כל ערך אחר. בניגוד ל-function declaration, ביטויי פונקציה לא עוברים hoisting — לא ניתן לקרוא להם לפני שהמשתנה מוגדר. שימו לב לנקודה-פסיק בסוף — זו השמת ערך למשתנה.' },
       { type: 'code', lang: 'javascript', caption: 'פונקציה כמשתנה', code: `const multiply = function(a, b) {
   return a * b;
 };
@@ -371,6 +375,7 @@ console.log(add(3, 5));     // 8
 console.log(square(4));     // 16
 console.log(double(7));     // 14` },
       { type: 'heading', text: 'פרמטרים ברירת מחדל' },
+      { type: 'text', text: 'פרמטרים עם ברירת מחדל מאפשרים לקרוא לפונקציה בלי להעביר את כל הארגומנטים — הפרמטר יקבל את הערך שהגדרנו אם לא הועבר אחד. הברירת המחדל פועלת גם כשמעבירים undefined במפורש. שימו לב שהפרמטרים עם ברירת מחדל צריכים להיות בסוף רשימת הפרמטרים.' },
       { type: 'code', lang: 'javascript', caption: 'Default parameters', code: `function greet(name = "אורח") {
   return \`שלום, \${name}!\`;
 }
@@ -379,6 +384,7 @@ console.log(greet("דנה"));  // שלום, דנה!
 console.log(greet());       // שלום, אורח!` },
       { type: 'tip', text: 'Arrow functions הם הכתיב המועדף בקוד מודרני, במיוחד עבור פונקציות קצרות ו-callbacks.' },
       { type: 'heading', text: 'Scope — היקף משתנים' },
+      { type: 'text', text: 'Scope קובע מאיפה בקוד ניתן לגשת למשתנה. משתנה גלובלי נגיש מכל מקום, ומשתנה מקומי נגיש רק בתוך הפונקציה שבה הוגדר. שימו לב שהפונקציה יכולה לקרוא משתנים מה-scope החיצוני שלה (globalVar), אבל הקוד שבחוץ לא יכול לגשת למשתנים הפנימיים שלה.' },
       { type: 'code', lang: 'javascript', caption: 'scope', code: `const globalVar = "גלובלי";
 
 function myFunc() {
@@ -533,6 +539,7 @@ const names = ["אלי", "דנה", "רון"];
 const greetings = names.map(name => \`שלום \${name}\`);
 // ["שלום אלי", "שלום דנה", "שלום רון"]` },
       { type: 'heading', text: 'filter — סינון' },
+      { type: 'text', text: 'filter יוצרת מערך חדש שמכיל רק את הפריטים שעברו תנאי מסוים. הפונקציה שמועברת ל-filter חייבת להחזיר true (שמור) או false (הוצא). שימו לב שהמערך המקורי לא משתנה כלל — filter תמיד מחזירה מערך חדש עם אותם אובייקטים שסוננו.' },
       { type: 'code', lang: 'javascript', caption: 'filter', code: `const scores = [45, 78, 92, 35, 88, 60];
 
 const passing = scores.filter(score => score >= 60);
@@ -541,11 +548,13 @@ console.log(passing); // [78, 92, 88, 60]
 const evens = [1,2,3,4,5,6].filter(n => n % 2 === 0);
 console.log(evens); // [2, 4, 6]` },
       { type: 'heading', text: 'reduce — צמצום לערך יחיד' },
+      { type: 'text', text: 'reduce היא השיטה החזקה ביותר של מערכים — היא "מצמצמת" את כל הפריטים לערך יחיד כלשהו: מספר, מחרוזת, אובייקט, ואפילו מערך חדש. הארגומנט הראשון הוא פונקצית הצבירה שמקבלת accumulator ופריט נוכחי. הארגומנט השני (0 בדוגמה) הוא ערך ההתחלה של ה-accumulator.' },
       { type: 'code', lang: 'javascript', caption: 'reduce', code: `const prices = [10, 25, 8, 43];
 
 const total = prices.reduce((sum, price) => sum + price, 0);
 console.log(total); // 86` },
       { type: 'heading', text: 'find & includes' },
+      { type: 'text', text: 'includes בודקת האם ערך מסוים קיים במערך ומחזירה true/false — שימושית לבדיקות מהירות. find מחזירה את הפריט הראשון שעומד בתנאי (לא את ה-index ולא מערך, אלא את הפריט עצמו). שימו לב שאם find לא מוצאת כלום, היא מחזירה undefined.' },
       { type: 'code', lang: 'javascript', caption: 'חיפוש במערך', code: `const users = ["דן", "שרה", "אבי"];
 
 console.log(users.includes("שרה")); // true
@@ -695,6 +704,7 @@ console.log(person["age"]); // 28
 person.email = "sarah@example.com";
 person.age = 29;` },
       { type: 'heading', text: 'Methods — פונקציות באובייקט' },
+      { type: 'text', text: 'Method היא פונקציה שמוגדרת כתכונה של אובייקט ויש לה גישה לאותו אובייקט דרך this. בדוגמה, כל קריאה ל-add מחזירה this — את האובייקט עצמו — מה שמאפשר שרשרת קריאות (method chaining). שימו לב ש-arrow functions לא מתאימות ל-methods כי הן לא מגדירות this משלהן.' },
       { type: 'code', lang: 'javascript', caption: 'Methods', code: `const calculator = {
   value: 0,
   add(n) {
@@ -709,6 +719,7 @@ person.age = 29;` },
 calculator.add(5).add(3);
 console.log(calculator.result()); // 8` },
       { type: 'heading', text: 'Destructuring — פירוק אובייקטים' },
+      { type: 'text', text: 'Destructuring מאפשר לחלץ תכונות מאובייקט ישירות למשתנים בשורה אחת, במקום לכתוב user.name, user.age וכו\' בנפרד. אפשר לתת שם חדש למשתנה עם נקודותיים (name: fullName), ולהגדיר ברירת מחדל עם = לתכונות שאולי לא קיימות. שימו לב שזה תבנית נפוצה מאוד ב-React לפרמטרי props.' },
       { type: 'code', lang: 'javascript', caption: 'Object destructuring', code: `const user = {
   name: "אלי",
   age: 32,
@@ -732,6 +743,7 @@ console.log(fullName); // אלי
 const { city = "לא ידוע" } = user;
 console.log(city); // לא ידוע` },
       { type: 'heading', text: 'Spread Operator' },
+      { type: 'text', text: 'Spread Operator (...) "פורש" את כל תכונות האובייקט לתוך אובייקט חדש. כך אפשר למזג אובייקטים או ליצור עותקים רדודים בלי לשנות את המקור. שימו לב להתנגשויות — כשאותה תכונה מופיעה בשני האובייקטים, הערך שמופיע אחרון מנצח, ולכן סדר ה-spread חשוב.' },
       { type: 'code', lang: 'javascript', caption: 'שיכפול ומיזוג אובייקטים', code: `const base = { color: "אדום", size: "גדול" };
 const extra = { weight: 500, color: "כחול" };
 
@@ -899,6 +911,7 @@ document.addEventListener("keydown", (e) => {
   console.log("לחצת על:", e.key);
 });` },
       { type: 'heading', text: 'שינוי Classes' },
+      { type: 'text', text: 'classList הוא ממשק נוח לניהול ה-classes של אלמנט HTML מבלי לכתוב ישירות ל-className. עם add ו-remove אפשר להוסיף ולהסיר classes, וה-toggle פועל כמתג — שימושי לפתיחה/סגירה של תפריטים ומצבי dark mode. שימו לב ש-contains מחזיר boolean ואפשר להשתמש בו בתנאים לפני פעולות.' },
       { type: 'code', lang: 'javascript', caption: 'classList', code: `const box = document.querySelector(".box");
 
 box.classList.add("active");      // הוספת class
@@ -906,6 +919,7 @@ box.classList.remove("hidden");   // הסרת class
 box.classList.toggle("dark");     // הוספה/הסרה לחילופין
 box.classList.contains("active"); // בדיקה — true/false` },
       { type: 'heading', text: 'טפסים' },
+      { type: 'text', text: 'קריאת תוכן שדה input נעשית דרך התכונה value. כאשר המשתמש לוחץ על כפתור שליחה, קוראים את input.value, מעבדים אותו, ואפשר לנקות את השדה על ידי השמת מחרוזת ריקה. שימו לב שחשוב תמיד לבדוק שה-value לא ריק לפני עיבוד הנתון.' },
       { type: 'code', lang: 'javascript', caption: 'עבודה עם input', code: `const input = document.querySelector("#nameInput");
 const btn = document.querySelector("#submitBtn");
 
@@ -1040,6 +1054,7 @@ btn.addEventListener("click", () => {
       { type: 'heading', text: 'למה אסינכרוני?' },
       { type: 'text', text: 'פעולות כמו שליפת נתונים מרשת לוקחות זמן. אם JS היה מחכה לכל פעולה — הדף היה קופא. לכן JS מטפל בפעולות ארוכות בצורה אסינכרונית.' },
       { type: 'heading', text: 'Promises' },
+      { type: 'text', text: 'Promise הוא אובייקט שמייצג פעולה אסינכרונית שתסתיים בעתיד — בהצלחה (resolve) או בכישלון (reject). ב-then מגדירים מה לעשות אחרי הצלחה, וב-catch מטפלים בשגיאות. שימו לב ל-setTimeout שמדמה כאן פעולה שלוקחת שתי שניות — כמו בקשת רשת אמיתית.' },
       { type: 'code', lang: 'javascript', caption: 'Promise', code: `const promise = new Promise((resolve, reject) => {
   // סימולציה של פעולה ארוכה:
   setTimeout(() => {
@@ -1052,6 +1067,7 @@ promise
   .then(result => console.log(result))  // הצליח
   .catch(error => console.log(error));  // נכשל` },
       { type: 'heading', text: 'async/await — כתיב נקי יותר' },
+      { type: 'text', text: 'async/await הוא סינטקס מודרני שמאפשר לכתוב קוד אסינכרוני שנראה כמו קוד סינכרוני רגיל. המילה await "עוצרת" את הריצה בתוך הפונקציה עד שה-Promise מסתיים, אבל לא חוסמת את שאר האפליקציה. שימו לב ש-try/catch חיוני — בלעדיו שגיאות רשת לא יטופלו.' },
       { type: 'code', lang: 'javascript', caption: 'async/await', code: `async function fetchUser(id) {
   try {
     const response = await fetch(\`https://api.example.com/users/\${id}\`);
@@ -1066,6 +1082,7 @@ promise
 const user = await fetchUser(1);
 console.log(user.name);` },
       { type: 'heading', text: 'Fetch API' },
+      { type: 'text', text: 'Fetch API היא הדרך המובנית בדפדפן לבצע בקשות HTTP. קריאת GET פשוטה דורשת רק כתובת URL, אבל קריאת POST דורשת גם method, headers ו-body עם הנתונים בפורמט JSON. שימו לב שצריך שתי פעולות await — אחת לקבלת ה-Response ואחת לקריאת גוף התשובה כ-JSON.' },
       { type: 'code', lang: 'javascript', caption: 'שליפת נתונים', code: `async function getJoke() {
   const res = await fetch("https://api.chucknorris.io/jokes/random");
   const data = await res.json();
@@ -1083,6 +1100,7 @@ async function createUser(userData) {
 }` },
       { type: 'tip', text: 'תמיד עטוף async/await ב-try/catch. בקשות רשת יכולות להיכשל מסיבות רבות.' },
       { type: 'heading', text: 'Promise.all — מקביליות' },
+      { type: 'text', text: 'Promise.all מאפשרת לשגר כמה בקשות רשת בו-זמנית ולחכות שכולן יסתיימו — הרבה יותר יעיל מ-await אחד אחרי השני. התוצאה מוחזרת כמערך בסדר שהוגדר, בלי תלות באיזו בקשה הסתיימה ראשונה. שימו לב שאם אחת הבקשות נכשלת, Promise.all נכשל כולו.' },
       { type: 'code', lang: 'javascript', caption: 'מספר בקשות במקביל', code: `async function loadDashboard() {
   // במקום לחכות לכל אחד בנפרד:
   const [user, posts, notifications] = await Promise.all([

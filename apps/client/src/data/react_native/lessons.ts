@@ -12,11 +12,13 @@ export const reactNativeLessons: Lesson[] = [
       { type: 'tip', text: 'אפליקציות כמו Facebook, Instagram, Shopify ו-Discord בנויות עם React Native.' },
       { type: 'heading', text: 'Expo — הדרך המהירה להתחיל' },
       { type: 'text', text: 'Expo היא פלטפורמה מעל React Native שמסירה את כאב ההגדרות. אין צורך ב-Xcode או Android Studio כדי להתחיל.' },
+      { type: 'text', text: 'שלוש הפקודות האלו מספיקות כדי להריץ אפליקציה ראשונה: יצירת הפרויקט, כניסה לתיקייה, והפעלת שרת הפיתוח. לאחר ש-expo start רץ, תוצג QR code בטרמינל — סרקו אותה עם אפליקציית Expo Go בטלפון וראו את האפליקציה חיה.' },
       { type: 'code', lang: 'bash', caption: 'יצירת פרויקט חדש עם Expo', code: `npx create-expo-app MyApp
 cd MyApp
 npx expo start` },
       { type: 'text', text: 'לאחר ההרצה, סרקו את ה-QR עם אפליקציית Expo Go בטלפון — האפליקציה תיפתח מיד.' },
       { type: 'heading', text: 'מבנה הפרויקט' },
+      { type: 'text', text: 'מבנה התיקיות של פרויקט Expo מבוסס על Expo Router: תיקיית app/ מכילה את כל המסכים, כאשר כל קובץ הופך אוטומטית למסלול ניווט. app.json מכיל את כל הגדרות האפליקציה כמו שם, אייקון ו-splash screen. שימו לב שהגישה הזו דומה לNext.js ומייתרת הגדרת routes ידנית.' },
       { type: 'code', lang: 'text', caption: 'קבצים עיקריים', code: `MyApp/
 ├── app/              ← מסכים (Expo Router)
 │   └── index.tsx     ← מסך הבית
@@ -24,6 +26,7 @@ npx expo start` },
 ├── assets/           ← תמונות, פונטים
 └── app.json          ← הגדרות האפליקציה` },
       { type: 'heading', text: 'Hello World ב-React Native' },
+      { type: 'text', text: 'הדוגמה הראשונה מציגה את ההבדל המרכזי מ-React Web: אין HTML — יש קומפוננטות native. View מחליפה div, Text מחליפה כל אלמנט טקסט. StyleSheet.create() מחליפה CSS, עם אותם מאפיינים אך בcamelCase. שימו לב שכל טקסט חייב להיות עטוף ב-Text, אחרת ייזרק שגיאה.' },
       { type: 'code', lang: 'tsx', caption: 'app/index.tsx', code: `import { View, Text, StyleSheet } from 'react-native';
 
 export default function HomeScreen() {
@@ -86,6 +89,7 @@ const styles = StyleSheet.create({
     content: [
       { type: 'heading', text: 'אין div — יש View' },
       { type: 'text', text: 'ב-React Native אין HTML. במקום div משתמשים ב-View, במקום p ו-h1 משתמשים ב-Text. כל טקסט חייב להיות בתוך קומפוננטת Text.' },
+      { type: 'text', text: 'הדוגמה מציגה קומפוננטת ProfileCard עם תמונה, שם ותפקיד. שימו לב שתמונות ברשת מועברות כ-{ uri: "..." } ולא כ-src. לתמונות עגולות משתמשים ב-borderRadius עם מחצית מהגודל. style מועבר כobject ישירות, ללא קובץ CSS חיצוני.' },
       { type: 'code', lang: 'tsx', caption: 'קומפוננטות בסיסיות', code: `import { View, Text, Image, ScrollView } from 'react-native';
 
 export default function ProfileCard() {
@@ -105,6 +109,7 @@ export default function ProfileCard() {
   );
 }` },
       { type: 'heading', text: 'כפתורים וגעת — Touchable' },
+      { type: 'text', text: 'אין <button> ב-React Native — יש TouchableOpacity ו-Pressable. TouchableOpacity מעמעם את האלמנט בלחיצה. Pressable חדש ומתקדם יותר — ה-style שלו יכול לקבל פונקציה שמקבלת { pressed } ומחזירה style דינמי. שימו לב שגם כאן כל טקסט הכפתור חייב להיות עטוף ב-Text.' },
       { type: 'code', lang: 'tsx', caption: 'כפתורים', code: `import { TouchableOpacity, Pressable, Text, Alert } from 'react-native';
 
 // TouchableOpacity — מעמעם בלחיצה
@@ -128,6 +133,7 @@ export default function ProfileCard() {
   <Text style={{ color: '#fff' }}>Pressable</Text>
 </Pressable>` },
       { type: 'heading', text: 'ScrollView לתוכן ארוך' },
+      { type: 'text', text: 'ScrollView מאפשרת גלילה על תוכן שחורג מגבולות המסך. שימו לב לשימוש ב-contentContainerStyle (ולא style) להגדרת padding בתוך ה-ScrollView. לרשימות ארוכות עם מאות פריטים, העדיפו FlatList שמרנדרת רק פריטים גלויים ואינה טוענת את הכל לזיכרון.' },
       { type: 'code', lang: 'tsx', caption: 'גלילה', code: `import { ScrollView, Text } from 'react-native';
 
 export default function LongPage() {
@@ -194,6 +200,7 @@ export default function LongPage() {
     content: [
       { type: 'heading', text: 'StyleSheet — CSS של React Native' },
       { type: 'text', text: 'ב-React Native אין CSS. משתמשים ב-StyleSheet.create() שמקבל אובייקט עם מאפייני עיצוב בcamelCase.' },
+      { type: 'text', text: 'הדוגמה מציגה כרטיס (Card) עם shadow. שימו לב ל-elevation: 3 שמוסיף צל ב-Android (shadowColor/shadowOffset לא עובדים ב-Android). borderRadius, padding ו-margin עובדים כמו ב-CSS. shadowOpacity ו-shadowRadius הם iOS בלבד.' },
       { type: 'code', lang: 'tsx', caption: 'StyleSheet.create', code: `import { View, Text, StyleSheet } from 'react-native';
 
 export default function Card() {
@@ -230,6 +237,7 @@ const styles = StyleSheet.create({
 });` },
       { type: 'heading', text: 'Flexbox ב-React Native' },
       { type: 'text', text: 'ב-React Native ברירת המחדל היא flex ו-flexDirection: "column" (לא row כמו בווב). כל View הוא Flex container.' },
+      { type: 'text', text: 'שלוש הדוגמאות מציגות תבניות Flexbox נפוצות: שורה אופקית עם חלוקת מקום יחסית (flex: 1 ו-flex: 2), מרכוז מלא עם alignItems+justifyContent: center, ו-space-between לפריסת שני אלמנטים בקצוות. שימו לב שgap עובד מ-React Native 0.71 ומחליף marginRight/marginBottom.' },
       { type: 'code', lang: 'tsx', caption: 'פריסה עם Flexbox', code: `// שורה אופקית
 <View style={{ flexDirection: 'row', gap: 8 }}>
   <View style={{ flex: 1, backgroundColor: '#10b981', height: 50 }} />
@@ -248,6 +256,7 @@ const styles = StyleSheet.create({
 </View>` },
       { type: 'heading', text: 'גדלים ויחידות' },
       { type: 'text', text: 'ב-React Native כל המידות הן ב-dp (density-independent pixels) — ללא יחידת מידה. אין px, em, rem.' },
+      { type: 'text', text: 'Dimensions.get("window") מחזיר את רוחב וגובה המסך ב-dp. שימו לב לשתי גישות: שימוש ברוחב המלא עם width: width, ושימוש באחוזים עם width: "80%". לרוחב מלא רספונסיבי, גישת האחוזים היא לרוב עדיפה ומתאימה לכל גדלי מסך.' },
       { type: 'code', lang: 'tsx', caption: 'Dimensions API', code: `import { Dimensions } from 'react-native';
 
 const { width, height } = Dimensions.get('window');
@@ -298,6 +307,7 @@ const { width, height } = Dimensions.get('window');
     content: [
       { type: 'heading', text: 'useState ב-React Native' },
       { type: 'text', text: 'useState עובד בדיוק כמו ב-React רגיל — משנים state, הקומפוננטה מתרנדרת מחדש.' },
+      { type: 'text', text: 'Counter פשוט מדגים state management: שני כפתורים + ו-− שמעדכנים count. שימו לב לשימוש ב-c => c - 1 (functional update) במקום count - 1 — זה מבטיח שמשתמשים בערך העדכני ביותר של state, חשוב לפעולות מהירות. ה-StyleSheet מוגדר מחוץ לקומפוננטה למניעת יצירה מחדש בכל render.' },
       { type: 'code', lang: 'tsx', caption: 'Counter פשוט', code: `import { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -327,6 +337,7 @@ const styles = StyleSheet.create({
   btnText: { color: '#fff', fontSize: 28, fontWeight: 'bold' },
 });` },
       { type: 'heading', text: 'TextInput — קלט מהמשתמש' },
+      { type: 'text', text: 'TextInput עם controlled input — value ו-onChangeText — עובד כמו <input> ב-React. שימו לב ל-autoCapitalize="words" שמגדיל את האות הראשונה בכל מילה. textAlign: "right" מתאים לעברית. הצגת ברכה מותנית (name ? ...) מדגימה rendering דינמי.' },
       { type: 'code', lang: 'tsx', caption: 'TextInput עם controlled input', code: `import { useState } from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
@@ -402,6 +413,7 @@ const styles = StyleSheet.create({
     content: [
       { type: 'heading', text: 'Expo Router — ניווט מבוסס קבצים' },
       { type: 'text', text: 'Expo Router (v3+) עובד כמו Next.js — כל קובץ ב-app/ הופך למסך. אין צורך להגדיר routes ידנית.' },
+      { type: 'text', text: 'מבנה התיקיות מגדיר אוטומטית את מסלולי הניווט. תיקיות בסוגריים כמו (tabs) הן group routes שלא מופיעות ב-URL. קבצי [id].tsx הם דינמיים ומקבלים פרמטרים. _layout.tsx מגדיר ה-layout המשותף לכל המסכים בתיקייה — מקום לTab Bar, Stack navigator ועוד.' },
       { type: 'code', lang: 'text', caption: 'מבנה תיקיות = מסלולים', code: `app/
 ├── index.tsx          → "/"  (מסך הבית)
 ├── profile.tsx        → "/profile"
@@ -412,6 +424,7 @@ const styles = StyleSheet.create({
 └── product/
     └── [id].tsx       → "/product/123" (דינמי)` },
       { type: 'heading', text: 'ניווט בין מסכים' },
+      { type: 'text', text: 'יש שתי דרכים לנווט: Link לניווט declarative (כמו <a> ב-HTML), ו-useRouter לניווט פרוגרמטי (לאחר שמירת נתונים, לדוגמה). שימו לב ל-router.push לעומת router.replace — push מוסיף ל-stack ומאפשר לחזור, replace מחליף את המסך הנוכחי ולא שומר היסטוריה. לניווט עם פרמטרים מעבירים את הערך ישירות ב-URL.' },
       { type: 'code', lang: 'tsx', caption: 'Link ו-useRouter', code: `import { Link, useRouter } from 'expo-router';
 import { View, TouchableOpacity, Text } from 'react-native';
 
@@ -438,6 +451,7 @@ export default function HomeScreen() {
   );
 }` },
       { type: 'heading', text: 'Tab Bar' },
+      { type: 'text', text: '_layout.tsx בתוך (tabs) מגדיר את ה-Tab Bar בתחתית המסך. כל Tabs.Screen מייצג לשונית אחת, עם שם (שמתאים לשם הקובץ), כותרת ואייקון. tabBarActiveTintColor קובע את צבע הלשונית הפעילה. שימו לב שאייקונים ב-React Native הם בדרך כלל קומפוננטות ולא string — כאן משתמשים ב-Emoji לפשטות.' },
       { type: 'code', lang: 'tsx', caption: 'app/(tabs)/_layout.tsx', code: `import { Tabs } from 'expo-router';
 
 export default function TabsLayout() {
@@ -495,6 +509,7 @@ export default function TabsLayout() {
     content: [
       { type: 'heading', text: 'FlatList — רשימה יעילה' },
       { type: 'text', text: 'FlatList מרנדרת רק את הפריטים הנראים על המסך (virtualization). מתאימה לרשימות ארוכות — אנשי קשר, פידים, תוצאות חיפוש.' },
+      { type: 'text', text: 'FlatList מקבלת data (המערך), keyExtractor (מחזיר מזהה ייחודי לכל פריט) ו-renderItem (פונקציה שמרנדרת כל פריט). שימו לב ל-ItemSeparatorComponent שמציג מפריד בין פריטים ללא צורך להוסיף margin לכל פריט. הפרדת UserRow לקומפוננטה נפרדת משפרת קריאות וביצועים.' },
       { type: 'code', lang: 'tsx', caption: 'FlatList בסיסי', code: `import { FlatList, View, Text, StyleSheet } from 'react-native';
 
 const DATA = [
@@ -530,6 +545,7 @@ const styles = StyleSheet.create({
   separator: { height: 1, backgroundColor: '#e5e7eb' },
 });` },
       { type: 'heading', text: 'Pull to Refresh' },
+      { type: 'text', text: 'Pull to Refresh מאפשר למשתמש לרענן את הרשימה על ידי משיכה למטה. מוסיפים refreshControl ל-FlatList עם RefreshControl שמקבל שני props: refreshing (האם כרגע מרענן) ו-onRefresh (callback). שימו לב לשימוש ב-useCallback למניעת יצירת פונקציה חדשה בכל render.' },
       { type: 'code', lang: 'tsx', caption: 'רענון בגרירה', code: `import { useState, useCallback } from 'react';
 import { FlatList, RefreshControl } from 'react-native';
 
@@ -556,6 +572,7 @@ export default function RefreshableList() {
   );
 }` },
       { type: 'heading', text: 'SectionList — רשימה עם קטגוריות' },
+      { type: 'text', text: 'SectionList דומה ל-FlatList אך תומכת בקבוצות עם כותרות — כמו רשימת אנשי קשר מסודרת לפי אות ראשונה. הנתונים מועברים כמערך של sections, כשכל section מכיל title ו-data. renderSectionHeader מציג כותרת לכל קבוצה. שימו לב לשימוש ב-backgroundColor בכותרת כדי שתישאר גלויה בגלילה.' },
       { type: 'code', lang: 'tsx', caption: 'רשימה עם כותרות קבוצות', code: `import { SectionList, Text, View } from 'react-native';
 
 const SECTIONS = [
@@ -614,6 +631,7 @@ const SECTIONS = [
     content: [
       { type: 'heading', text: 'fetch ב-React Native' },
       { type: 'text', text: 'fetch עובד בדיוק כמו בדפדפן — אותו API. משתמשים ב-useEffect לטעינת נתונים בעת טעינת הקומפוננטה.' },
+      { type: 'text', text: 'הדוגמה מציגה פטרן מלא לטעינת נתונים: שלושה states (posts, loading, error), fetch ב-useEffect עם [] ריק שמריץ פעם אחת, טיפול בshגיאה, והצגת ActivityIndicator בזמן טעינה. שימו לב לשרשרת .then().catch().finally() — finally מבטיח ש-setLoading(false) תמיד יקרה בסוף.' },
       { type: 'code', lang: 'tsx', caption: 'טעינת נתונים מ-API', code: `import { useEffect, useState } from 'react';
 import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 
@@ -650,7 +668,9 @@ export default function PostsFeed() {
 }` },
       { type: 'heading', text: 'AsyncStorage — שמירה מקומית' },
       { type: 'text', text: 'AsyncStorage הוא כמו localStorage של הדפדפן — שומר נתונים על המכשיר בין הפעלות האפליקציה.' },
+      { type: 'text', text: 'AsyncStorage לא כלול ב-React Native Core ודורש התקנה נפרדת. שימוש ב-npx expo install (ולא npm install) מבטיח התקנת הגרסה התואמת לגרסת Expo שלכם. לאחר ההתקנה, יש לבצע rebuild של האפליקציה.' },
       { type: 'code', lang: 'bash', caption: 'התקנה', code: `npx expo install @react-native-async-storage/async-storage` },
+      { type: 'text', text: 'AsyncStorage שומר key-value pairs כ-strings בלבד. setItem שומר, getItem קורא (מחזיר null אם לא קיים), removeItem מוחק. שימו לב שאובייקטים דורשים JSON.stringify לפני שמירה ו-JSON.parse בקריאה. כל הפעולות אסינכרוניות ומחזירות Promise.' },
       { type: 'code', lang: 'tsx', caption: 'שמירה וקריאה', code: `import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // שמירה
@@ -665,6 +685,7 @@ const settings = raw ? JSON.parse(raw) : null;
 // מחיקה
 await AsyncStorage.removeItem('username');` },
       { type: 'heading', text: 'ActivityIndicator — אינדיקטור טעינה' },
+      { type: 'text', text: 'ActivityIndicator מציגה את ה-spinner הנייטיב של מערכת ההפעלה — כדורים ב-iOS ועיגול מסתובב ב-Android. Props עיקריים: size ("small" או "large") ו-color. לתצוגה מרכזית על כל המסך, עוטפים ב-View עם flex: 1 ו-alignItems + justifyContent: center.' },
       { type: 'code', lang: 'tsx', caption: 'Spinner native', code: `import { ActivityIndicator, View } from 'react-native';
 
 // Spinner של מערכת ההפעלה
@@ -715,10 +736,12 @@ await AsyncStorage.removeItem('username');` },
     content: [
       { type: 'heading', text: 'EAS — Expo Application Services' },
       { type: 'text', text: 'EAS Build הוא שירות הענן של Expo לבניית קבצי .ipa (iOS) ו-.aab (Android) מוכנים לפרסום — ללא Xcode ו-Android Studio.' },
+      { type: 'text', text: 'הגדרת EAS דורשת התקנת eas-cli גלובלית, login לחשבון Expo, ו-build:configure שיוצר קובץ eas.json. קובץ זה מגדיר פרופילי בנייה שונים — preview לבדיקות ו-production לחנויות. שימו לב שפרסום ב-iOS דורש חשבון Apple Developer בעלות שנתית.' },
       { type: 'code', lang: 'bash', caption: 'הגדרת EAS', code: `npm install -g eas-cli
 eas login
 eas build:configure   # יוצר eas.json` },
       { type: 'heading', text: 'בניית האפליקציה' },
+      { type: 'text', text: 'eas build מבצע את הבנייה בענן Expo ולא על המחשב שלכם. פרופיל preview בונה APK לבדיקות ישירות על מכשיר Android ללא חנות. פרופיל production בונה AAB לפרסום ב-Google Play ו-IPA ל-App Store. autoIncrement מגדיל אוטומטית את מספר הגרסה בכל build.' },
       { type: 'code', lang: 'bash', caption: 'פקודות בנייה', code: `# בניה ל-Android (APK לבדיקה)
 eas build --platform android --profile preview
 
@@ -728,6 +751,7 @@ eas build --platform ios --profile production
 # בניה לשני הפלטפורמות
 eas build --platform all` },
       { type: 'heading', text: 'eas.json — פרופילי בנייה' },
+      { type: 'text', text: 'eas.json מגדיר פרופילי בנייה שונים — כל פרופיל עם הגדרות שונות לפי המטרה. preview מגדיר buildType: apk ל-Android (קובץ להתקנה ישירה), production מגדיר autoIncrement לגרסאות אוטומטיות. ניתן להוסיף env vars ו-distribution settings לכל פרופיל.' },
       { type: 'code', lang: 'json', caption: 'eas.json', code: `{
   "build": {
     "preview": {
@@ -740,6 +764,7 @@ eas build --platform all` },
 }` },
       { type: 'heading', text: 'OTA Updates — עדכון ללא חנות' },
       { type: 'text', text: 'EAS Update מאפשר לדחוף עדכוני JavaScript ישירות לאפליקציות מותקנות — ללא עדכון בחנות.' },
+      { type: 'text', text: 'eas update שולח את ה-JavaScript bundle החדש לשרתי Expo. בפתיחת האפליקציה הבאה, המשתמש יורד את ה-bundle החדש אוטומטית. הflag --branch מציין את ה-environment (production, staging), ו---message מתעד מה השתנה. שימו לב: OTA עובד רק לשינויים ב-JS, לא לשינויים native.' },
       { type: 'code', lang: 'bash', caption: 'EAS Update', code: `# שליחת עדכון OTA לכל המשתמשים
 eas update --branch production --message "תיקון באג בחיפוש"` },
       {

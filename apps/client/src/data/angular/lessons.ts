@@ -29,6 +29,10 @@ export const angularLessons: Lesson[] = [
       },
       { type: 'heading', text: 'Angular CLI' },
       {
+        type: 'text',
+        text: 'Angular CLI הוא הכלי המרכזי לניהול פרויקט Angular — יצירה, הרצה, בנייה ויצירת קבצים. הפקודה ng new יוצרת פרויקט מלא עם כל הקונפיגורציה. שימו לב לאפשרויות --standalone ו---routing שמגדירות את סגנון הפרויקט מהיום הראשון.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'יצירת פרויקט והפקודות הנפוצות',
@@ -158,6 +162,10 @@ bootstrapApplication(AppComponent, {
     content: [
       { type: 'heading', text: '@Component — מבנה בסיסי' },
       {
+        type: 'text',
+        text: 'הדקורטור @Component מגדיר את כל מה ש-Angular צריך לדעת על הרכיב: ה-selector שיקבע את שם התג ב-HTML, ה-template, ה-styles, ואילו modules/components לייבא. שימו לב ל-standalone: true שמייתר את הצורך ב-NgModule, וכן ל-@Input ו-@Output שמגדירים את ממשק התקשורת עם ה-parent.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'קומפוננטה Standalone מלאה',
@@ -216,6 +224,10 @@ export class CourseCardComponent implements OnInit, OnDestroy {
         ],
       },
       {
+        type: 'text',
+        text: 'הדוגמה הבאה מציגה את ארבעת סוגי ה-binding בפועל ב-HTML. שימו לב להבדל בין [src] (property binding) שמעביר ערך דינמי לתכונת DOM, לבין (click) (event binding) שמאזין לאירועים. הסוגריים הכפולים [( )] לבניית two-way binding הם שילוב של שניהם ודורשים ייבוא של FormsModule.',
+      },
+      {
         type: 'code',
         lang: 'html',
         caption: 'Template — דוגמאות binding',
@@ -248,6 +260,10 @@ export class CourseCardComponent implements OnInit, OnDestroy {
           ['ngAfterViewInit', 'אחרי render ה-template', 'גישה ל-DOM, @ViewChild'],
           ['ngOnDestroy', 'לפני הסרה מ-DOM', 'unsubscribe, cleanup'],
         ],
+      },
+      {
+        type: 'text',
+        text: 'הדוגמה מציגה שימוש משולב ב-@Input עם transform (Angular 16+), @Output עם EventEmitter, ו-@ViewChild לגישה ישירה לאלמנט DOM. שימו לב שה-@ViewChild זמין רק מ-ngAfterViewInit ואילך — ניסיון לגשת אליו קודם יחזיר undefined. ה-transform ב-@Input מאפשר לנרמל ערכים נכנסים לפני שהם מגיעים ל-component.',
       },
       {
         type: 'code',
@@ -289,6 +305,10 @@ export class SearchComponent implements AfterViewInit {
 }`,
       },
       { type: 'heading', text: 'Control Flow החדש (Angular 17)' },
+      {
+        type: 'text',
+        text: 'Angular 17 הכניס תחביר control flow חדש ישירות בתוך ה-template, כתחליף ל-*ngIf ו-*ngFor הישנים. שימו לב ש-@for מחייב track — זה אינו אופציונלי אלא חובה. בנוסף, @for תומך ב-@empty שמוצג כשהמערך ריק, ו-@if תומך ב-@else if בלי צורך ב-ng-container נפרד.',
+      },
       {
         type: 'code',
         lang: 'html',
@@ -437,6 +457,10 @@ export class NotesService {
 }`,
       },
       {
+        type: 'text',
+        text: 'הדוגמה הבאה מראה כיצד מזריקים service ל-component ומשתמשים ב-async pipe לניהול Observable. שימו לב שה-Observable מאוחסן כ-notes$ ולא נעשה subscribe ידני — ה-async pipe מנהל את ה-subscription ועושה unsubscribe אוטומטי כש-component נהרס, מה שמונע memory leaks.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'שימוש בservice ב-component',
@@ -480,6 +504,10 @@ export class NotesListComponent implements OnInit {
       },
       { type: 'heading', text: 'HTTP Interceptors' },
       {
+        type: 'text',
+        text: 'Interceptor מיירט כל בקשת HTTP היוצאת ויכול לשנות אותה לפני שתישלח לשרת. הדוגמה מציגה Functional Interceptor (Angular 15+) שמוסיף Authorization header. שימו לב שה-HttpRequest הוא immutable — לא ניתן לשנותו ישירות, אלא חייבים לקרוא ל-req.clone() שמחזיר עותק חדש עם השינויים.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Functional Interceptor (Angular 15+) — הוספת Auth header',
@@ -507,6 +535,10 @@ export const authInterceptor: HttpInterceptorFn = (
 
 // רישום ב-main.ts:
 // provideHttpClient(withInterceptors([authInterceptor]))`,
+      },
+      {
+        type: 'text',
+        text: 'Interceptor שני זה מטפל בשגיאות HTTP בצורה גלובלית — במקום לטפל ב-401 ו-403 בכל service בנפרד. שימו לב לשימוש ב-catchError מ-RxJS שמיירט שגיאות ב-Observable pipeline, ולשימוש ב-throwError כדי להמשיך להפיץ את השגיאה לאחר הטיפול.',
       },
       {
         type: 'code',
@@ -610,6 +642,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     content: [
       { type: 'heading', text: 'הגדרת Routes' },
       {
+        type: 'text',
+        text: 'קובץ app.routes.ts מגדיר את מבנה הניווט של האפליקציה. שימו לב ל-loadComponent שמיישם lazy loading — כל component נטען רק כשמגיעים ל-route שלו. ה-route עם path: ** חייב תמיד להופיע אחרון כי הוא "תופס" כל URL שלא הותאם לפניו.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'app.routes.ts — הגדרת navigation',
@@ -643,6 +679,10 @@ export const routes: Routes = [
       },
       { type: 'heading', text: 'RouterLink ו-Navigation' },
       {
+        type: 'text',
+        text: 'ה-template מציג כיצד מנווטים בין דפים ב-Angular — הן בעזרת routerLink ב-HTML והן פרוגרמטית. שימו לב ל-routerLinkActive שמוסיף CSS class אוטומטית לקישור הפעיל, ול-router-outlet שהוא המקום בדף שבו Angular מציג את ה-component המותאם ל-route הנוכחי.',
+      },
+      {
         type: 'code',
         lang: 'html',
         caption: 'navigation ב-template ובקוד',
@@ -659,6 +699,10 @@ export const routes: Routes = [
 
 <!-- Router outlet — כאן מוצגים ה-components -->
 <router-outlet />`,
+      },
+      {
+        type: 'text',
+        text: 'הדוגמה מציגה ניווט פרוגרמטי מתוך TypeScript וקריאת route params. שימו לב להבדל בין snapshot.params (ערך חד-פעמי) לבין queryParamMap כ-Observable (מתעדכן כשה-params משתנים). שימוש ב-toSignal מאפשר לצרוך ערך reactive ישירות ב-template בלי async pipe.',
       },
       {
         type: 'code',
@@ -701,6 +745,10 @@ export class LessonComponent {
       },
       { type: 'heading', text: 'Guards — הגנה על Routes' },
       {
+        type: 'text',
+        text: 'Guard הוא פונקציה שנקראת לפני שמגיעים ל-route ומחליטה אם לאפשר את הכניסה. הדוגמה מציגה Functional Guard (Angular 15+) שבודק אם המשתמש מחובר. שימו לב שהפונקציה מחזירה UrlTree לצורך redirect — זה עדיף על router.navigate() כי Angular יכול לבצע בו אופטימיזציות.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'authGuard — Functional Guard',
@@ -725,6 +773,10 @@ export const authGuard: CanActivateFn = (route, state) => {
 // { path: 'dashboard', canActivate: [authGuard], ... }`,
       },
       { type: 'heading', text: 'Lazy Loading — טעינה עצלה' },
+      {
+        type: 'text',
+        text: 'Lazy loading מפצל את ה-bundle של האפליקציה לחלקים שנטענים רק לפי דרישה. הדוגמה מציגה קובץ routes של feature שלם — הוא נטען רק כשהמשתמש מנווט ל-/courses. שימו לב ש-loadChildren מקבל פונקציה שמחזירה Promise — זה מה שמאפשר ל-bundler ליצור chunk נפרד.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -837,6 +889,10 @@ export const coursesRoutes: Routes = [
       },
       { type: 'heading', text: 'Reactive Forms — FormBuilder' },
       {
+        type: 'text',
+        text: 'FormBuilder מאפשר לבנות FormGroup עם validators בצורה תמציתית. הדוגמה מציגה טופס הרשמה שלם עם validation תצוגתי — שגיאות מוצגות רק אחרי שהשדה touched. שימו לב ל-cross-field validator (passwordsMatch) שמוגדר ברמת ה-group ולא ברמת שדה בודד.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Reactive Form מלא עם validators',
@@ -904,6 +960,10 @@ export class RegisterComponent {
       },
       { type: 'heading', text: 'Custom Validators' },
       {
+        type: 'text',
+        text: 'ניתן לכתוב validators מותאמים אישית — סינכרוניים ואסינכרוניים. הדוגמה מציגה validator לבדיקת מספר טלפון ישראלי ו-async validator שבודק ייחודיות אימייל מול השרת. שימו לב ל-debounceTime שמונע קריאה לשרת בכל הקלדה, ול-switchMap שמבטל בקשה קודמת כשמגיעה הקלדה חדשה.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'Validator פונקציה ו-Async Validator',
@@ -937,6 +997,10 @@ export function emailExistsValidator(): AsyncValidatorFn {
 // email: ['', [Validators.required], [emailExistsValidator()]]`,
       },
       { type: 'heading', text: 'FormArray — שדות דינמיים' },
+      {
+        type: 'text',
+        text: 'FormArray מאפשר לנהל רשימה דינמית של שדות שהמשתמש יכול להוסיף ולהסיר בזמן ריצה. הדוגמה מציגה טופס תגיות עם יכולת הוספה והסרה. שימו לב לשימוש ב-formArrayName ב-template ולגישה ל-FormArray דרך getter — זה נדרש כי TypeScript לא מכיר את הסוג המדויק דרך form.get().',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -1116,6 +1180,10 @@ export class CounterComponent {
       },
       { type: 'heading', text: 'Signals עם Objects ו-Arrays' },
       {
+        type: 'text',
+        text: 'Signals עובדים גם עם arrays ו-objects מורכבים. הדוגמה מציגה רשימת הערות עם computed שסופר הערות פעילות. שימו לב שעדכון array חייב להשתמש ב-update עם spread (...)  כדי ליצור מערך חדש — שינוי מוטציה ישיר של המערך הפנימי לא יפעיל את ה-reactivity.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'ניהול state מורכב עם Signals',
@@ -1155,6 +1223,10 @@ export class NotesComponent {
       },
       { type: 'heading', text: 'toSignal — RxJS ↔ Signals' },
       {
+        type: 'text',
+        text: 'toSignal ו-toObservable הם הגשר בין עולם ה-RxJS לעולם ה-Signals. הדוגמה מציגה חיפוש שמשתמש בשניהם: query הוא Signal, אבל ה-HTTP pipeline (debounce, switchMap) משתמש ב-RxJS, ותוצאת toSignal מחזירה Signal לצריכה ב-template. שימו לב ש-toSignal חייב לרוץ ב-injection context (בתוך class, לא בפונקציה).',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'toSignal ו-toObservable — גשר בין עולמות',
@@ -1189,6 +1261,10 @@ export class SearchComponent {
     { initialValue: [] },
   )
 }`,
+      },
+      {
+        type: 'text',
+        text: 'Angular 17.1 הכניס API חדש לגמרי ל-@Input ו-@Output — input() ו-output() שמחזירים Signals. הדוגמה מציגה component שמשתמש ב-input.required() לקלט חובה ו-computed() שנגזר ממנו. היתרון: inputs הם כעת Signals אמיתיים ואפשר לשלב אותם ישירות ב-computed ו-effect ללא הגדרה מיוחדת.',
       },
       {
         type: 'code',

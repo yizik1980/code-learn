@@ -24,6 +24,10 @@ export const testingLessons: Lesson[] = [
       },
       { type: 'heading', text: 'Unit vs Integration vs E2E' },
       {
+        type: 'text',
+        text: 'הדוגמה מציגה את אותה פונקציית הנחה נבדקת בשלוש רמות שונות. Unit test בודק את הפונקציה לבד בלי DB. Integration test בודק את ה-API endpoint עם middleware ו-DB. E2E test בודק את כל הזרימה דרך הbrowser ומוודא שהמשתמש רואה את המחיר הנכון. שימו לב שכל רמה מוסיפה ביטחון אך גם עולה יותר בזמן ריצה.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'דוגמה — אותה לוגיקה, 3 רמות בדיקה',
@@ -147,6 +151,10 @@ test('premium user sees discounted price at checkout', async () => {
     content: [
       { type: 'heading', text: 'Vitest — התקנה וקונפיגורציה' },
       {
+        type: 'text',
+        text: 'Vitest הוא framework בדיקות מהיר שמשתלב ישירות עם Vite ומשתמש באותה קונפיגורציה. ההתקנה דורשת שני חבילות — vitest עצמו ו-coverage-v8 לדוחות כיסוי. שימו לב שמוסיפים שתי פקודות לpackage.json — אחת להרצה רגילה ואחת עם דוח coverage.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'הוספת Vitest לפרויקט Vite/Node',
@@ -156,6 +164,10 @@ test('premium user sees discounted price at checkout', async () => {
 # package.json:
 # "test": "vitest",
 # "test:coverage": "vitest --coverage"`,
+      },
+      {
+        type: 'text',
+        text: 'vite.config.ts עם הגדרות test קובע את סביבת הריצה ואת התנהגות הבדיקות. environment: "node" מתאים לבדיקות backend, ו-"jsdom" מדמה browser לבדיקות React. שימו לב להגדרת setupFiles — קובץ זה ירוץ לפני כל suite ומאפשר לאתחל matchers כמו jest-dom.',
       },
       {
         type: 'code',
@@ -178,6 +190,10 @@ export default defineConfig({
 })`,
       },
       { type: 'heading', text: 'מבנה בסיסי' },
+      {
+        type: 'text',
+        text: 'describe מקבץ בדיקות קשורות יחד, ו-it (או test) מגדיר בדיקה בודדת עם שם תיאורי. beforeEach יוצר instance חדש של CartService לפני כל בדיקה כדי למנוע state משותף. שימו לב לבדיקת הזריקת exception — expect(() => fn()).toThrow() עוטף את הקריאה ב-lambda כדי לתפוס את ה-exception.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -218,6 +234,10 @@ describe('CartService', () => {
       },
       { type: 'heading', text: 'Matchers חשובים' },
       {
+        type: 'text',
+        text: 'Matchers הם הפעלות שבודקות ערכים בדרכים שונות — toBe לשוויון מדויק, toEqual לבדיקה עמוקה של אובייקטים, ו-toContain לבדיקת כלילה. ההבדל בין toBe ל-toEqual קריטי — toBe משתמש ב-=== ולכן ייכשל על שני אובייקטים זהים ב-reference שונה. שימו לב ל-not שמאפשר לשלול כל matcher.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'expect() matchers — הנפוצים ביותר',
@@ -252,6 +272,10 @@ expect(() => risky()).toThrow(ValidationError)
 expect(value).not.toBeNull()`,
       },
       { type: 'heading', text: 'Async Testing' },
+      {
+        type: 'text',
+        text: 'בדיקת קוד async מחייבת שימוש ב-async/await כדי שהבדיקה תחכה לתוצאה לפני שתבדוק אותה. rejects.toThrow() בודק שPromise נדחה עם שגיאה מסוימת. שימו לב שחייבים לשים await לפני expect(promise).rejects — בלי זה הבדיקה תסתיים לפני שה-promise נפתר ותעבור תמיד.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -370,6 +394,10 @@ describe('fetchUser', () => {
       },
       { type: 'heading', text: 'vi.fn() — יצירת Mock Function' },
       {
+        type: 'text',
+        text: 'vi.fn() יוצר פונקציה מזויפת שניתן לשלוט בתשובה שלה ולאמת כיצד נקראה. הדוגמה מציגה OrderService שמקבל את charge ו-saveOrder כ-dependencies — כך ניתן לבדוק שה-service קורא לתשלום לפני שמירה, ושאם התשלום נכשל הוזמנה אינה נשמרת. שימו לב ל-expect.objectContaining שבודק רק חלק מהאובייקט.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'vi.fn() — יצירה, שליטה ואימות',
@@ -410,6 +438,10 @@ describe('OrderService', () => {
       },
       { type: 'heading', text: 'vi.mock() — Mock Module שלם' },
       {
+        type: 'text',
+        text: 'vi.mock() מחליף module שלם בגרסה מזויפת לכל משך קובץ הבדיקה. חשוב להגדיר אותו לפני ה-imports שמשתמשים בו — Vitest מרים אותו לראש הקובץ אוטומטית. שימו לב לדפוס הנפוץ: UserService.register קורא ל-sendEmail, ואנחנו בודקים שנקרא עם הפרמטרים הנכונים ללא שליחת email אמיתי.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'vi.mock() — החלפת ייבוא שלם',
@@ -438,6 +470,10 @@ describe('UserService.register', () => {
 })`,
       },
       { type: 'heading', text: 'vi.spyOn() — עקיבה ללא החלפה' },
+      {
+        type: 'text',
+        text: 'vi.spyOn() עוטף מתודה קיימת ומתעד קריאות מבלי להחליף את המימוש כברירת מחדל. שימושי לאימות שלוגיקה כמו Logger.error נקראת בתנאים מסוימים. שימו לב ל-afterEach(() => vi.restoreAllMocks()) שחייב להופיע כדי שה-spy לא ישפיע על בדיקות אחרות — ללא restore, הspy יישאר פעיל.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -469,6 +505,10 @@ describe('processData', () => {
 })`,
       },
       { type: 'heading', text: 'MSW — Mock Service Worker לבדיקות HTTP' },
+      {
+        type: 'text',
+        text: 'MSW (Mock Service Worker) יורט HTTP requests ברמת הרשת ומחזיר תשובות מוגדרות — ללא שינוי בקוד הייצור. handlers מוגדרים בסגנון Express ומאפשרים לסמוך על userId שונים. שימו לב ל-server.use() בתוך בדיקה — מאפשר להוסיף override זמני רק לבדיקה ספציפית, ו-resetHandlers() בafterEach מנקה אותו.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -590,6 +630,10 @@ describe('getUser', () => {
         text: 'React Testing Library (RTL) בנויה על עיקרון אחד: "The more your tests resemble the way your software is used, the more confidence they can give you." — בדוק מה המשתמש רואה ועושה, לא את ה-state הפנימי של הקומפוננטה.',
       },
       {
+        type: 'text',
+        text: 'React Testing Library דורשת שלוש חבילות — הספרייה עצמה, user-event לסימולציית אינטראקציות, ו-jest-dom לmatchers כמו toBeInTheDocument. עם Vitest צריך גם jsdom שמספק סביבת browser מדומה. שימו לב שsetup.ts מייבא את jest-dom פעם אחת ומגדיר את הmatchers לכל הבדיקות.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'התקנה',
@@ -598,12 +642,20 @@ describe('getUser', () => {
 npm install -D vitest jsdom`,
       },
       {
+        type: 'text',
+        text: 'קובץ setup.ts מייבא את jest-dom שמוסיף matchers ייעודיים לבדיקות DOM. matchers כמו toBeInTheDocument, toBeDisabled ו-toHaveTextContent קריאים יותר מאשר לבדוק את ה-DOM ישירות. שימו לב שמספיק שורה אחת בקובץ הzה — כל ה-matchers מיובאים אוטומטית.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'src/test/setup.ts — הגדרת environment',
         code: `import '@testing-library/jest-dom'  // matchers כמו toBeInTheDocument, toBeDisabled`,
       },
       { type: 'heading', text: 'בדיקה ראשונה — render ו-screen' },
+      {
+        type: 'text',
+        text: 'render() מרנדר קומפוננטה לDOM מדומה, ו-screen מספק גישה לאלמנטים שנוצרו. getByRole הוא ה-query המומלץ כי הוא בודק accessibility — כפתור שנמצא getByRole("button") חייב לקבל role נגיש. שימו לב שבדיקת src של תמונה משתמשת ב-getByRole("img") ולא getByTagName — זה הדרך הנכונה.',
+      },
       {
         type: 'code',
         lang: 'tsx',
@@ -645,6 +697,10 @@ describe('GreetingCard', () => {
       },
       { type: 'heading', text: 'userEvent — אינטראקציה' },
       {
+        type: 'text',
+        text: 'userEvent מדמה אינטראקציות משתמש אמיתיות — לחיצה, הקלדה, focus — ברצף הנכון של events. user.type() מדמה הקלדה תו-תו, ו-user.click() שולח את כל ה-events שdrowser שולח בלחיצה אמיתית. שימו לב ל-userEvent.setup() שיוצר instance — זה הדרך המומלצת שמאפשרת עקביות בין events.',
+      },
+      {
         type: 'code',
         lang: 'tsx',
         caption: 'userEvent — סימולציית פעולות משתמש',
@@ -682,6 +738,10 @@ describe('LoginForm', () => {
 })`,
       },
       { type: 'heading', text: 'Async — waitFor ו-findBy' },
+      {
+        type: 'text',
+        text: 'קומפוננטה שטוענת נתונים מAPI משנה את ה-DOM אחרי שהbetch מסתיים — לא מיד. findByText ממתין עד שהאלמנט מופיע, ו-queryByText מחזיר null אם לא קיים. שימו לב לדפוס הנפוץ: בודקים שspinner מוצג בתחילה, ואחרי await findBy... בודקים שהנתונים הופיעו וה-spinner נעלם.',
+      },
       {
         type: 'code',
         lang: 'tsx',
@@ -785,10 +845,18 @@ it('shows loading then user data', async () => {
     content: [
       { type: 'heading', text: 'Supertest — בדיקות HTTP ללא server אמיתי' },
       {
+        type: 'text',
+        text: 'Supertest עוטף Express app ומאפשר לשלוח HTTP requests ישירות ללא port אמיתי. ההתקנה כוללת את הpackage עצמו ו-types לTypeScript. שימו לב שמדובר בחבילת devDependency בלבד — היא לא צריכה להיות בproduction.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'התקנה',
         code: `npm install -D supertest @types/supertest`,
+      },
+      {
+        type: 'text',
+        text: 'כדי ש-Supertest יוכל לעטוף את ה-app, חייבים להפריד בין יצירת האפליקציה להפעלתה. app.ts מגדיר את ה-routes ו-middleware ומייצא את ה-app, בעוד index.ts קורא ל-app.listen(). שימו לב לתגובה הכחולה בקוד — זה ההסבר למה לא קוראים listen כאן.',
       },
       {
         type: 'code',
@@ -802,6 +870,10 @@ app.use(express.json())
 app.use('/api/notes', notesRouter)
 
 // ✓ לא קוראים ל-app.listen() כאן — Supertest מטפל בזה`,
+      },
+      {
+        type: 'text',
+        text: 'הדוגמה מציגה integration test מלא לAPI של הערות. beforeAll מריץ migrations, beforeEach מנקה נתוני המשתמש הספציפי, ו-afterAll סוגר את חיבור הDB. שימו לב לבדיקת "רק הערות של המשתמש המבוקש" — נתון second user מוכנס, ובודקים שהquery מחזיר רק הערה אחת של TEST_USER.',
       },
       {
         type: 'code',
@@ -890,6 +962,10 @@ describe('GET /api/notes', () => {
       },
       { type: 'heading', text: 'In-Memory DB עם better-sqlite3' },
       {
+        type: 'text',
+        text: 'better-sqlite3 עם ":memory:" יוצר DB שחי בזיכרון בלבד ונמחק אוטומטית בסיום הבדיקה. אין צורך בהגדרת connection string חיצוני, ואין I/O לדיסק — מה שהופך בדיקות DB למהירות מאוד. שימו לב שניתן ליצור את הschema ישירות בקוד הבדיקה ולהזריק את ה-DB לapp דרך dependency injection.',
+      },
+      {
         type: 'code',
         lang: 'typescript',
         caption: 'in-memory SQLite לבדיקות — מהיר ועצמאי',
@@ -913,6 +989,10 @@ testDb.exec(\`
 // (dependency injection — אותו pattern כמו ב-production רק עם DB אחר)`,
       },
       { type: 'heading', text: 'Test Fixtures' },
+      {
+        type: 'text',
+        text: 'Factory functions לבדיקות יוצרות אובייקטים עם ערכי ברירת מחדל הגיוניים ומאפשרות override רק לשדות הרלוונטיים לבדיקה. זה מונע קוד boilerplate חוזר ומקל על קריאת הבדיקה — ברור מיד מה מיוחד בבדיקה הנוכחית. שימו לב שה-overrides משתמש בspread operator שמאפשר לדרוס כל subset של שדות.',
+      },
       {
         type: 'code',
         lang: 'typescript',
@@ -1009,6 +1089,10 @@ const note = createNote({ courseId: 'react', content: 'הערה על React' })
     content: [
       { type: 'heading', text: 'xUnit — Unit Tests ב-C#' },
       {
+        type: 'text',
+        text: 'xUnit הוא framework הבדיקות המומלץ ב-.NET מודרני. NSubstitute מספק mocking קל לקריאה, ו-FluentAssertions הופך assertions לקריאות יותר עם הודעות שגיאה מפורטות. שימו לב שהפקודה יוצרת פרויקט נפרד — מקובל ב-.NET שלכל פרויקט יש פרויקט בדיקות מקביל.',
+      },
+      {
         type: 'code',
         lang: 'bash',
         caption: 'יצירת פרויקט בדיקות',
@@ -1020,6 +1104,10 @@ dotnet add package NSubstitute
 
 # FluentAssertions — assertions קריאות יותר
 dotnet add package FluentAssertions`,
+      },
+      {
+        type: 'text',
+        text: 'xUnit משתמש ב-[Fact] לבדיקה בודדת וב-[Theory] לבדיקה פרמטרית שרצה מספר פעמים עם ערכים שונים. Constructor של test class מחליף את beforeEach — xUnit יוצר instance חדש לפני כל [Fact]. שימו לב לדפוס Arrange-Act-Assert ולאמירה שבודקת exception — act.Should().Throw<ArgumentException>().',
       },
       {
         type: 'code',
@@ -1076,6 +1164,10 @@ public class DiscountServiceTests
       },
       { type: 'heading', text: 'NSubstitute — Mocking ב-.NET' },
       {
+        type: 'text',
+        text: 'NSubstitute יוצר mock objects בתחביר קריא ונקי. Substitute.For<T>() מייצר מימוש מזויף של כל interface. הדוגמה מציגה OrderService שמקבל IPaymentGateway ו-IOrderRepository — ובודק שה-service מפעיל charge לפני save ולא שומר הזמנה שהתשלום שלה נכשל. שימו לב לשימוש ב-Arg.Is<T>() לבדיקה מדויקת של ארגומנט.',
+      },
+      {
         type: 'code',
         lang: 'csharp',
         caption: 'NSubstitute — mock dependencies',
@@ -1128,6 +1220,10 @@ public class OrderServiceTests
 }`,
       },
       { type: 'heading', text: 'WebApplicationFactory — Integration Tests' },
+      {
+        type: 'text',
+        text: 'WebApplicationFactory מריצה את כל ה-ASP.NET Core pipeline בזיכרון — middleware, routing, DI — ומחליפה את ה-DbContext ב-in-memory database. IClassFixture מבטיח שהfactory נוצרת פעם אחת לכל test class. שימו לב לשימוש ב-Guid.NewGuid() בשם ה-DB — מונע collision בין בדיקות שרצות במקביל.',
+      },
       {
         type: 'code',
         lang: 'csharp',
@@ -1192,6 +1288,10 @@ public class NotesApiTests : IClassFixture<TestWebFactory>
         text: 'IClassFixture<T> ב-xUnit = factory נוצרת פעם אחת לכל ה-test class. מהיר יותר מיצירת factory בכל בדיקה. השתמש ב-IAsyncLifetime לניקוי אסינכרוני.',
       },
       { type: 'heading', text: 'FluentAssertions — assertions קריאות' },
+      {
+        type: 'text',
+        text: 'FluentAssertions מחליף את Assert הקלאסי בתחביר נקי שנקרא כמו משפט באנגלית. כשבדיקה נכשלת, הודעת השגיאה מפורטת יותר ומצביעה מדויק על מה השתבש. שימו לב לשרשרת — act.Should().Throw<ArgumentException>().WithMessage("*price*").And.ParamName — מאפשר לבדוק כמה תכונות של exception בביטוי אחד.',
+      },
       {
         type: 'code',
         lang: 'csharp',
