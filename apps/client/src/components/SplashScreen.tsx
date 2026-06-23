@@ -30,6 +30,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
       <img
         src="/splash.png"
         alt="CodeLearn"
+        onError={(e) => (e.currentTarget.style.display = 'none')}
         style={{
           maxWidth:  '90vw',
           maxHeight: '90vh',
