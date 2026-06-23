@@ -28,7 +28,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
       }}
     >
       <img
-        src="public/splash.png"
+        src="/splash.png"
         alt="CodeLearn"
         onError={(e) => (e.currentTarget.style.display = 'none')}
         style={{
