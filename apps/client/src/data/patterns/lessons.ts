@@ -153,39 +153,117 @@ class Square implements Shape {
   area() { return this.side ** 2 }
 }`,
       },
-      { type: 'heading', text: 'I — Interface Segregation & D — Dependency Inversion' },
+      { type: 'heading', text: 'I — Interface Segregation Principle' },
       {
         type: 'text',
-        text: 'הדוגמה מציגה שני עקרונות יחד. ISP: interface Worker שמכיל eat() מאלץ את RobotWorker לממש מתודה לא רלוונטית — הפתרון הוא interfaces ממוקדים Workable ו-Eatable בנפרד. DIP: OrderService שיוצר ישירות MySqlOrderRepository הוא coupled; הפתרון הוא injection של interface OrderRepository שמאפשר החלפת implementation.',
+        text: 'ISP אומר: עדיף כמה interfaces ממוקדים על interface אחד גדול ("שמן"). כש-interface שמן, classes נאלצות לממש מתודות שלא רלוונטיות להן — גורם ל-coupling מיותר: שינוי כלשהו ב-interface ישפיע על כל המממשים, גם על אלו שלא משתמשים בחלק שהשתנה. הדוגמה הקלאסית היא Worker/Robot — Robot שמממש eat() רק כי ה-interface מאלץ אותו. הדוגמה הריאלית מציגה repository שמן מול interfaces ממוקדים לקריאה, כתיבה ומחיקה.',
       },
       {
         type: 'code',
         lang: 'typescript',
-        caption: 'ISP + DIP — interfaces קטנים ותלות ב-abstractions',
-        code: `// ✗ ISP — interface שמן שמאלץ מימוש לא רלוונטי
+        caption: 'ISP — Worker/Robot: interface שמן מול interfaces ממוקדים',
+        code: `// ✗ ISP — interface שמן מאלץ מימוש לא רלוונטי
 interface Worker {
   work(): void
-  eat(): void   // Robot לא אוכל!
+  eat(): void    // Robot לא אוכל!
+  sleep(): void  // Robot לא ישן!
 }
 
-// ✓ ISP — interfaces ממוקדים
-interface Workable { work(): void }
-interface Eatable  { eat(): void  }
+class RobotWorker implements Worker {
+  work()  { console.log('beep boop') }
+  eat()   { throw new Error("robots don't eat") }   // code smell
+  sleep() { throw new Error("robots don't sleep") }
+}
 
-class HumanWorker implements Workable, Eatable {
-  work() { console.log('working') }
-  eat()  { console.log('eating')  }
+// ✓ ISP — interfaces ממוקדים, כל class מממש רק מה שרלוונטי
+interface Workable  { work(): void  }
+interface Eatable   { eat(): void   }
+interface Sleepable { sleep(): void }
+
+class HumanWorker implements Workable, Eatable, Sleepable {
+  work()  { console.log('working')  }
+  eat()   { console.log('eating')   }
+  sleep() { console.log('sleeping') }
 }
 
 class RobotWorker implements Workable {
   work() { console.log('beep boop') }
-  // לא מממש eat — לא צריך!
+  // אפס throws, אפס dead code — רק מה שרלוונטי
+}`,
+      },
+      {
+        type: 'code',
+        lang: 'typescript',
+        caption: 'ISP — Repository ריאלי: הפרדת קריאה/כתיבה/מחיקה',
+        code: `// ✗ Repository שמן — catalog לקריאה בלבד נאלץ לממש write/delete
+interface ProductRepository {
+  findById(id: string): Promise<Product | null>
+  findAll(): Promise<Product[]>
+  save(product: Product): Promise<Product>
+  update(id: string, data: Partial<Product>): Promise<Product>
+  delete(id: string): Promise<void>
+  bulkDelete(ids: string[]): Promise<void>
 }
 
-// ──────────────────────────────────────────────
-// ✗ DIP — תלות ישירה ב-implementation
+class ProductCatalogRepository implements ProductRepository {
+  async findById(id: string) { /* ... */ }
+  async findAll()            { /* ... */ }
+  async save()      { throw new Error('read-only!') }  // 🤮
+  async update()    { throw new Error('read-only!') }
+  async delete()    { throw new Error('read-only!') }
+  async bulkDelete(){ throw new Error('read-only!') }
+}
+
+// ✓ ISP — interfaces לפי אחריות
+interface ReadableRepo<T> {
+  findById(id: string): Promise<T | null>
+  findAll(): Promise<T[]>
+}
+
+interface WritableRepo<T> {
+  save(entity: T): Promise<T>
+  update(id: string, data: Partial<T>): Promise<T>
+}
+
+interface DeletableRepo {
+  delete(id: string): Promise<void>
+  bulkDelete(ids: string[]): Promise<void>
+}
+
+// Catalog — קורא בלבד, מממש רק Readable
+class ProductCatalogRepository implements ReadableRepo<Product> {
+  async findById(id: string) { /* DB query */ }
+  async findAll()            { /* DB query */ }
+}
+
+// Admin repository — מממש הכל
+class AdminProductRepository
+  implements ReadableRepo<Product>, WritableRepo<Product>, DeletableRepo {
+  async findById(id: string) { /* ... */ }
+  async findAll()            { /* ... */ }
+  async save(p: Product)     { /* ... */ }
+  async update(id, data)     { /* ... */ }
+  async delete(id: string)   { /* ... */ }
+  async bulkDelete(ids)      { /* ... */ }
+}
+
+// פונקציה שצריכה רק לקרוא — מקבלת ReadableRepo, לא את ה-"שמן"
+async function listProducts(repo: ReadableRepo<Product>) {
+  return repo.findAll()
+}`,
+      },
+      { type: 'heading', text: 'D — Dependency Inversion Principle' },
+      {
+        type: 'text',
+        text: 'DIP אומר שמודולים ברמה גבוהה לא צריכים לתלות במודולים ברמה נמוכה — שניהם צריכים לתלות ב-abstractions. הדוגמה מציגה OrderService שיוצר ישירות MySqlOrderRepository — coupling קשיח שמקשה על החלפה ובדיקה. הפתרון הוא injection של interface OrderRepository מבחוץ: MySQL ב-production, InMemory בtetest — ללא שינוי שורה אחת ב-OrderService.',
+      },
+      {
+        type: 'code',
+        lang: 'typescript',
+        caption: 'DIP — תלות ב-abstraction, לא ב-concretion',
+        code: `// ✗ DIP — תלות ישירה ב-implementation
 class OrderService {
-  private repo = new MySqlOrderRepository()  // coupled!
+  private repo = new MySqlOrderRepository()  // coupled! לא ניתן לבדוק, לא ניתן להחליף
 }
 
 // ✓ DIP — תלות ב-interface, injection מבחוץ
@@ -196,65 +274,25 @@ interface OrderRepository {
 
 class OrderService {
   constructor(private repo: OrderRepository) {}  // DI ✓
-  // עכשיו אפשר להזריק MySql, Postgres, InMemory, Mock...
-}`,
-      },
-    {
-      type:"text",
-      text:`עיקרון ה-Interface Segregation Principle (ISP) הוא העיקרון הרביעי ב-SOLID, והוא מתמקד בגישה של "פחות זה יותר" כשמדובר בממשקים (Interfaces).
 
-הכלל פשוט מאוד:
-
-אל תכריחו מחלקה (Class) לממש מתודות שהיא לא צריכה.
-
-הבעיה: ה-Interface "השמן"
-דמיינו Interface בשם Worker שמכיל את כל הפעולות האפשריות לעובד: work() ו-eat().
-
-אם ניצור מחלקה של RobotWorker, היא תהיה חייבת לממש את work() (כי רובוט עובד) אבל גם את eat() (כי זה מה שה-Interface דורש). התוצאה: הרובוט מקבל פונקציה חסרת משמעות עבורו, או גרוע מכך – פונקציה שזורקת שגיאה כי רובוטים לא אוכלים.
-
-הפתרון: פירוק (Segregation)
-במקום Interface אחד גדול, מפצלים אותו לממשקים קטנים וממוקדים (Focused Interfaces). כך כל מחלקה יכולה לבחור רק את מה שרלוונטי לה.
-
-Workable: מכיל רק work().
-
-Eatable: מכיל רק eat().
-
-עכשיו:
-
-HumanWorker יממש את שניהם (Workable, Eatable).
-
-RobotWorker יממש רק את Workable.
-
-דוגמה בקוד (TypeScript)
-TypeScript
-// ✗ ממשק "שמן" שגורם לבעיה
-interface Worker {
-  work(): void;
-  eat(): void;
-}
-
-// ✓ פתרון ה-ISP: פיצול לממשקים קטנים
-interface Workable {
-  work(): void;
-}
-
-interface Eatable {
-  eat(): void;
-}
-
-// מחלקה שממשת רק את מה שהיא באמת צריכה
-class RobotWorker implements Workable {
-  work() {
-    console.log('Beep boop, working...');
+  async createOrder(data: CreateOrderData): Promise<Order> {
+    const order = new Order(data)
+    return this.repo.save(order)
   }
 }
-למה זה "יפה"?
-קוד נקי יותר: אין מתודות "מיותרות" או קוד ריק/שגוי בתוך מחלקות.
 
-גמישות: קל יותר להוסיף סוגי עובדים חדשים בעתיד מבלי להרוס את הקוד הקיים.
+// Production
+const service = new OrderService(new MySqlOrderRepository())
 
-תחזוקה: כשמשנים ממשק קטן, משפיעים על פחות מחלקות, מה שמפחית את הסיכוי ל-Bugs.`
-    },
+// Test — בלי DB אמיתי
+class InMemoryOrderRepository implements OrderRepository {
+  private orders: Order[] = []
+  async save(order: Order) { this.orders.push(order); return order }
+  async findById(id: string) { return this.orders.find(o => o.id === id) ?? null }
+}
+
+const testService = new OrderService(new InMemoryOrderRepository())`,
+      },
       {
         type: 'tip',
         text: 'SOLID הוא כלי, לא דת. לא כל class זקוק לכל 5 עקרונות. יישם אותם בהדרגה כשהקוד גדל ומורכב — over-engineering ביום הראשון גרוע לא פחות מ-no-engineering.',
