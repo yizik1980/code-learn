@@ -1478,8 +1478,7 @@ merged.plot(
     k=5,
     legend=True,
     legend_kwds={"label": "אוכלוסייה", "orientation": "vertical"},
-    missing_kwds={"color": "lightgrey"},
-)
+    missing_kwds={"color": "lightg
 
 ax.set_title("אוכלוסיית ישראל לפי ישוב 2023", fontsize=16)
 ax.set_axis_off()

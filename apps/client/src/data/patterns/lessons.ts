@@ -199,6 +199,62 @@ class OrderService {
   // עכשיו אפשר להזריק MySql, Postgres, InMemory, Mock...
 }`,
       },
+    {
+      type:"text",
+      text:`עיקרון ה-Interface Segregation Principle (ISP) הוא העיקרון הרביעי ב-SOLID, והוא מתמקד בגישה של "פחות זה יותר" כשמדובר בממשקים (Interfaces).
+
+הכלל פשוט מאוד:
+
+אל תכריחו מחלקה (Class) לממש מתודות שהיא לא צריכה.
+
+הבעיה: ה-Interface "השמן"
+דמיינו Interface בשם Worker שמכיל את כל הפעולות האפשריות לעובד: work() ו-eat().
+
+אם ניצור מחלקה של RobotWorker, היא תהיה חייבת לממש את work() (כי רובוט עובד) אבל גם את eat() (כי זה מה שה-Interface דורש). התוצאה: הרובוט מקבל פונקציה חסרת משמעות עבורו, או גרוע מכך – פונקציה שזורקת שגיאה כי רובוטים לא אוכלים.
+
+הפתרון: פירוק (Segregation)
+במקום Interface אחד גדול, מפצלים אותו לממשקים קטנים וממוקדים (Focused Interfaces). כך כל מחלקה יכולה לבחור רק את מה שרלוונטי לה.
+
+Workable: מכיל רק work().
+
+Eatable: מכיל רק eat().
+
+עכשיו:
+
+HumanWorker יממש את שניהם (Workable, Eatable).
+
+RobotWorker יממש רק את Workable.
+
+דוגמה בקוד (TypeScript)
+TypeScript
+// ✗ ממשק "שמן" שגורם לבעיה
+interface Worker {
+  work(): void;
+  eat(): void;
+}
+
+// ✓ פתרון ה-ISP: פיצול לממשקים קטנים
+interface Workable {
+  work(): void;
+}
+
+interface Eatable {
+  eat(): void;
+}
+
+// מחלקה שממשת רק את מה שהיא באמת צריכה
+class RobotWorker implements Workable {
+  work() {
+    console.log('Beep boop, working...');
+  }
+}
+למה זה "יפה"?
+קוד נקי יותר: אין מתודות "מיותרות" או קוד ריק/שגוי בתוך מחלקות.
+
+גמישות: קל יותר להוסיף סוגי עובדים חדשים בעתיד מבלי להרוס את הקוד הקיים.
+
+תחזוקה: כשמשנים ממשק קטן, משפיעים על פחות מחלקות, מה שמפחית את הסיכוי ל-Bugs.`
+    },
       {
         type: 'tip',
         text: 'SOLID הוא כלי, לא דת. לא כל class זקוק לכל 5 עקרונות. יישם אותם בהדרגה כשהקוד גדל ומורכב — over-engineering ביום הראשון גרוע לא פחות מ-no-engineering.',
