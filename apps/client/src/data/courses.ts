@@ -14,6 +14,7 @@ import { csharpLessons } from './csharp/lessons'
 import { testingLessons } from './testing/lessons'
 import { angularLessons } from './angular/lessons'
 import { patternsLessons } from './patterns/lessons'
+import { cicdLessons } from './cicd/lessons'
 import { architectureLessons } from './architecture/lessons'
 import { vibeCodingLessons } from './vibe_coding/lessons'
 import { notebooklmLessons } from './notebooklm/lessons'
@@ -92,6 +93,15 @@ export const courses: Course[] = [
     color: '#0ea5e9',
     gradient: 'from-sky-400 to-blue-600',
     lessons: cloudLessons,
+  },
+  {
+    id: 'cicd',
+    title: 'CI/CD',
+    description: 'GitHub Actions, Docker ב-pipeline, Secrets, Quality Gates, Blue/Green, Canary ו-Monitoring — מ-push ועד production',
+    emoji: '🚀',
+    color: '#f97316',
+    gradient: 'from-orange-500 to-rose-600',
+    lessons: cicdLessons,
   },
   {
     id: 'devops',
