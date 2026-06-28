@@ -126,7 +126,7 @@ db.users.find()
   .skip(10)
   .limit(5)` },
       { type: 'heading', text: 'UPDATE — עדכון מסמכים' },
-      { type: 'text', text: '$set מעדכן שדות ספציפיים מבלי לפגוע בשאר המסמך — בלי $set MongoDB תחליף את המסמך כולו! $inc מגדיל ערך מספרי, ו-upsert יוצר מסמך חדש אם לא נמצאה התאמה. שימו לב שהארגומנט הראשון הוא filter ולא המסמך עצמו.' },
+      { type: 'text', text: '$set מעדכן שדות ספציפיים מבלי לפגוע בשאר המסמך — חשוב: בלי $set, MongoDB תחליף את המסמך כולו! $inc מגדיל ערך מספרי, ו-upsert יוצר מסמך חדש אם לא נמצאה התאמה. שימו לב שהארגומנט הראשון הוא filter ולא המסמך עצמו.' },
       { type: 'code', lang: 'javascript', caption: 'עדכון מסמכים', code: `// עדכון שדה בודד
 db.users.updateOne(
   { email: "sara@example.com" },       // filter
@@ -263,7 +263,7 @@ db.data.find({ value: { $type: "string" } })` },
     questionBank: [
       {
         id: 'nosql-query-q1',
-        text: 'כיצד מוצאים מסמכים עם price בין 100 ל-500?',
+        text: 'כיצד מוצאים מסמכים עם price גדול מ-100 וקטן או שווה ל-500?',
         options: ['{ price: [100, 500] }', '{ price: { $gt: 100, $lte: 500 } }', '{ price: BETWEEN(100,500) }', '{ price: { $range: [100,500] } }'],
         correct: 1,
         explanation: '$gt (greater than) ו-$lte (less than or equal) משולבים באובייקט אחד לשדה: { price: { $gt: 100, $lte: 500 } }.',
@@ -400,6 +400,271 @@ db.posts.aggregate([
         options: ['$join', '$merge', '$concat', '$combine'],
         correct: 2,
         explanation: '$concat מחבר מחרוזות: { $concat: ["$first", " ", "$last"] }. אפשר לשלב שדות וטקסט קבוע.',
+      },
+    ],
+  },
+  {
+    id: 'nosql-lookup',
+    title: '$lookup — חיבור בין אוספים',
+    summary: 'JOIN ב-MongoDB — חיבור מסמכים ממספר Collections, שלב אחרי שלב',
+    emoji: '🔗',
+    content: [
+      { type: 'heading', text: 'מה זה $lookup?' },
+      { type: 'text', text: '$lookup הוא שלב ב-Aggregation Pipeline שמבצע LEFT OUTER JOIN בין שני collections. בדיוק כמו JOIN ב-SQL — אתה לוקח נתונים מאוסף אחד ומצרף אליהם נתונים מאוסף שני, לפי שדה משותף.' },
+      {
+        type: 'table',
+        caption: 'SQL JOIN לעומת MongoDB $lookup',
+        headers: ['SQL', 'MongoDB'],
+        rows: [
+          ['FROM orders JOIN customers', 'db.orders.aggregate([$lookup])'],
+          ['ON orders.customerId = customers._id', 'localField: "customerId", foreignField: "_id"'],
+          ['AS c', 'as: "customer"'],
+          ['מחזיר שורה שטוחה', 'מחזיר מערך — צריך $unwind לשיטוח'],
+        ],
+      },
+      { type: 'heading', text: 'הנתונים לדוגמה — שני Collections' },
+      { type: 'text', text: 'נניח שיש לנו שני collections: orders (הזמנות) ו-customers (לקוחות). לכל הזמנה יש customerId שמצביע על הלקוח.' },
+      { type: 'code', lang: 'javascript', caption: 'הנתונים ההתחלתיים', code: `// ── Collection: customers ──────────────────────────
+{ _id: ObjectId("AAA"), name: "דוד",  city: "תל אביב" }
+{ _id: ObjectId("BBB"), name: "שרה",  city: "ירושלים"  }
+{ _id: ObjectId("CCC"), name: "יוסי", city: "חיפה"     }
+
+// ── Collection: orders ──────────────────────────────
+{ _id: 1, customerId: ObjectId("AAA"), amount: 250 }
+{ _id: 2, customerId: ObjectId("BBB"), amount: 180 }
+{ _id: 3, customerId: ObjectId("AAA"), amount: 420 }
+{ _id: 4, customerId: ObjectId("BBB"), amount: 95  }` },
+      { type: 'heading', text: 'שלב 1 — $lookup בסיסי' },
+      { type: 'text', text: 'ה-$lookup בסיסי מקבל 4 שדות: from (שם האוסף החיצוני), localField (השדה שלנו), foreignField (השדה באוסף החיצוני), ו-as (שם השדה החדש שיצורף).' },
+      { type: 'code', lang: 'javascript', caption: '$lookup — ארבעת השדות הבסיסיים', code: `db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",        // חפש באוסף customers
+      localField: "customerId", // הנה שדה ה-orders שלי
+      foreignField: "_id",      // מצא מסמך customers שה-_id שלו תואם
+      as: "customerData"        // שמור תוצאה בשדה חדש בשם customerData
+    }
+  }
+])` },
+      { type: 'text', text: 'הנה מה שמוחזר אחרי $lookup — שימו לב שהשדה customerData הוא מערך ולא אובייקט, גם כשיש רק התאמה אחת. זה כי $lookup תמיד מחזיר מערך (יכולים להיות כמה התאמות). כדי לגשת ל-customerData.name, נצטרך קודם לשטח עם $unwind.' },
+      { type: 'code', lang: 'javascript', caption: 'תוצאה אחרי $lookup', code: `// MongoDB מחזיר כל הזמנה + customerData כ-מערך:
+
+{ _id: 1, customerId: ObjectId("AAA"), amount: 250,
+  customerData: [{ _id: ObjectId("AAA"), name: "דוד", city: "תל אביב" }]
+}
+{ _id: 2, customerId: ObjectId("BBB"), amount: 180,
+  customerData: [{ _id: ObjectId("BBB"), name: "שרה", city: "ירושלים" }]
+}
+{ _id: 3, customerId: ObjectId("AAA"), amount: 420,
+  customerData: [{ _id: ObjectId("AAA"), name: "דוד", city: "תל אביב" }]
+}
+
+// ⚠️ שים לב: customerData הוא מערך [] — לא אובייקט!
+// זה כי יכולים להיות כמה התאמות. נתקן עם $unwind.` },
+      { type: 'heading', text: 'שלב 2 — $unwind לשיטוח המערך' },
+      { type: 'text', text: '$lookup תמיד מחזיר מערך. אם בדרך כלל צפויה התאמה אחת בלבד (כמו lookup לפי _id), $unwind הופך את [{ name: "דוד" }] לאובייקט ישיר { name: "דוד" }.' },
+      { type: 'code', lang: 'javascript', caption: '$lookup + $unwind', code: `db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customerId",
+      foreignField: "_id",
+      as: "customerData"
+    }
+  },
+  {
+    $unwind: "$customerData"
+    // אפשרות בטוחה יותר:
+    // $unwind: { path: "$customerData", preserveNullAndEmptyArrays: true }
+    // preserveNullAndEmptyArrays: true — שומר הזמנות גם אם לא מצאנו לקוח
+  }
+])` },
+      { type: 'text', text: 'לאחר $unwind, customerData הוא עכשיו אובייקט ישיר ולא מערך. ניתן כעת לגשת לשדות שלו עם customerData.name ו-customerData.city. שימו לב לאפשרות preserveNullAndEmptyArrays: true שחשובה כשלא לכל מסמך בטוח יש התאמה.' },
+      { type: 'code', lang: 'javascript', caption: 'תוצאה אחרי $unwind', code: `// עכשיו customerData הוא אובייקט — לא מערך:
+
+{ _id: 1, customerId: ObjectId("AAA"), amount: 250,
+  customerData: { _id: ObjectId("AAA"), name: "דוד", city: "תל אביב" }
+}
+{ _id: 2, customerId: ObjectId("BBB"), amount: 180,
+  customerData: { _id: ObjectId("BBB"), name: "שרה", city: "ירושלים" }
+}
+// ...
+
+// ✅ עכשיו אפשר לגשת ל: customerData.name, customerData.city` },
+      { type: 'heading', text: 'שלב 3 — $project לנקות שדות מיותרים' },
+      { type: 'text', text: 'אחרי $lookup + $unwind יש לנו הרבה שדות. $project מאפשר לבחור רק מה שצריך, ולשנות שמות אם רוצים.' },
+      { type: 'code', lang: 'javascript', caption: '$project — בחירת שדות', code: `db.orders.aggregate([
+  { $lookup: { from: "customers", localField: "customerId", foreignField: "_id", as: "customerData" } },
+  { $unwind: "$customerData" },
+  {
+    $project: {
+      _id: 0,                       // הסתר _id
+      orderId: "$_id",              // שנה שם ל-orderId
+      amount: 1,                    // הצג amount
+      customerName: "$customerData.name",  // שדה מקונן → שטוח
+      city: "$customerData.city"
+    }
+  }
+])
+
+// תוצאה סופית — נקיה ומובנת:
+// { orderId: 1, amount: 250, customerName: "דוד",  city: "תל אביב" }
+// { orderId: 2, amount: 180, customerName: "שרה",  city: "ירושלים" }
+// { orderId: 3, amount: 420, customerName: "דוד",  city: "תל אביב" }
+// { orderId: 4, amount: 95,  customerName: "שרה",  city: "ירושלים" }` },
+      { type: 'heading', text: 'דוגמה מלאה — דוח TOP לקוחות, שלב-אחרי-שלב' },
+      { type: 'text', text: 'נבנה דוח שמראה את הלקוחות הכי פעילים: כמה הזמנות כל אחד עשה, וכמה הוציא בסך הכל. נעקוב אחרי הנתונים בכל שלב.' },
+      { type: 'code', lang: 'javascript', caption: 'שלב א׳ — $match: סנן הזמנות מ-2024 בלבד', code: `db.orders.aggregate([
+  {
+    $match: {
+      createdAt: { $gte: new Date("2024-01-01") }
+    }
+  }
+])
+
+// לפני: 4 הזמנות
+// אחרי:  נניח שנשארו 3 (הזמנה 4 ישנה)
+// { _id: 1, customerId: "AAA", amount: 250, createdAt: 2024-03-01 }
+// { _id: 2, customerId: "BBB", amount: 180, createdAt: 2024-03-05 }
+// { _id: 3, customerId: "AAA", amount: 420, createdAt: 2024-04-01 }` },
+      { type: 'text', text: 'שלב ב׳ מצרף את פרטי הלקוח לכל הזמנה: $lookup מביא את המסמך מ-customers, ו-$unwind הופך את המערך לאובייקט. אחרי שני השלבים כל הזמנה כוללת customerData עם שם העיר ושם הלקוח.' },
+      { type: 'code', lang: 'javascript', caption: 'שלב ב׳ — $lookup + $unwind: הוסף פרטי לקוח', code: `// ממשיכים את ה-pipeline:
+  {
+    $lookup: {
+      from: "customers",
+      localField: "customerId",
+      foreignField: "_id",
+      as: "customerData"
+    }
+  },
+  { $unwind: "$customerData" }
+
+// אחרי שני השלבים — כל הזמנה כוללת עכשיו את הלקוח שלה:
+// { _id: 1, amount: 250, customerData: { name: "דוד", city: "תל אביב" }, ... }
+// { _id: 2, amount: 180, customerData: { name: "שרה", city: "ירושלים"  }, ... }
+// { _id: 3, amount: 420, customerData: { name: "דוד", city: "תל אביב" }, ... }` },
+      { type: 'text', text: 'שלב ג׳ מקבץ את ההזמנות לפי לקוח ומחשב סטטיסטיקות. $first משמש לשם הלקוח כי הוא זהה בכל הזמנות של אותו לקוח. $count סופר הזמנות ו-$sum מסכם סכומים. שימו לב שה-_id של הקבוצה הוא מזהה הלקוח.' },
+      { type: 'code', lang: 'javascript', caption: 'שלב ג׳ — $group: קבץ לפי לקוח וחשב סטטיסטיקות', code: `  {
+    $group: {
+      _id: "$customerData._id",              // מפתח הקיבוץ: מזהה הלקוח
+      customerName: { $first: "$customerData.name" }, // שם (ב-$first כי שווה בכל הזמנות)
+      totalOrders: { $count: {} },            // ספור הזמנות
+      totalAmount: { $sum: "$amount" }        // סכם סכומים
+    }
+  }
+
+// אחרי $group — שורה אחת לכל לקוח:
+// { _id: "AAA", customerName: "דוד", totalOrders: 2, totalAmount: 670 }
+// { _id: "BBB", customerName: "שרה", totalOrders: 1, totalAmount: 180 }` },
+      { type: 'text', text: 'השלבים האחרונים ממיינים את התוצאות מהלקוח עם הסכום הגבוה ביותר ומגבילים ל-10 תוצאות. -1 ב-$sort פירושו סדר יורד (מהגדול לקטן). $limit עצמאי פועל על הנתונים שנותרו אחרי כל השלבים הקודמים.' },
+      { type: 'code', lang: 'javascript', caption: 'שלבים ד׳-ה׳ — $sort + $limit: מיין והגבל', code: `  { $sort:  { totalAmount: -1 } },  // מהגדול לקטן
+  { $limit: 10 }                    // top 10 בלבד
+
+// תוצאה סופית — מדורגת:
+// { customerName: "דוד", totalOrders: 2, totalAmount: 670 }
+// { customerName: "שרה", totalOrders: 1, totalAmount: 180 }` },
+      { type: 'text', text: 'כאן כל השלבים מחוברים לפעולה אחת מלאה. שימו לב לסדר ולהיגיון: קודם מסננים ($match), אז מצרפים נתונים ($lookup + $unwind), אז מקבצים ומחשבים ($group), ולבסוף ממיינים ומגבילים. כל שלב מקבל את פלט הקודם ומייצר פלט חדש.' },
+      { type: 'code', lang: 'javascript', caption: 'ה-Pipeline המלא — הכל ביחד', code: `db.orders.aggregate([
+  // א. רק הזמנות מ-2024
+  { $match: { createdAt: { $gte: new Date("2024-01-01") } } },
+
+  // ב. צרף פרטי לקוח
+  { $lookup: { from: "customers", localField: "customerId", foreignField: "_id", as: "customerData" } },
+  { $unwind: "$customerData" },
+
+  // ג. קבץ לפי לקוח
+  { $group: {
+      _id: "$customerData._id",
+      customerName: { $first: "$customerData.name" },
+      totalOrders: { $count: {} },
+      totalAmount: { $sum: "$amount" }
+  }},
+
+  // ד. מיין — הכי הרבה כסף קודם
+  { $sort: { totalAmount: -1 } },
+
+  // ה. top 10 בלבד
+  { $limit: 10 }
+])` },
+      { type: 'heading', text: '$lookup מתקדם — עם pipeline פנימי' },
+      { type: 'text', text: 'כשצריך תנאים מורכבים מעבר לשיוויון פשוט, אפשר להשתמש ב-lookup עם pipeline. let מגדיר משתנים מהמסמך הנוכחי, ואז pipeline משתמש בהם.' },
+      { type: 'code', lang: 'javascript', caption: '$lookup עם pipeline — הזמנה עם פרטי מוצרים', code: `// כל הזמנה מכילה מערך של מזהי מוצרים:
+// { _id: 1, items: [ObjectId("P1"), ObjectId("P2")], amount: 350 }
+
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "products",
+
+      // let: "ייצא" שדות מה-order הנוכחי לשימוש ב-pipeline
+      let: { itemIds: "$items" },   // $$itemIds = הערך של items מה-order
+
+      pipeline: [
+        {
+          $match: {
+            // $expr נדרש כשמשווים שדות (לא ערכים קבועים)
+            $expr: { $in: ["$_id", "$$itemIds"] }
+            //            ↑ שדה products._id    ↑ משתנה מה-let
+          }
+        },
+        // החזר רק שדות רלוונטיים — חסוך bandwidth
+        { $project: { name: 1, price: 1, _id: 0 } }
+      ],
+
+      as: "productDetails"
+    }
+  }
+])
+
+// תוצאה:
+// { _id: 1, amount: 350,
+//   productDetails: [
+//     { name: "עט",  price: 15 },
+//     { name: "מחברת", price: 25 }
+//   ]
+// }` },
+      { type: 'tip', text: 'ביצועים: צור אינדקס על השדות שמשמשים ל-JOIN. למשל: db.orders.createIndex({ customerId: 1 }) — הופך $lookup לעשרות מונים מהיר יותר על collections גדולים.' },
+    ],
+    questionBank: [
+      {
+        id: 'nosql-lookup-q1',
+        text: 'מה המקביל ל-$lookup ב-SQL?',
+        options: ['UNION', 'GROUP BY', 'LEFT OUTER JOIN', 'HAVING'],
+        correct: 2,
+        explanation: '$lookup מבצע LEFT OUTER JOIN — כל מסמך מה-collection המקורי נשאר, ושדות מה-collection החיצוני מצורפים (כמערך) כשיש התאמה.',
+      },
+      {
+        id: 'nosql-lookup-q2',
+        text: 'מה $lookup מחזיר בשדה ה-as?',
+        options: ['אובייקט יחיד', 'מערך של מסמכים תואמים', 'מספר ההתאמות', 'null אם לא נמצא'],
+        correct: 1,
+        explanation: '$lookup תמיד מחזיר מערך ב-as. אם נמצאה התאמה אחת — מערך עם אלמנט אחד. אם לא נמצא — מערך ריק [].',
+      },
+      {
+        id: 'nosql-lookup-q3',
+        text: 'מדוע משתמשים ב-$unwind אחרי $lookup?',
+        options: ['חובה לתפקוד', 'להמיר מערך [תוצאה] לאובייקט בודד', 'לסנן תוצאות', 'לשפר ביצועים'],
+        correct: 1,
+        explanation: '$lookup מחזיר מערך. $unwind "פורס" אותו כך שבמקום customerData: [{ name: "דוד" }] תקבל customerData: { name: "דוד" } — נוח יותר לגישה לשדות.',
+      },
+      {
+        id: 'nosql-lookup-q4',
+        text: 'מה preserveNullAndEmptyArrays עושה ב-$unwind?',
+        options: ['מסיר מסמכים ריקים', 'שומר מסמכים גם אם ה-$lookup לא מצא התאמה', 'ממלא ערכים null', 'מוסיף מערכים ריקים'],
+        correct: 1,
+        explanation: 'ב-$unwind, מסמכים עם מערך ריק (ללא התאמה ב-$lookup) נמחקים כברירת מחדל. preserveNullAndEmptyArrays: true שומר אותם — שימושי כש-JOIN הוא אופציונלי.',
+      },
+      {
+        id: 'nosql-lookup-q5',
+        text: 'מתי משתמשים ב-$lookup עם let ו-pipeline במקום הצורה הבסיסית?',
+        options: [
+          'תמיד — זה הצורה המומלצת',
+          'כשצריך תנאי JOIN מורכב מעבר לשיוויון בין שני שדות',
+          'כשיש יותר מ-10 מסמכים',
+          'רק ב-MongoDB Atlas',
+        ],
+        correct: 1,
+        explanation: 'הצורה הבסיסית (localField/foreignField) עובדת לשיוויון פשוט. let+pipeline נדרש כשצריך $in, $gt, תנאים מרובים, או pipeline מלא על ה-collection החיצוני.',
       },
     ],
   },
@@ -813,25 +1078,26 @@ db.users.find({ email: "test@test.com" }).explain("executionStats")
       { type: 'heading', text: 'כלל האצבע לבחירה' },
       {
         type: 'table',
-        caption: 'מתי Embed ומתי Reference',
+        caption: 'כללי אצבע: Embed vs. Reference',
         headers: ['קריטריון', 'Embed', 'Reference'],
         rows: [
-          ['גודל תת-ישות', 'קטן ומוגבל', 'גדול / לא מוגבל'],
-          ['כמה ישויות קשורות?', '"one-to-few" (עד ~100)', '"one-to-many" / "many-to-many"'],
-          ['האם נתונים משותפים?', 'ייחודי לאובייקט אחד', 'משותף להרבה אובייקטים'],
-          ['עדכון תדיר?', 'לא / נדיר', 'תדיר — עדיף reference'],
-          ['גישה יחד תמיד?', 'כן — embed!', 'לפעמים — reference'],
+          ['סוג קשר', '"One-to-Few" (עד ~100)', '"One-to-Many" / "Many-to-Many"'],
+          ['גודל נתונים מקושרים', 'קטן ומוגבל', 'גדול / לא מוגבל'],
+          ['שיתוף נתונים', 'ייחודי למסמך אחד', 'משותף למסמכים רבים'],
+          ['תדירות עדכון', 'נדירה', 'תדירה (עדיף reference)'],
+          ['תדירות גישה', 'תמיד ניגשים יחד', 'לפעמים ניגשים בנפרד'],
         ],
       },
-      { type: 'text', text: 'ה-Hybrid Pattern משלב הפניה (לשמירת קשר) עם snapshot (לשמירת ערכים בזמן האירוע). בהזמנה שומרים גם את productId (הפניה) וגם את המחיר בזמן הקנייה (snapshot). כך גם אם המחיר ישתנה בעתיד, ההזמנה הישנה תשמור את המחיר המקורי.' },
-      { type: 'code', lang: 'javascript', caption: 'Pattern מעשי — Hybrid', code: `// הזמנה עם פרטי מוצר מקוננים (snapshot)
+      { type: 'heading', text: 'דפוסים מתקדמים: Hybrid Pattern' },
+      { type: 'text', text: 'ה-Hybrid Pattern משלב הפניה (לשמירת קשר) עם snapshot (לשמירת ערכים בזמן האירוע). בהזמנה שומרים גם את productId (הפניה) וגם את המחיר ושם המוצר בזמן הקנייה (snapshot). כך גם אם המחיר ישתנה בעתיד, ההזמנה הישנה תשמור את המחיר המקורי.' },
+      { type: 'code', lang: 'javascript', caption: 'דפוס היברידי: הפניה + Snapshot', code: `// הזמנה עם פרטי מוצר מקוננים (snapshot)
 // + הפניה ל-product המקורי
 {
   _id: ObjectId("order1"),
   customerId: ObjectId("cust1"),
   items: [{
-    productId: ObjectId("prod1"),    // הפניה
-    name: "מחשב נייד",               // snapshot — מחיר בזמן הקנייה
+    productId: ObjectId("prod1"),    // ← הפניה (Reference)
+    name: "מחשב נייד",               // ← Snapshot (מחיר ושם בזמן הקנייה)
     price: 4500,
     qty: 1
   }]

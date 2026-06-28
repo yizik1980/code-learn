@@ -1689,4 +1689,175 @@ class AccountActivityProjection {
       },
     ],
   },
+
+  {
+    id: 'anti-patterns',
+    title: 'Anti-Patterns — מה לא לעשות',
+    summary: 'זיהוי ותיקון "פתרונות" נפוצים שגורמים יותר נזק מתועלת',
+    emoji: '💀',
+    content: [
+      { type: 'heading', text: 'מה זה Anti-Pattern?' },
+      {
+        type: 'text',
+        text: 'Anti-Pattern הוא פתרון נפוץ לבעיה חוזרת שנראה טוב על פניו, אך בפועל אינו יעיל וגורם יותר נזק מתועלת בטווח הארוך. זיהוי Anti-Patterns הוא מיומנות חשובה לא פחות מהכרת Design Patterns.',
+      },
+      {
+        type: 'table',
+        caption: 'Anti-Patterns נפוצים',
+        headers: ['Anti-Pattern', 'ה"פתרון"', 'הבעיה האמיתית'],
+        rows: [
+          ['God Object', 'Class אחד שעושה הכל', 'שובר SRP, קשה לבדיקה, coupling גבוה'],
+          ['Spaghetti Code', 'קוד ללא מבנה, קפיצות לכל עבר', 'בלתי ניתן לתחזוקה, קשה להבנה'],
+          ['Golden Hammer', 'שימוש באותו כלי לכל בעיה', 'הכלי לא מתאים, ביצועים גרועים'],
+          ['Premature Optimization', 'אופטימיזציה לפני שיש בעיה', 'קוד מסובך, בזבוז זמן, לעיתים פוגע'],
+          ['Anemic Domain Model', 'אובייקטים עם getters/setters בלבד', 'כל הלוגיקה מחוץ לאובייקט, קוד פרוצדורלי'],
+        ],
+      },
+      { type: 'heading', text: 'דוגמה: God Object' },
+      {
+        type: 'text',
+        text: 'God Object (או God Class) הוא class שיודע יותר מדי ועושה יותר מדי. הוא מרכז אחריות רבה מדי, מה שהופך אותו לבלתי ניתן לבדיקה, קשה לתחזוקה, וצוואר בקבוק לשינויים. הפתרון הוא תמיד לפצל אותו למחלקות קטנות וממוקדות לפי עיקרון SRP.',
+      },
+      {
+        type: 'code',
+        lang: 'typescript',
+        caption: 'פיצול God Object',
+        code: `// ✗ God Object — יודע הכל, עושה הכל
+class SuperManager {
+  parseFile(path: string) { /* ... */ }
+  validateData(data: any) { /* ... */ }
+  saveToDb(data: any) { /* ... */ }
+  sendEmail(to: string) { /* ... */ }
+  log(msg: string) { /* ... */ }
+}
+
+// ✓ פיצול לפי אחריות (SRP)
+class FileParser { /* ... */ }
+class DataValidator { /* ... */ }
+class DatabaseService { /* ... */ }
+class EmailService { /* ... */ }`,
+      },
+      { type: 'heading', text: 'דוגמה: Spaghetti Code' },
+      {
+        type: 'text',
+        text: 'Spaghetti Code הוא קוד ללא מבנה ברור, עם לוגיקה שקופצת ממקום למקום, תלויות נסתרות וזרימה שקשה לעקוב אחריה. הפתרון הוא תמיד לפרק את הלוגיקה לפונקציות קטנות, ממוקדות ובעלות שם ברור.',
+      },
+      {
+        type: 'code',
+        lang: 'typescript',
+        caption: 'פירוק Spaghetti Code',
+        code: `// ✗ Spaghetti Code — לוגיקה מבולגנת וקשה למעקב
+function processOrder(order, user) {
+  let total = 0;
+  for (const item of order.items) {
+    total += item.price * item.quantity;
+  }
+
+  if (user.isVip) {
+    total *= 0.9; // 10% discount
+  }
+
+  order.shipping = total > 500 ? 'free' : 'standard';
+  order.status = 'processed';
+  order.total = total;
+  return order;
+}
+
+// ✓ פירוק לפונקציות קטנות וברורות
+const calculateTotal = (items) => items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+const applyVipDiscount = (total, isVip) => isVip ? total * 0.9 : total;
+const getShippingType = (total) => total > 500 ? 'free' : 'standard';`,
+      },
+      { type: 'heading', text: 'דוגמה: Anemic Domain Model' },
+      {
+        type: 'text',
+        text: 'Anemic Domain Model הוא אובייקט שהוא רק "שקית" של נתונים עם getters ו-setters, וכל הלוגיקה העסקית נמצאת ב-services חיצוניים. זה מוביל לקוד פרוצדורלי ולא מונחה-עצמים. הפתרון הוא להעביר את ההתנהגות לתוך ה-domain object עצמו.',
+      },
+      {
+        type: 'code',
+        lang: 'typescript',
+        caption: 'מ-Anemic ל-Rich Domain Model',
+        code: `// ✗ Anemic — רק נתונים, אפס התנהגות
+class Order {
+  public id: string;
+  public status: string;
+  public total: number;
+}
+
+// כל הלוגיקה ב-service חיצוני:
+class OrderService {
+  ship(order: Order) {
+    if (order.status === 'paid') order.status = 'shipped';
+  }
+}
+
+// ✓ Rich — נתונים + התנהגות ביחד
+class Order {
+  private status: 'new' | 'paid' | 'shipped' = 'new';
+
+  ship() {
+    if (this.status !== 'paid') throw new Error('Cannot ship unpaid order');
+    this.status = 'shipped';
+  }
+}
+`,
+      },
+      {
+        type: 'tip',
+        text: 'הכלל של דונלד קנות\': "Premature optimization is the root of all evil". אל תבזבז זמן על אופטימיזציה לפני שאתה יודע שיש בעיית ביצועים.',
+      },
+    ],
+    questionBank: [
+      {
+        id: 'anti-patterns-q1',
+        text: 'מה הבעיה המרכזית ב-"God Object"?',
+        options: [
+          'הוא מהיר מדי',
+          'הוא מפר את עקרון SRP, קשה לבדיקה ובעל coupling גבוה',
+          'הוא משתמש ביותר מדי זיכרון',
+          'הוא דורש קומפיילר מיוחד',
+        ],
+        correct: 1,
+        explanation: 'God Object מרכז יותר מדי אחריויות, מה שהופך אותו לקשה לתחזוקה, קשה לבדיקה, וצוואר בקבוק לשינויים. הפתרון הוא לפצל אותו למחלקות קטנות וממוקדות.',
+      },
+      {
+        id: 'anti-patterns-q2',
+        text: 'מה מאפיין "Anemic Domain Model"?',
+        options: [
+          'אובייקטים עם לוגיקה מורכבת',
+          'אובייקטים שהם רק "שקיות" של נתונים (getters/setters) ללא התנהגות',
+          'אובייקטים ללא נתונים כלל',
+          'אובייקטים שמתחברים ישירות למסד הנתונים',
+        ],
+        correct: 1,
+        explanation: 'Anemic Domain Model הוא אובייקט שמכיל רק נתונים, וכל הלוגיקה העסקית נמצאת בשירותים חיצוניים. זה מוביל לקוד פרוצדורלי ולא מונחה-עצמים.',
+      },
+      {
+        id: 'anti-patterns-q3',
+        text: 'מהו ה-Anti-Pattern "Golden Hammer"?',
+        options: [
+          'שימוש בכלי הטוב ביותר למשימה',
+          'שימוש באותו כלי מוכר לכל בעיה, גם כשהוא לא מתאים',
+          'אופטימיזציה של קוד לפני שיש בעיית ביצועים',
+          'כתיבת קוד ללא מבנה ברור',
+        ],
+        correct: 1,
+        explanation: '"Golden Hammer" הוא הנטייה להשתמש בכלי/טכנולוגיה שאנחנו מכירים היטב לכל בעיה, גם אם יש כלים מתאימים יותר. זה יכול להוביל לביצועים גרועים או קוד מסובך.',
+      },
+      {
+        id: 'anti-patterns-q4',
+        text: 'מתי נכון לבצע אופטימיזציה לקוד, כדי להימנע מ-"Premature Optimization"?',
+        options: ['תמיד, מיד כשכותבים אותו', 'אף פעם', 'רק לאחר זיהוי בעיית ביצועים אמיתית באמצעות מדידה (profiling)', 'לפני שמעלים ל-production'],
+        correct: 2,
+        explanation: 'הכלל הוא "Make it work, make it right, make it fast" — ובסדר הזה. אופטימיזציה לפני שיש בעיה אמיתית מובילה לקוד מסובך ובזבוז זמן.',
+      },
+      {
+        id: 'anti-patterns-q5',
+        text: 'איך פותרים את בעיית ה-"Anemic Domain Model"?',
+        options: ['מוסיפים עוד getters ו-setters', 'מעבירים את ההתנהגות והלוגיקה העסקית לתוך ה-domain object עצמו', 'מפצלים את האובייקט לכמה אובייקטים קטנים', 'משתמשים ביותר services'],
+        correct: 1,
+        explanation: 'הפתרון הוא להפוך את המודל ל-"Rich", כלומר, להעביר את הלוגיקה העסקית שקשורה לנתונים לתוך האובייקט עצמו, כך שהנתונים וההתנהגות חיים יחד.',
+      },
+    ],
+  },
 ]
