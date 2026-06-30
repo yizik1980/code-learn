@@ -15,6 +15,7 @@ import { testingLessons } from './testing/lessons'
 import { angularLessons } from './angular/lessons'
 import { patternsLessons } from './patterns/lessons'
 import { cicdLessons } from './cicd/lessons'
+import { electronicsLessons } from './electronics/lessons'
 import { architectureLessons } from './architecture/lessons'
 import { vibeCodingLessons } from './vibe_coding/lessons'
 import { notebooklmLessons } from './notebooklm/lessons'
@@ -93,6 +94,15 @@ export const courses: Course[] = [
     color: '#0ea5e9',
     gradient: 'from-sky-400 to-blue-600',
     lessons: cloudLessons,
+  },
+  {
+    id: 'electronics',
+    title: 'יסודות האלקטרוניקה',
+    description: 'מתח, זרם, חוק אוהם, מולטימטר, נגדים, קבלים, דיודות, טרנזיסטורים, סלילים וקריאת סכמות',
+    emoji: '⚡',
+    color: '#f59e0b',
+    gradient: 'from-yellow-500 to-orange-600',
+    lessons: electronicsLessons,
   },
   {
     id: 'cicd',
