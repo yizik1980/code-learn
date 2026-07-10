@@ -19,6 +19,7 @@ import { electronicsLessons } from './electronics/lessons'
 import { architectureLessons } from './architecture/lessons'
 import { vibeCodingLessons } from './vibe_coding/lessons'
 import { notebooklmLessons } from './notebooklm/lessons'
+import { networkingLessons } from './networking/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -85,6 +86,15 @@ export const courses: Course[] = [
     color: '#0ea5e9',
     gradient: 'from-sky-500 to-blue-600',
     lessons: reactNativeLessons,
+  },
+  {
+    id: 'networking',
+    title: 'ניהול רשתות תקשורת בענן',
+    description: 'VPC, Security Groups, Load Balancers, DNS, VPN, CloudFront, WAF, Transit Gateway ועוד',
+    emoji: '🌐',
+    color: '#0891b2',
+    gradient: 'from-cyan-600 to-blue-700',
+    lessons: networkingLessons,
   },
   {
     id: 'cloud',
