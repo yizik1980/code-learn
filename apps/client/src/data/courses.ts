@@ -20,6 +20,7 @@ import { architectureLessons } from './architecture/lessons'
 import { vibeCodingLessons } from './vibe_coding/lessons'
 import { notebooklmLessons } from './notebooklm/lessons'
 import { networkingLessons } from './networking/lessons'
+import { aiDevopsLessons } from './ai_devops/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -86,6 +87,15 @@ export const courses: Course[] = [
     color: '#0ea5e9',
     gradient: 'from-sky-500 to-blue-600',
     lessons: reactNativeLessons,
+  },
+  {
+    id: 'ai-devops',
+    title: 'AI לDevOps',
+    description: 'GitHub Copilot, k8sGPT, AI Monitoring, Incident Response, IaC Generation, Security Scanning ו-DevOps Agents',
+    emoji: '🤖',
+    color: '#7c3aed',
+    gradient: 'from-violet-600 to-purple-800',
+    lessons: aiDevopsLessons,
   },
   {
     id: 'networking',
