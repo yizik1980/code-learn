@@ -21,6 +21,7 @@ import { vibeCodingLessons } from './vibe_coding/lessons'
 import { notebooklmLessons } from './notebooklm/lessons'
 import { networkingLessons } from './networking/lessons'
 import { aiDevopsLessons } from './ai_devops/lessons'
+import { dockerLessons } from './docker/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -96,6 +97,15 @@ export const courses: Course[] = [
     color: '#7c3aed',
     gradient: 'from-violet-600 to-purple-800',
     lessons: aiDevopsLessons,
+  },
+  {
+    id: 'docker',
+    title: 'Docker & Containers',
+    description: 'מבוא לContainers, Docker CLI, Dockerfile, Networking, Volumes, Compose, Registry, Security ו-Production',
+    emoji: '🐳',
+    color: '#0db7ed',
+    gradient: 'from-blue-500 to-cyan-600',
+    lessons: dockerLessons,
   },
   {
     id: 'networking',
