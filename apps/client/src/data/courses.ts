@@ -1,3 +1,4 @@
+import { nodejsLessons } from './nodejs/lessons'
 import { etlLessons } from './etl/lessons'
 import { gisLessons } from './gis/lessons'
 import { pythonLessons } from './python/lessons'
@@ -51,6 +52,15 @@ export const courses: Course[] = [
     color: '#10b981',
     gradient: 'from-emerald-500 to-teal-600',
     lessons: sqlLessons,
+  },
+  {
+    id: 'nodejs',
+    title: 'Node.js',
+    description: 'סביבת ריצה לJavaScript — Event Loop, Express, Async, Streams, אבטחה ושאלות ראיון',
+    emoji: '🟢',
+    color: '#417e38',
+    gradient: 'from-green-700 to-lime-600',
+    lessons: nodejsLessons,
   },
   {
     id: 'javascript',
