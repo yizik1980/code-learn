@@ -1,4 +1,5 @@
 import { nodejsLessons } from './nodejs/lessons'
+import { elasticsearchLessons } from './elasticsearch/lessons'
 import { etlLessons } from './etl/lessons'
 import { gisLessons } from './gis/lessons'
 import { pythonLessons } from './python/lessons'
@@ -34,6 +35,15 @@ export const courses: Course[] = [
     color: '#3b82f6',
     gradient: 'from-blue-500 to-indigo-600',
     lessons: pythonLessons,
+  },
+  {
+    id: 'elasticsearch',
+    title: 'Elasticsearch',
+    description: 'מנוע חיפוש ואנליטיקה — Inverted Index, Query DSL, Aggregations, Mapping, ILM ושאלות ראיון',
+    emoji: '🔍',
+    color: '#f5a623',
+    gradient: 'from-yellow-500 to-orange-600',
+    lessons: elasticsearchLessons,
   },
   {
     id: 'nosql',
