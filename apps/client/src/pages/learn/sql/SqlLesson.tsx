@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress } from '../../../signals/progress'
-import { sqlLessons } from '../../../data/sql/lessons'
+import { sqlLessons } from '@codelearn/courses-data'
 import LessonContent from '../../../components/LessonContent'
 import QuizDialog from '../../../components/QuizDialog'
 

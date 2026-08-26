@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate, Navigate } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress } from '../../signals/progress'
-import { courses } from '../../data/courses'
+import { courses } from '@codelearn/courses-data'
 import LessonContent from '../../components/LessonContent'
 import QuizDialog from '../../components/QuizDialog';
 import { LESSON_MESSAGES } from '../../constants/messages'

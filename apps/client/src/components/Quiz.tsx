@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import type { Question } from '../types'
+import type { Question } from '@codelearn/courses-data'
 import { pickRandom, calcScore } from '../utils/quiz'
 import { saveProgress } from '../signals/progress'
 

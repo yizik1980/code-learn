@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getCourseStats } from '../signals/progress'
-import type { Course } from '../types'
+import type { Course } from '@codelearn/courses-data'
 
 interface Props {
   course: Course

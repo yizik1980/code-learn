@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useSignals } from '@preact/signals-react/runtime'
 import { getLessonProgress, getCourseStats } from '../../../signals/progress'
-import { sqlLessons } from '../../../data/sql/lessons'
+import { sqlLessons } from '@codelearn/courses-data'
 
 export default function SqlIndex() {
   useSignals()

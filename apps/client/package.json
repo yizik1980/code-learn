@@ -10,6 +10,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@codelearn/courses-data": "*",
     "@preact/signals-react": "^2.2.0",
     "canvas-confetti": "^1.9.4",
     "react": "^18.3.1",

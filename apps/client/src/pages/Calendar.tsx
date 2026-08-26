@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { courses } from '../data/courses'
+import { courses } from '@codelearn/courses-data'
 
 const STORAGE_KEY = 'cl_schedule'
 const TASKS_KEY = 'cl_tasks'

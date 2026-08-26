@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { globalStatsSignal } from '../signals/progress'
 import { userNameSignal } from '../signals/userName'
-import { courses } from '../data/courses'
+import { courses } from '@codelearn/courses-data'
 import CourseCard from '../components/CourseCard'
 
 interface TodaySession { id: string; courseId: string; duration: 10 | 20 | 30 }

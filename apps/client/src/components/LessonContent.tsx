@@ -1,4 +1,4 @@
-import type { ContentBlock } from '../types'
+import type { ContentBlock } from '@codelearn/courses-data'
 import CodeBlock from './CodeBlock'
 import TableDialog from './TableDialog'
 

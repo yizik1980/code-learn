@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import Quiz from './Quiz'
-import type { Question, LessonProgress } from '../types'
+import type { Question } from '@codelearn/courses-data'
+import type { LessonProgress } from '../types'
 import { playQuizSuccess, fireQuizConfetti } from '../utils/celebration'
 
 interface Props {
