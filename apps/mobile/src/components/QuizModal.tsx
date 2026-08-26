@@ -27,7 +27,7 @@ export default function QuizModal({ questions, courseId, lessonId, progress }: P
   return (
     <>
       <View style={[styles.card, brutalCard(colors.ink)]}>
-        <View style={styles.cardHeader}>
+        <View style={styles.cardHeader} aria-hidden>
           <Text style={styles.cardHeaderEmoji}>🧠</Text>
           <View style={{ flex: 1 }}>
             <Text style={styles.cardHeaderTitle}>בחן את עצמך</Text>
@@ -40,24 +40,40 @@ export default function QuizModal({ questions, courseId, lessonId, progress }: P
           )}
         </View>
         <View style={styles.cardBody}>
-          <Text style={{ color: colors.inkSoft }}>{done ? 'הבחינה הושלמה' : 'מוכן לבדוק את עצמך?'}</Text>
+          <Text style={{ color: colors.inkSoft }} aria-hidden>{done ? 'הבחינה הושלמה' : 'מוכן לבדוק את עצמך?'}</Text>
           <Pressable
             onPress={handleOpen}
             style={[styles.startBtn, { backgroundColor: done ? colors.white : colors.blue, borderColor: colors.ink }]}
+            accessibilityRole="button"
+            accessibilityLabel={
+              done
+                ? `נסה שוב את הבחינה. הושלמה בעבר עם ${progress.score} מתוך ${progress.total} נקודות`
+                : `התחל בחינה, ${Math.min(5, questions.length)} שאלות אקראיות מתוך ${questions.length}`
+            }
           >
-            <Text style={{ color: done ? colors.ink : colors.white, fontWeight: '900' }}>
+            <Text style={{ color: done ? colors.ink : colors.white, fontWeight: '900' }} aria-hidden>
               {done ? 'נסה שוב' : 'התחל בחינה ←'}
             </Text>
           </Pressable>
         </View>
       </View>
 
-      <Modal visible={open} animationType="slide" onRequestClose={() => setOpen(false)}>
+      <Modal
+        visible={open}
+        animationType="slide"
+        onRequestClose={() => setOpen(false)}
+        accessibilityViewIsModal
+      >
         <SafeAreaView style={{ flex: 1, backgroundColor: colors.bg }}>
           <View style={styles.modalHeader}>
-            <Text style={styles.modalHeaderTitle}>🧠 בחינה</Text>
-            <Pressable style={styles.closeBtn} onPress={() => setOpen(false)}>
-              <Text style={styles.closeBtnText}>✕</Text>
+            <Text style={styles.modalHeaderTitle} accessibilityRole="header">🧠 בחינה</Text>
+            <Pressable
+              style={styles.closeBtn}
+              onPress={() => setOpen(false)}
+              accessibilityRole="button"
+              accessibilityLabel="סגור בחינה"
+            >
+              <Text style={styles.closeBtnText} aria-hidden>✕</Text>
             </Pressable>
           </View>
           <ScrollView contentContainerStyle={{ padding: 18 }}>

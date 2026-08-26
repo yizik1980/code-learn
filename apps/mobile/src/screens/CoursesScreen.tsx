@@ -26,10 +26,12 @@ export default function CoursesScreen({ navigation }: Props) {
     <View style={styles.screen}>
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <Text style={styles.logo}>👨‍💻 Code<Text style={styles.logoBadge}> Learn </Text></Text>
+          <Text style={styles.logo} accessibilityRole="header">
+            👨‍💻 Code<Text style={styles.logoBadge}> Learn </Text>
+          </Text>
           {stats.totalMax > 0 && (
-            <View style={styles.scoreBadge}>
-              <Text style={styles.scoreBadgeText}>⭐ {stats.totalScore}/{stats.totalMax}</Text>
+            <View style={styles.scoreBadge} accessibilityLabel={`ניקוד כולל: ${stats.totalScore} מתוך ${stats.totalMax}`}>
+              <Text style={styles.scoreBadgeText} aria-hidden>⭐ {stats.totalScore}/{stats.totalMax}</Text>
             </View>
           )}
         </View>
@@ -39,6 +41,8 @@ export default function CoursesScreen({ navigation }: Props) {
           placeholder="חיפוש קורס..."
           placeholderTextColor="#8a8aa0"
           style={styles.search}
+          accessibilityLabel="חיפוש קורס"
+          accessibilityHint="הקלד כדי לסנן את רשימת הקורסים"
         />
       </View>
 
@@ -46,7 +50,7 @@ export default function CoursesScreen({ navigation }: Props) {
         data={filtered}
         keyExtractor={(c) => c.id}
         contentContainerStyle={styles.listContent}
-        ListHeaderComponent={<Text style={styles.sectionTitle}>קורסים זמינים</Text>}
+        ListHeaderComponent={<Text style={styles.sectionTitle} accessibilityRole="header">קורסים זמינים</Text>}
         ListEmptyComponent={<Text style={styles.empty}>לא נמצאו קורסים עבור "{search}"</Text>}
         renderItem={({ item }) => (
           <CourseCard course={item} onPress={() => navigation.navigate('CourseDetail', { courseId: item.id })} />

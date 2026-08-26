@@ -77,7 +77,7 @@ export default function Quiz({ questions, courseId, lessonId, onComplete }: Prop
     <View>
       <View style={styles.progressRow}>
         <Text style={styles.progressLabel}>שאלה {currentIdx + 1} מתוך {picked.length}</Text>
-        <View style={styles.dots}>
+        <View style={styles.dots} aria-hidden>
           {picked.map((_, i) => (
             <View
               key={i}
@@ -93,7 +93,7 @@ export default function Quiz({ questions, courseId, lessonId, onComplete }: Prop
         </View>
       </View>
 
-      <Text style={styles.question}>{current.text}</Text>
+      <Text style={styles.question} accessibilityRole="header">{current.text}</Text>
 
       <View style={{ gap: 8, marginBottom: 16 }}>
         {current.options.map((opt, i) => {
@@ -121,18 +121,30 @@ export default function Quiz({ questions, courseId, lessonId, onComplete }: Prop
             textColor = '#a0a0b8'
           }
 
+          const optionState = checked
+            ? i === current.correct
+              ? ' — תשובה נכונה'
+              : selected === i
+                ? ' — תשובה שגויה'
+                : ''
+            : ''
+
           return (
             <Pressable
               key={i}
               onPress={() => handleSelect(i)}
+              disabled={checked}
               style={[styles.option, { backgroundColor: bg, borderColor: border }]}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: selected === i, disabled: checked }}
+              accessibilityLabel={`אפשרות ${String.fromCharCode(65 + i)}: ${opt}${optionState}`}
             >
-              <View style={[styles.optionLetter, { borderColor: border }]}>
+              <View style={[styles.optionLetter, { borderColor: border }]} aria-hidden>
                 <Text style={{ color: textColor, fontWeight: '900' }}>{String.fromCharCode(65 + i)}</Text>
               </View>
-              <Text style={{ flex: 1, color: textColor, fontWeight: '600', textAlign: 'right' }}>{opt}</Text>
-              {checked && i === current.correct && <Text style={{ color: colors.green, fontWeight: '900' }}>✓</Text>}
-              {checked && selected === i && isWrong && <Text style={{ color: colors.red, fontWeight: '900' }}>✗</Text>}
+              <Text style={{ flex: 1, color: textColor, fontWeight: '600', textAlign: 'right' }} aria-hidden>{opt}</Text>
+              {checked && i === current.correct && <Text style={{ color: colors.green, fontWeight: '900' }} aria-hidden>✓</Text>}
+              {checked && selected === i && isWrong && <Text style={{ color: colors.red, fontWeight: '900' }} aria-hidden>✗</Text>}
             </Pressable>
           )
         })}
@@ -144,6 +156,7 @@ export default function Quiz({ questions, courseId, lessonId, onComplete }: Prop
             styles.explanation,
             { backgroundColor: isCorrect ? colors.greenBg : colors.redBg, borderColor: isCorrect ? colors.green : colors.red },
           ]}
+          accessibilityLiveRegion="polite"
         >
           <Text style={{ color: isCorrect ? colors.greenText : colors.redText, lineHeight: 22 }}>
             <Text style={{ fontWeight: '900' }}>{isCorrect ? '✓ נכון! ' : '✗ לא נכון. '}</Text>
@@ -158,12 +171,20 @@ export default function Quiz({ questions, courseId, lessonId, onComplete }: Prop
             onPress={handleCheck}
             disabled={selected === null}
             style={[styles.actionBtn, { backgroundColor: colors.blue, opacity: selected === null ? 0.5 : 1 }]}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: selected === null }}
+            accessibilityLabel="בדוק תשובה"
           >
-            <Text style={styles.actionBtnText}>בדוק</Text>
+            <Text style={styles.actionBtnText} aria-hidden>בדוק</Text>
           </Pressable>
         ) : (
-          <Pressable onPress={handleNext} style={[styles.actionBtn, { backgroundColor: colors.green }]}>
-            <Text style={styles.actionBtnText}>{isLast ? 'סיים ←' : 'הבא ←'}</Text>
+          <Pressable
+            onPress={handleNext}
+            style={[styles.actionBtn, { backgroundColor: colors.green }]}
+            accessibilityRole="button"
+            accessibilityLabel={isLast ? 'סיים את הבחינה' : 'שאלה הבאה'}
+          >
+            <Text style={styles.actionBtnText} aria-hidden>{isLast ? 'סיים ←' : 'הבא ←'}</Text>
           </Pressable>
         )}
       </View>
@@ -193,21 +214,33 @@ function QuizResults({
 
   return (
     <View>
-      <View style={{ alignItems: 'center', marginBottom: 20 }}>
-        <Text style={{ fontSize: 44 }}>{emoji}</Text>
-        <Text style={{ fontSize: 28, fontWeight: '900', color: colors.ink, marginTop: 6 }}>
+      <View
+        style={{ alignItems: 'center', marginBottom: 20 }}
+        accessible
+        accessibilityLabel={`תוצאת הבחינה: ${score} מתוך ${total} נקודות, ${pct} אחוז. ${msg}`}
+      >
+        <Text style={{ fontSize: 44 }} aria-hidden>{emoji}</Text>
+        <Text style={{ fontSize: 28, fontWeight: '900', color: colors.ink, marginTop: 6 }} aria-hidden>
           {score} / {total} נקודות
         </Text>
-        <Text style={{ color: colors.inkSoft, marginTop: 4, marginBottom: 12 }}>{msg}</Text>
-        <View style={styles.scoreBarTrack}>
+        <Text style={{ color: colors.inkSoft, marginTop: 4, marginBottom: 12 }} aria-hidden>{msg}</Text>
+        <View
+          style={styles.scoreBarTrack}
+          accessibilityRole="progressbar"
+          accessibilityValue={{ min: 0, max: 100, now: pct }}
+          aria-hidden
+        >
           <View style={[styles.scoreBarFill, { width: `${pct}%`, backgroundColor: scoreColor }]} />
         </View>
-        <Text style={{ color: scoreColor, fontWeight: '700', marginTop: 4 }}>{pct}%</Text>
+        <Text style={{ color: scoreColor, fontWeight: '700', marginTop: 4 }} aria-hidden>{pct}%</Text>
       </View>
 
       <View style={{ gap: 8, marginBottom: 20 }}>
         {picked.map((q, i) => {
           const correct = answers[i] === q.correct
+          const rowLabel = correct
+            ? `נכון: ${q.text}`
+            : `שגוי: ${q.text}. התשובה הנכונה: ${q.options[q.correct]}`
           return (
             <View
               key={q.id}
@@ -219,8 +252,10 @@ function QuizResults({
                 borderWidth: 2,
                 borderColor: correct ? colors.green : colors.red,
               }}
+              accessible
+              accessibilityLabel={rowLabel}
             >
-              <View style={{ flexDirection: 'row-reverse', gap: 8 }}>
+              <View style={{ flexDirection: 'row-reverse', gap: 8 }} aria-hidden>
                 <Text style={{ color: correct ? colors.green : colors.red, fontWeight: '900' }}>{correct ? '✓' : '✗'}</Text>
                 <View style={{ flex: 1 }}>
                   <Text style={{ fontWeight: '600', color: colors.ink, textAlign: 'right' }}>{q.text}</Text>
@@ -236,8 +271,13 @@ function QuizResults({
         })}
       </View>
 
-      <Pressable onPress={onRetry} style={styles.retryBtn}>
-        <Text style={{ color: colors.ink, fontWeight: '700' }}>נסה שוב עם שאלות אחרות</Text>
+      <Pressable
+        onPress={onRetry}
+        style={styles.retryBtn}
+        accessibilityRole="button"
+        accessibilityLabel="נסה שוב עם שאלות אחרות"
+      >
+        <Text style={{ color: colors.ink, fontWeight: '700' }} aria-hidden>נסה שוב עם שאלות אחרות</Text>
       </Pressable>
     </View>
   )

@@ -20,23 +20,40 @@ export default function TableModal({ headers, rows, caption = '' }: Props) {
 
   return (
     <>
-      <Pressable style={[styles.trigger, brutalCard(colors.ink)]} onPress={() => setOpen(true)}>
-        <Text style={styles.triggerEmoji}>📊</Text>
-        <Text style={styles.triggerLabel}>{caption || tableName}</Text>
-        <View style={styles.triggerBadge}>
+      <Pressable
+        style={[styles.trigger, brutalCard(colors.ink)]}
+        onPress={() => setOpen(true)}
+        accessibilityRole="button"
+        accessibilityLabel={`טבלה: ${caption || tableName}, ${rows.length} שורות, ${headers.length} עמודות`}
+        accessibilityHint="פותח את הטבלה במסך מלא"
+      >
+        <Text style={styles.triggerEmoji} aria-hidden>📊</Text>
+        <Text style={styles.triggerLabel} aria-hidden>{caption || tableName}</Text>
+        <View style={styles.triggerBadge} aria-hidden>
           <Text style={styles.triggerBadgeText}>
             {rows.length} שורות · {headers.length} עמודות
           </Text>
         </View>
       </Pressable>
 
-      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
-        <Pressable style={styles.overlay} onPress={() => setOpen(false)}>
+      <Modal
+        visible={open}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setOpen(false)}
+        accessibilityViewIsModal
+      >
+        <Pressable style={styles.overlay} onPress={() => setOpen(false)} accessible={false}>
           <Pressable style={[styles.dialog, brutalCard(colors.ink)]} onPress={(e) => e.stopPropagation()}>
             <View style={styles.dialogHeader}>
-              <Text style={styles.dialogTitle}>📊 {caption || tableName}</Text>
-              <Pressable style={styles.closeBtn} onPress={() => setOpen(false)}>
-                <Text style={styles.closeBtnText}>✕</Text>
+              <Text style={styles.dialogTitle} accessibilityRole="header">📊 {caption || tableName}</Text>
+              <Pressable
+                style={styles.closeBtn}
+                onPress={() => setOpen(false)}
+                accessibilityRole="button"
+                accessibilityLabel="סגור"
+              >
+                <Text style={styles.closeBtnText} aria-hidden>✕</Text>
               </Pressable>
             </View>
             <ScrollView style={{ maxHeight: 420 }}>
@@ -44,7 +61,7 @@ export default function TableModal({ headers, rows, caption = '' }: Props) {
                 <View>
                   <View style={styles.headerRow}>
                     {headers.map((h) => (
-                      <Text key={h} style={styles.headerCell}>{h}</Text>
+                      <Text key={h} style={styles.headerCell} accessibilityRole="header">{h}</Text>
                     ))}
                   </View>
                   {rows.map((row, i) => (

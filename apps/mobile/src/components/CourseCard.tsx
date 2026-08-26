@@ -13,9 +13,17 @@ export default function CourseCard({ course, onPress }: Props) {
   const stats = getCourseStats(course.id, course.lessons.length)
   const pct = stats.percent
 
+  const ctaLabel = stats.completed === 0 ? 'התחל ללמוד' : 'המשך'
+  const accessibilityLabel = `${course.title}. ${course.description}. ${stats.completed} מתוך ${course.lessons.length} שיעורים הושלמו, ${pct} אחוז. ${ctaLabel}`
+
   return (
-    <Pressable onPress={onPress} style={[styles.card, brutalCard(colors.ink)]}>
-      <View style={styles.headerRow}>
+    <Pressable
+      onPress={onPress}
+      style={[styles.card, brutalCard(colors.ink)]}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+    >
+      <View style={styles.headerRow} aria-hidden>
         <Text style={styles.emoji}>{course.emoji}</Text>
         {pct > 0 && (
           <View style={[styles.pctBadge, { backgroundColor: course.color }]}>
@@ -24,15 +32,15 @@ export default function CourseCard({ course, onPress }: Props) {
         )}
       </View>
 
-      <Text style={styles.title}>{course.title}</Text>
-      <Text style={styles.description}>{course.description}</Text>
+      <Text style={styles.title} aria-hidden>{course.title}</Text>
+      <Text style={styles.description} aria-hidden>{course.description}</Text>
 
-      <View style={styles.statsRow}>
+      <View style={styles.statsRow} aria-hidden>
         <Text style={styles.statsText}>{stats.completed} / {course.lessons.length} הושלמו</Text>
         <Text style={styles.statsText}>{course.lessons.length} שיעורים</Text>
       </View>
 
-      <View style={styles.progressTrack}>
+      <View style={styles.progressTrack} aria-hidden>
         <View style={[styles.progressFill, { width: `${pct}%`, backgroundColor: course.color }]} />
       </View>
 
@@ -41,9 +49,10 @@ export default function CourseCard({ course, onPress }: Props) {
           styles.cta,
           { backgroundColor: pct === 0 ? course.color : colors.white, borderColor: colors.ink },
         ]}
+        aria-hidden
       >
         <Text style={{ color: pct === 0 ? colors.white : colors.ink, fontWeight: '900' }}>
-          {stats.completed === 0 ? 'התחל ללמוד ←' : 'המשך ←'}
+          {ctaLabel} ←
         </Text>
       </View>
     </Pressable>

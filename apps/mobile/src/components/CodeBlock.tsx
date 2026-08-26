@@ -10,15 +10,15 @@ export default function CodeBlock({ code, caption }: Props) {
   return (
     <View style={styles.wrap}>
       {caption && (
-        <View style={styles.captionBar}>
-          <View style={[styles.dot, { backgroundColor: '#ef444480' }]} />
-          <View style={[styles.dot, { backgroundColor: '#eab30880' }]} />
-          <View style={[styles.dot, { backgroundColor: '#22c55e80' }]} />
-          <Text style={styles.captionText}>{caption}</Text>
+        <View style={styles.captionBar} accessibilityLabel={`קטע קוד: ${caption}`}>
+          <View style={[styles.dot, { backgroundColor: '#ef444480' }]} aria-hidden />
+          <View style={[styles.dot, { backgroundColor: '#eab30880' }]} aria-hidden />
+          <View style={[styles.dot, { backgroundColor: '#22c55e80' }]} aria-hidden />
+          <Text style={styles.captionText} aria-hidden>{caption}</Text>
         </View>
       )}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.codeScroll}>
-        <Text style={styles.codeText}>{code.trim()}</Text>
+        <Text style={styles.codeText} accessibilityLabel={`תוכן הקוד: ${code.trim()}`}>{code.trim()}</Text>
       </ScrollView>
     </View>
   )

@@ -32,28 +32,36 @@ export default function CourseDetailScreen({ route, navigation }: Props) {
         contentContainerStyle={styles.listContent}
         ListHeaderComponent={
           <View style={{ marginBottom: 20 }}>
-            <Text style={styles.emoji}>{course.emoji}</Text>
-            <Text style={styles.title}>{course.title}</Text>
+            <Text style={styles.emoji} aria-hidden>{course.emoji}</Text>
+            <Text style={styles.title} accessibilityRole="header">{course.title}</Text>
             <Text style={styles.description}>{course.description}</Text>
 
-            <View style={[styles.progressCard, brutalCard(colors.ink)]}>
-              <View style={styles.progressCardHeader}>
+            <View
+              style={[styles.progressCard, brutalCard(colors.ink)]}
+              accessibilityRole="progressbar"
+              accessibilityValue={{ min: 0, max: 100, now: stats.percent }}
+              accessibilityLabel={`התקדמות בקורס: ${stats.completed} מתוך ${stats.total} שיעורים${stats.maxScore > 0 ? `, ${stats.score} מתוך ${stats.maxScore} נקודות` : ''}`}
+            >
+              <View style={styles.progressCardHeader} aria-hidden>
                 <Text style={{ fontWeight: '900', color: colors.ink }}>התקדמות</Text>
                 <Text style={{ fontWeight: '900', color: course.color }}>
                   {stats.completed} / {stats.total} שיעורים
                 </Text>
               </View>
-              <View style={styles.progressTrack}>
+              <View style={styles.progressTrack} aria-hidden>
                 <View style={[styles.progressFill, { width: `${stats.percent}%`, backgroundColor: course.color }]} />
               </View>
               {stats.maxScore > 0 && (
-                <Text style={styles.progressScore}>⭐ {stats.score} / {stats.maxScore} נקודות</Text>
+                <Text style={styles.progressScore} aria-hidden>⭐ {stats.score} / {stats.maxScore} נקודות</Text>
               )}
             </View>
           </View>
         }
         renderItem={({ item: lesson, index: idx }) => {
           const prog = getLessonProgress(course.id, lesson.id)
+          const lessonLabel = `שיעור ${idx + 1}: ${lesson.title}. ${lesson.summary}. ${
+            prog?.completed ? `הושלם, ${prog.score} מתוך ${prog.total} נקודות` : 'טרם הושלם'
+          }`
           return (
             <Pressable
               onPress={() => navigation.navigate('Lesson', { courseId: course.id, lessonId: lesson.id })}
@@ -62,6 +70,8 @@ export default function CourseDetailScreen({ route, navigation }: Props) {
                 brutalCard(prog?.completed ? course.color : colors.ink),
                 { backgroundColor: prog?.completed ? colors.greenBg : colors.white },
               ]}
+              accessibilityRole="button"
+              accessibilityLabel={lessonLabel}
             >
               <View
                 style={[
@@ -71,17 +81,18 @@ export default function CourseDetailScreen({ route, navigation }: Props) {
                     borderColor: prog?.completed ? course.color : colors.cardBorder,
                   },
                 ]}
+                aria-hidden
               >
                 <Text style={{ color: prog?.completed ? colors.white : colors.inkSoft, fontWeight: '900' }}>
                   {prog?.completed ? '✓' : idx + 1}
                 </Text>
               </View>
-              <View style={{ flex: 1 }}>
+              <View style={{ flex: 1 }} aria-hidden>
                 <Text style={styles.lessonTitle}>{lesson.emoji} {lesson.title}</Text>
                 <Text style={styles.lessonSummary}>{lesson.summary}</Text>
               </View>
               {prog?.completed && (
-                <View style={[styles.scoreBadge, { backgroundColor: course.color }]}>
+                <View style={[styles.scoreBadge, { backgroundColor: course.color }]} aria-hidden>
                   <Text style={styles.scoreBadgeText}>{prog.score}/{prog.total}</Text>
                 </View>
               )}

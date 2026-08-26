@@ -15,7 +15,11 @@ export default function LessonContent({ blocks }: Props) {
         switch (block.type) {
           case 'heading':
             return (
-              <Text key={i} style={[styles.heading, i === 0 && { marginTop: 0 }]}>
+              <Text
+                key={i}
+                style={[styles.heading, i === 0 && { marginTop: 0 }]}
+                accessibilityRole="header"
+              >
                 {block.text}
               </Text>
             )
@@ -27,9 +31,9 @@ export default function LessonContent({ blocks }: Props) {
             )
           case 'tip':
             return (
-              <View key={i} style={styles.tip}>
-                <Text style={styles.tipEmoji}>💡</Text>
-                <Text style={styles.tipText}>{block.text}</Text>
+              <View key={i} style={styles.tip} accessible accessibilityLabel={`טיפ: ${block.text}`}>
+                <Text style={styles.tipEmoji} aria-hidden>💡</Text>
+                <Text style={styles.tipText} aria-hidden>{block.text}</Text>
               </View>
             )
           case 'code':

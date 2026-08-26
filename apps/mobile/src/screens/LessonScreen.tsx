@@ -40,17 +40,21 @@ export default function LessonScreen({ route, navigation }: Props) {
   return (
     <View style={styles.screen}>
       <View style={styles.topBar}>
-        <Text style={styles.crumb} numberOfLines={1}>
+        <Text
+          style={styles.crumb}
+          numberOfLines={1}
+          accessibilityLabel={`${course.title}, שיעור ${lesson.title}`}
+        >
           {course.emoji} {course.title} / {lesson.emoji} {lesson.title}
         </Text>
-        <View style={styles.crumbBadge}>
-          <Text style={styles.crumbBadgeText}>{lessonIdx + 1} / {course.lessons.length}</Text>
+        <View style={styles.crumbBadge} accessibilityLabel={`שיעור ${lessonIdx + 1} מתוך ${course.lessons.length}`}>
+          <Text style={styles.crumbBadgeText} aria-hidden>{lessonIdx + 1} / {course.lessons.length}</Text>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.emoji}>{lesson.emoji}</Text>
-        <Text style={styles.title}>{lesson.title}</Text>
+        <Text style={styles.emoji} aria-hidden>{lesson.emoji}</Text>
+        <Text style={styles.title} accessibilityRole="header">{lesson.title}</Text>
         <Text style={styles.summary}>{lesson.summary}</Text>
         {prog?.completed && (
           <View style={[styles.doneBadge, { borderColor: course.color }]}>
@@ -71,9 +75,11 @@ export default function LessonScreen({ route, navigation }: Props) {
             <Pressable
               onPress={() => navigation.push('Lesson', { courseId: course.id, lessonId: prevLesson.id })}
               style={styles.navBtn}
+              accessibilityRole="button"
+              accessibilityLabel={`שיעור קודם: ${prevLesson.title}`}
             >
-              <Text style={styles.navBtnLabel}>שיעור קודם</Text>
-              <Text style={styles.navBtnTitle}>{prevLesson.title}</Text>
+              <Text style={styles.navBtnLabel} aria-hidden>שיעור קודם</Text>
+              <Text style={styles.navBtnTitle} aria-hidden>{prevLesson.title}</Text>
             </Pressable>
           ) : (
             <View style={{ flex: 1 }} />
@@ -83,14 +89,21 @@ export default function LessonScreen({ route, navigation }: Props) {
             <Pressable
               onPress={() => navigation.push('Lesson', { courseId: course.id, lessonId: nextLesson.id })}
               style={[styles.navBtn, { backgroundColor: course.color, borderColor: course.color }]}
+              accessibilityRole="button"
+              accessibilityLabel={`שיעור הבא: ${nextLesson.title}`}
             >
-              <Text style={[styles.navBtnLabel, { color: 'rgba(255,255,255,0.75)' }]}>שיעור הבא</Text>
-              <Text style={[styles.navBtnTitle, { color: colors.white }]}>{nextLesson.title}</Text>
+              <Text style={[styles.navBtnLabel, { color: 'rgba(255,255,255,0.75)' }]} aria-hidden>שיעור הבא</Text>
+              <Text style={[styles.navBtnTitle, { color: colors.white }]} aria-hidden>{nextLesson.title}</Text>
             </Pressable>
           ) : (
-            <Pressable onPress={() => navigation.goBack()} style={[styles.navBtn, { backgroundColor: colors.amber, borderColor: colors.ink }]}>
-              <Text style={[styles.navBtnLabel, { color: '#7a6a30' }]}>הקורס הושלם 🏆</Text>
-              <Text style={styles.navBtnTitle}>חזרה לסיכום</Text>
+            <Pressable
+              onPress={() => navigation.goBack()}
+              style={[styles.navBtn, { backgroundColor: colors.amber, borderColor: colors.ink }]}
+              accessibilityRole="button"
+              accessibilityLabel="הקורס הושלם. חזרה לסיכום הקורס"
+            >
+              <Text style={[styles.navBtnLabel, { color: '#7a6a30' }]} aria-hidden>הקורס הושלם 🏆</Text>
+              <Text style={styles.navBtnTitle} aria-hidden>חזרה לסיכום</Text>
             </Pressable>
           )}
         </View>
