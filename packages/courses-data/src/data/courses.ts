@@ -24,6 +24,7 @@ import { notebooklmLessons } from './notebooklm/lessons'
 import { networkingLessons } from './networking/lessons'
 import { aiDevopsLessons } from './ai_devops/lessons'
 import { dockerLessons } from './docker/lessons'
+import { ragLessons } from './rag/lessons'
 import type { Course } from '../types'
 
 export const courses: Course[] = [
@@ -243,6 +244,15 @@ export const courses: Course[] = [
     color: '#8b5cf6',
     gradient: 'from-violet-500 to-purple-700',
     lessons: llmLessons,
+  },
+  {
+    id: 'rag',
+    title: 'RAG — Retrieval-Augmented Generation',
+    description: 'חיבור LLM למאגרי ידע — Embeddings, Vector DB, Chunking, Retrieval, Reranking ו-RAG עם PDF/SQL/Mongo',
+    emoji: '📚',
+    color: '#c026d3',
+    gradient: 'from-fuchsia-600 to-purple-700',
+    lessons: ragLessons,
   },
   {
     id: 'gis',
